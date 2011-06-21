@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.presentation.htdModelWizardID"
+            name="%_UI_htdModelWizard_label"
+            class="org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.presentation.htdModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/htdModelFile.gif">
+         <description>%_UI_htdModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.presentation.htdEditorID"
+            name="%_UI_htdEditor_label"
+            icon="icons/full/obj16/htdModelFile.gif"
+            extensions="htd"
+            class="org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.presentation.htdEditor"
+            contributorClass="org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.presentation.htdActionBarContributor">
+      </editor>
+      
+       <editor
+            class="org.wso2.tools.humantask.editor.editors.HTMultiPageEditor"
+            contributorClass="org.wso2.tools.humantask.editor.editors.HTMultiPageEditorContributor"
+            extensions="htd"
+            icon="icons/full/obj16/HtdModelFile.gif"
+            id="org.wso2.tools.humantask.editor.editors.HTEditorID"
+            name="HTEditor">
+      </editor>
+   </extension>
+
+</plugin>
