@@ -1321,6 +1321,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		preElem_GenInfo_lang_txt = new Text(sectionClient, SWT.SINGLE
 				| SWT.BORDER);
 		preElem_GenInfo_lang_txt.setLayoutData(gd);
+		
+		configPElemGeneralInfoSection_language(preElem_GenInfo_lang_txt);
 
 		info_section.setClient(sectionClient);
 
@@ -2167,7 +2169,11 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 		}
 	}
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//
+	//hjakk
+	
+	
+	
+	
 	
 	private void configPElemGeneralInfoSection_name(final Text nameTextBox)
 	{
@@ -2208,6 +2214,43 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 			System.out.println("can't modify Attribute: " + tParameter_attribute.getName());
 		}
 	}
+	
+	
+	
+	//Languge of name tag
+	private void configPElemGeneralInfoSection_language(final Text languageTextBox) {
+		if (tasks != null) {
+			if (tasks.getTask().get(0).getPresentationElements() != null) {
+				if ((tasks.getTask().get(0).getPresentationElements().getName().get(0).getLang() != null)) {
+					languageTextBox.setText((tasks.getTask().get(0).getPresentationElements().getName().get(0).getLang()));
+				} else {
+					languageTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}
+		}
+		languageTextBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_presentationElement(
+						htdPackage.eINSTANCE.getTText_Lang(),languageTextBox.getText());
+			}
+		});
+
+	}
+	
+	private void setAttribute_presentationElement(EAttribute tText_attribute, String text) {
+		Command setAttribCommand = SetCommand.create(domain,selectedElemName, tText_attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tText_attribute.getName());
+		}
+	}
+	
+	
 	
 	/*private void configPresentationInfoSection_name(final Text nameTextBox) 
 	{
