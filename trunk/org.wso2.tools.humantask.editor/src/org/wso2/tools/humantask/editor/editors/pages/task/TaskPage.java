@@ -2167,7 +2167,7 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 		}
 	}
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+	//hjakk
 	
 	private void configPElemGeneralInfoSection_name(final Text nameTextBox)
 	{
