@@ -30,7 +30,7 @@ public class testpage extends FormPage {
 
 	public testpage(FormEditor editor, String title) {
 		super(editor, "test", title);
-		// TODO Auto-generated constructor stub
+		 // TODO Auto-generated constructor stub
 	}
 
 	protected void createFormContent(IManagedForm managedform) {
