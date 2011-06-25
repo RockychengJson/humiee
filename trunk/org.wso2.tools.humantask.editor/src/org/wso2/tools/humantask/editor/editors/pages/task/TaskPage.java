@@ -10,7 +10,6 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
@@ -38,12 +37,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -138,6 +139,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private Combo preElemDescInfo_context_type;
 	private Text preElemDescInfo_desc_txt;
 
+	private static final String[] FILTER_EXTS = { "*.wsdl","*.*" };
 	
 	
 	
@@ -355,6 +357,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		sectiondata.horizontalSpan = 2;
 		section.setLayoutData(sectiondata);
 
+		
 		Composite sectionClient = toolkit.createComposite(section);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
@@ -362,7 +365,58 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		layout.marginHeight = 5;
 
 		sectionClient.setLayout(layout);
-
+		
+		final Composite wsdl_import_comp = toolkit.createComposite(sectionClient);
+		GridData wsdl_import_comp_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL);
+		wsdl_import_comp_gd.horizontalSpan = 2;
+		wsdl_import_comp.setLayoutData(wsdl_import_comp_gd);
+		GridLayout wsdlComp_layout = new GridLayout(3 ,false);
+		wsdl_import_comp.setLayout(wsdlComp_layout);
+		
+		Label import_label = new Label(wsdl_import_comp, SWT.WRAP);
+		import_label.setText("Imported WSDLs");
+		GridData import_lb_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL);
+		import_lb_gd.horizontalSpan =1;
+		import_label.setLayoutData(import_lb_gd);
+		
+		Combo comboDropDown = new Combo(wsdl_import_comp, SWT.DROP_DOWN | SWT.BORDER);
+		comboDropDown.add("test 1");
+		comboDropDown.add("test 2");
+		comboDropDown.add("test 3");
+		GridData combo_lb_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL);
+		combo_lb_gd.horizontalSpan = 2;
+		comboDropDown.setLayoutData(combo_lb_gd);
+		
+		Label select_wsdl_label = new Label(wsdl_import_comp, SWT.WRAP);
+		select_wsdl_label.setText("Select the WSDL");
+		//import_lb_gd.horizontalSpan =  1;
+		select_wsdl_label.setLayoutData(import_lb_gd);
+		
+		final Text filename = new Text(wsdl_import_comp, SWT.SINGLE | SWT.BORDER);
+		filename.setLayoutData(import_lb_gd);
+		
+		Button browse_btn = new Button(wsdl_import_comp, SWT.PUSH);
+		browse_btn.setText("Browse");
+		browse_btn.addSelectionListener(new SelectionAdapter() {
+			
+			public void widgetSelected(SelectionEvent event) {
+				
+				FileDialog dlg = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+			  //dlg.setFilterNames(FILTER_NAMES);
+				dlg.setFilterExtensions(FILTER_EXTS);
+				String fn = dlg.open();
+				if (fn != null) {
+					filename.setText(fn);
+				}
+			}
+			
+		});
+		browse_btn.setLayoutData(import_lb_gd);
+		
+		
 		// Port Type label and Text box
 		Label portTypeLabel = new Label(sectionClient, SWT.WRAP);
 		portTypeLabel.setText(Messages
@@ -446,7 +500,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				OresponseTextBox.setEnabled(false);
 			}
 		});
-
+		//section.setClient(wsdl_import_comp);
 		section.setClient(sectionClient);
 
 		return section;
@@ -1312,7 +1366,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				| SWT.BORDER);
 		preElem_GenInfo_name_txt.setLayoutData(gd);
 
-		configPElemGeneralInfoSection_name(preElem_GenInfo_name_txt);
+		//configPElemGeneralInfoSection_name(preElem_GenInfo_name_txt);
 		
 		Label language_lb = new Label(sectionClient, SWT.WRAP);
 		language_lb.setText("Language");
@@ -1322,7 +1376,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				| SWT.BORDER);
 		preElem_GenInfo_lang_txt.setLayoutData(gd);
 		
-		configPElemGeneralInfoSection_language(preElem_GenInfo_lang_txt);
+		//configPElemGeneralInfoSection_language(preElem_GenInfo_lang_txt);
 
 		info_section.setClient(sectionClient);
 
@@ -2177,9 +2231,9 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 	
 	private void configPElemGeneralInfoSection_name(final Text nameTextBox)
 	{
-		/* if (input != null)
+		 if (input != null)
 		  {
-			  if(selectedElemName.ge!= null))
+			  if(selectedElemName!= null)
 			  { 
 				  nameTextBox.setText((tasks.getTask().get(0).getPresentationElements().
 						  getPresentationParameters().getPresentationParameter().get(0).getName())); 
@@ -2190,7 +2244,7 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 				
 			  } 
 			  
-		  }*/
+		  }
 		  		
 		  nameTextBox.addModifyListener(new ModifyListener() {
 		  			public void modifyText(ModifyEvent e) 
