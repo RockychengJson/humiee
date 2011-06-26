@@ -32,13 +32,14 @@ import org.eclipse.jface.text.source.Annotation; // this is need
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.DocumentRoot;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TLogicalPeopleGroups;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TNotifications;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TPresentationElements;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TTasks;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.util.htdAdapterFactory;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.util.htdResourceFactoryImpl;
 import org.wso2.tools.humantask.editor.editors.pages.humanInteractions.HumanInteractionsPage;
 import org.wso2.tools.humantask.editor.editors.pages.logicalpeoplegroups.LogicalPeopleGroupPage;
-import org.wso2.tools.humantask.editor.editors.pages.presentationelements.PresentationElementsPage;
+import org.wso2.tools.humantask.editor.editors.pages.notifications.NotificationPage;
 import org.wso2.tools.humantask.editor.editors.pages.task.TaskPage;
 import org.wso2.tools.humantask.editor.editors.pages.task.testpage;
 
@@ -48,7 +49,7 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 	private HumanInteractionsPage humanInteractionPage;
 	private LogicalPeopleGroupPage logicalPeopleGroupPage;
 	private TaskPage taskPage;
-	private PresentationElementsPage presentationElemPage;
+	private NotificationPage notificationPage;
 	private testpage testpage;
 	// Human Interactions source viewer
 	private StructuredTextEditor sourceViewer;
@@ -56,7 +57,7 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 	private THumanInteractions humanInteractions;
 	private TLogicalPeopleGroups logicalPeopleGroups;
 	private TTasks tasks;
-	private TPresentationElements presentationElements;
+	
 	
 	public HTMultiPageEditor(){
 		super();
@@ -188,13 +189,14 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 			index = addPage(taskPage);
 			setPageText(index, taskPage.getTitle());
 			
+			notificationPage = new NotificationPage(this,humanInteractions);
+			index = addPage(notificationPage);
+			setPageText(index, notificationPage.getTitle());
+			
 			testpage = new testpage(this,"testpage");
 			index = addPage(testpage);
 			setPageText(index, "testpage");
 			
-			presentationElemPage = new PresentationElementsPage(this,"Presentation Elemnts");
-			index = addPage(presentationElemPage);
-			setPageText(index,presentationElemPage.getTitle());
 			
 		} catch (PartInitException e) {
 			e.printStackTrace();

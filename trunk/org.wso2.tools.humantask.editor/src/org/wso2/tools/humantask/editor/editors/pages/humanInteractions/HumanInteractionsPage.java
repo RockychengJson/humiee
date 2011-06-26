@@ -889,12 +889,15 @@ public class HumanInteractionsPage extends FormPage implements
 				if(humanInteractions.getImport()!=null)
 				{
 					importTypeTextBox.setText(humanInteractions.getImport().get(0).getImportType());
-					} else {
-						importTypeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-					}
+				}
+				else 
+				{
+					importTypeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
 				
 				importTypeTextBox.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
+				public void modifyText(ModifyEvent e) 
+				{
 					//validateInput();
 					setAttribute_import(htdPackage.eINSTANCE.getTImport_ImportType(), importTypeTextBox.getText());
 				}
@@ -906,10 +909,12 @@ public class HumanInteractionsPage extends FormPage implements
 			private void setAttribute_import(EAttribute tImport_Attribute, String text) {
 				Command setAttribCommand = SetCommand.create(domain, selectedItem_import, tImport_Attribute, text);
 
-				if (setAttribCommand.canExecute()) {
+				if (setAttribCommand.canExecute()) 
+				{
 					domain.getCommandStack().execute(setAttribCommand);
 					//System.out.println(humanInteractions.getAnyAttribute().size());
-				} else {
+				} else
+				{
 					System.out.println("can't modify Attribute: " + tImport_Attribute.getName());
 				}
 			}
