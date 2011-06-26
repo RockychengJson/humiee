@@ -1376,7 +1376,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				| SWT.BORDER);
 		preElem_GenInfo_lang_txt.setLayoutData(gd);
 		
-		//configPElemGeneralInfoSection_language(preElem_GenInfo_lang_txt);
+		configPElemGeneralInfoSection_language(preElem_GenInfo_lang_txt);
 
 		info_section.setClient(sectionClient);
 
@@ -2223,7 +2223,7 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 		}
 	}
 	// /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//hjakk
+	
 	
 	
 	

@@ -2,6 +2,7 @@ package org.wso2.tools.humantask.editor.editors.pages.logicalpeoplegroups;
 
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.xml.type.internal.QName;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
@@ -28,18 +29,14 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.SectionPart;
-
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TLogicalPeopleGroup;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TLogicalPeopleGroups;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TParameter;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
@@ -52,7 +49,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 	protected HTMultiPageEditor editor;
 	protected EditingDomain domain;
 	protected THumanInteractions  humanInteractions;
-	//protected TLogicalPeopleGroups logicalPeopleGroups;
+	
 	protected FormToolkit toolkit;
 	protected ComposedAdapterFactory adapterFactory;
 	protected String pageTitle;
@@ -82,9 +79,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 		this.domain = this.editor.getEditingDomain();
 		this.adapterFactory = editor.getAdapterFactory();
 		this.humanInteractions = humanInteractions;
-		//this.logicalPeopleGroups = logicalPeopleGroups;
 		
-		//mBlock = new LogicalPeopleGroupMasterBlock(this, editor, this.humanInteractions);
 	}
 	
 	
@@ -155,9 +150,6 @@ public class LogicalPeopleGroupPage extends FormPage {
 		grp_table.setHeaderVisible(true);
 		grp_table.setLinesVisible(true);
 
-		// configure the selection changed listener to this section part for
-		// notify other sections
-
 		logicalPplviewer.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
 						logiclPplTableitemSelecter(event.getSelection());
@@ -188,8 +180,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 
 			}
 		});
-		//createPramTableSection(managedForm, parent);
-
+		
 		
 	}
 	
@@ -240,8 +231,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 		parameterViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				//ISelection is=event.getSelection();
-				//System.out.println(is.toString());
+				
 				parameterViewerItemSelecter(event.getSelection());
 			}
 		});
@@ -286,20 +276,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 		
 		name_txt = new Text(sectionClient, SWT.SINGLE|SWT.BORDER);
 		name_txt.setLayoutData(gd);
-		//config_logicalPplGroupNameField(name_txt);
-		//Label doc_label = new Label(sectionClient, SWT.WRAP);
-		//doc_label.setText("Documentation");
-		//doc_label.setLayoutData(gd);
-		
-	   // doc_txt = new Text(sectionClient,SWT.WRAP|SWT.MULTI|SWT.BORDER);
-	   // doc_txt.setLayoutData(gd);
-		
-	   //Label lang_label = new Label(sectionClient, SWT.WRAP);
-	   //lang_label.setText("Language");
-	   //lang_label.setLayoutData(gd);
-		
-	   // lang_txt = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-	   // lang_txt.setLayoutData(gd);
+		config_logicalPplGroupNameField(name_txt);
 		
 		Label para_name = new Label(sectionClient, SWT.WRAP);
 		para_name.setText("Parameter Name");
@@ -307,6 +284,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 		
 		para_name_txt = new Text(sectionClient, SWT.SINGLE|SWT.BORDER);
 		para_name_txt.setLayoutData(gd);
+		config_parmNameField(para_name_txt);
 		
 		Label para_type_label = new Label(sectionClient, SWT.WRAP);
 		para_type_label.setText("Parameter Type");
@@ -315,6 +293,9 @@ public class LogicalPeopleGroupPage extends FormPage {
 		para_type_txt = new Text(sectionClient, SWT.SINGLE|SWT.BORDER);
 		para_type_txt.setLayoutData(gd);
 		
+		//TODO config the type field
+		
+		//config_parmTypeField(para_type_txt);
 		
 		 detail_section.setClient(sectionClient);
 	
@@ -394,7 +375,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 			clearTextBox();
 		}
 		
-		updateParameter(selectedParameter);
+		updateParameters(selectedParameter);
 	
 	}
 	
@@ -411,7 +392,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 			selectedParameter = null;
 		}
 		//System.out.println(selectedParameter.getName());
-		updateParameter(selectedParameter);
+		updateParameters(selectedParameter);
 	}
 	
 	public Object createLogicalPplModle() {
@@ -425,10 +406,32 @@ public class LogicalPeopleGroupPage extends FormPage {
 
 	}
 	
+
+	public void updateParameters(TParameter selectedParameter) {
+		if (selectedLogicalPplGroup != null) {
+
+		name_txt.setText(selectedLogicalPplGroup.getName());
+
+		}
+		if (selectedParameter != null) {
+		para_name_txt.setText(selectedParameter.getName());
+		para_type_txt.setText(selectedParameter.getType().toString());
+		}
 	
+	}
+
 	
+
+	public void clearTextBox()
+	{
+		para_name_txt.setText("");
+		para_type_txt.setText("");
+	}
+
 	
-private void config_logicalPplGroupNameField(final Text nameTextBox){
+	//functional area
+	
+	private void config_logicalPplGroupNameField(final Text nameTextBox){
 		
 		if(selectedLogicalPplGroup.getName() != null)
 		{
@@ -448,50 +451,103 @@ private void config_logicalPplGroupNameField(final Text nameTextBox){
 			}
 		});
 	}
-private void setAttribute_logicalPplGroup(EAttribute tTaskInterface_Attribute, String text) {
-	Command setAttribCommand = SetCommand.create(domain,selectedLogicalPplGroup, tTaskInterface_Attribute, text);
+	
+	private void config_parmNameField(final Text parmNameTextBox)
+	{
+		if(selectedParameter != null)
+		{
+			if(selectedParameter.getName() != null)
+			{
+				parmNameTextBox.setText(selectedParameter.getName());
+			}
+			else
+			{
+				parmNameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				
+			}
+		}
+		
+		parmNameTextBox.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) 
+			{
+				
+				setAttribute_parmName(htdPackage.eINSTANCE.getTParameter_Name(), parmNameTextBox.getText());
+			}
+		});
+	}
+	
+	private void config_parmTypeField(final Text parmTypeTextBox)
+	{
+		if(selectedParameter != null)
+		{
+			if(selectedParameter.getType() != null)
+			{
+				parmTypeTextBox.setText(selectedParameter.getType().toString());
+			}
+			else
+			{
+				parmTypeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+		}
+		
+		parmTypeTextBox.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				
+				setAttribute_parmType(htdPackage.eINSTANCE.getTParameter_Type(), new QName(parmTypeTextBox.getText()));
+				
+			}
+		});
+	}
+	
+	
+	private void setAttribute_logicalPplGroup(EAttribute tTaskInterface_Attribute, String text) 
+	{
+		
+		Command setAttribCommand = SetCommand.create(domain,selectedLogicalPplGroup, tTaskInterface_Attribute, text);
 
-	if (setAttribCommand.canExecute()) {
+		if (setAttribCommand.canExecute()) {
 		domain.getCommandStack().execute(setAttribCommand);
 		
-	} else {
+		} else {
 		System.out.println("can't modify Attribute: " + tTaskInterface_Attribute.getName());
-	}
-}
-
-public void updateParameter(TParameter selectedParameter) {
-	if (selectedLogicalPplGroup != null) {
-
-		name_txt.setText(selectedLogicalPplGroup.getName());
-
-	}
-	if (selectedParameter != null) {
-		para_name_txt.setText(selectedParameter.getName());
-		para_type_txt.setText(selectedParameter.getType().toString());
+		}
 	}
 	
-}
-
-private void update() {
-	if (selectedLogicalPplGroup!= null) {
+	
+	private void setAttribute_parmName(EAttribute tTaskInterface_Attribute, String text)
+	{
+		Command setAttribCommand = SetCommand.create(domain, selectedParameter,tTaskInterface_Attribute ,text);
 		
-		name_txt.setText(selectedLogicalPplGroup.getName());
-	
-	} else {
-		System.out.println("INPUT NULL");
+		if (setAttribCommand.canExecute()) {
+		domain.getCommandStack().execute(setAttribCommand);
+		
+		} else {
+		System.out.println("can't modify Attribute: " + tTaskInterface_Attribute.getName());
+		}
+		
 	}
-}
-
-public void clearTextBox()
-{
-	para_name_txt.setText("");
-	para_type_txt.setText("");
-}
-
 	
+	private void setAttribute_parmType(EAttribute tTaskInterface_Attribute, QName text)
+	{
+		Command setAttribCommand = SetCommand.create(domain, selectedParameter, tTaskInterface_Attribute, text);
+		
+		if (setAttribCommand.canExecute()) 
+		{
+			domain.getCommandStack().execute(setAttribCommand);
+			
+		} else 
+		{
+			System.out.println("can't modify Attribute: " + tTaskInterface_Attribute.getName());
+		}
+	}
 	
-	
-	private void checkAvailability_LogicalPeopleGroup() {
+	private void checkAvailability_LogicalPeopleGroup() 
+	{
+		
 		if (humanInteractions.getLogicalPeopleGroups() == null) {
 			// Error message
 
@@ -503,23 +559,28 @@ public void clearTextBox()
 	}
 	
 	
-	
-	private void checkAvailability_Parameter(){
+	private void checkAvailability_Parameter()
+	{
 		
 		if (humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().get(0).getParameter() != null){
 			// Error message
 		}
-		else{
+		else
+		{
 			selectedParameter = humanInteractions.getLogicalPeopleGroups().
 									getLogicalPeopleGroup().get(0).getParameter().get(0);
 		}
 	}
 	
-	public void setResourceChanged(boolean value) {
+	
+	public void setResourceChanged(boolean value) 
+	{
 		this.isResourceChanged = value;
 	}
 
-	public boolean isResourceChanged() {
+	
+	public boolean isResourceChanged() 
+	{
 		return this.isResourceChanged;
 	}
 
