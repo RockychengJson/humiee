@@ -15,6 +15,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
@@ -50,6 +51,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
@@ -164,7 +166,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private File file;
 	private Combo comboDropDown;
 	private String selectedWsdlComboBoxItem;
-	private String filename= "WSDLLocations.txt";;
+	private String filename= "WSDLLocations.txt";
 	private WSDLReaderImpl reader;
 	private Definition definition;
 	private Object portTypes[];
@@ -188,7 +190,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		this.humanInteractions = humanInteractions;
 		
 		reader=new WSDLReaderImpl();
-
+		
+		
 	}
 
 	public String getTitle() {
@@ -440,7 +443,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			public void widgetSelected(SelectionEvent event) {
 				
 			
-				FileDialog dlg = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+				FileDialog dlg = new FileDialog(Display
+						.getCurrent().getActiveShell(), SWT.OPEN);
 			  //dlg.setFilterNames(FILTER_NAMES);
 				dlg.setFilterExtensions(FILTER_EXTS);
 				String fn = dlg.open();
@@ -2490,9 +2494,9 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 			br.close();
 			
 		} catch (IOException e) {
-			System.err.println("Error: " + e.getMessage());
+			System.out.println("Error: " + e.getMessage());
 		}
-		
+		System.out.println(WsdlComboBox.getItemCount());
 		selectedWsdlComboBoxItem = WsdlComboBox.getItem(0);
 			  
 			

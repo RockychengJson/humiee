@@ -235,6 +235,25 @@ public class LogicalPeopleGroupPage extends FormPage {
 				parameterViewerItemSelecter(event.getSelection());
 			}
 		});
+		
+		
+		Button add_btn = toolkit.createButton(client, "Add", SWT.PUSH); 
+		GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		add_btn.setLayoutData(btn_gd);
+
+		add_btn.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+
+				AddParmWizard wizard = new AddParmWizard();
+				WizardDialog wizardDialog = new WizardDialog(Display
+						.getCurrent().getActiveShell(), wizard);
+				wizardDialog.create();
+				wizardDialog.open();
+
+			}
+		});
 
 	}
 	
