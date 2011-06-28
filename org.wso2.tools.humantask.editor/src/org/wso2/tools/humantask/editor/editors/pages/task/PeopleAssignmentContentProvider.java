@@ -31,6 +31,8 @@ public class PeopleAssignmentContentProvider implements IStructuredContentProvid
 		List<HumanRole> list=new ArrayList<HumanRole>();
 		//list.add(t);*/
 		
+		if(t.getPeopleAssignments()!=null)
+		{
 		if(t.getPeopleAssignments().getBusinessAdministrators()!=null)
 		{
 			for(int i=0;i<t.getPeopleAssignments().getBusinessAdministrators().size();++i)
@@ -73,6 +75,7 @@ public class PeopleAssignmentContentProvider implements IStructuredContentProvid
 			{
 				list.add(new HumanRole(t.getPeopleAssignments().getTaskStakeholders().get(i), "TaskStakeholders"));
 			}
+		}
 		}
 	
 		return list.toArray();
