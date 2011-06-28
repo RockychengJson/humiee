@@ -29,6 +29,17 @@ public class HumanRole {
 	{
 		return type;
 	}
+	public String getLogicalPeopleGroup()
+	{
+		if(genericHumanRole.getFrom().getLogicalPeopleGroup()!=null)
+		{
+			return genericHumanRole.getFrom().getLogicalPeopleGroup().toString();
+		}
+		else
+		{		
+		return "";
+		}
+	}
 	
 	public String getPeopleAssignMethodology()
 	{
