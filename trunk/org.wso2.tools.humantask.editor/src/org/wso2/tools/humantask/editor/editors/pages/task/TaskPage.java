@@ -1,8 +1,22 @@
 package org.wso2.tools.humantask.editor.editors.pages.task;
 
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.wsdl.Definition;
+import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -53,6 +67,7 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TBoolean;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TDescription;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TPresentationParameter;
@@ -62,7 +77,11 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TText;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
+import org.wso2.tools.humantask.editor.editors.pages.humanInteractions.HumanInteractionsPage;
 import org.wso2.tools.humantask.editor.editors.pages.util.Messages;
+
+import com.ibm.wsdl.OperationImpl;
+import com.ibm.wsdl.xml.WSDLReaderImpl;
 
 public class TaskPage extends FormPage implements IResourceChangeListener,
 		Listener {
@@ -91,6 +110,9 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private Text OportTextBox;
 	private Text OresponseTextBox;
 	private Text operationTextBox;
+	
+	private Button oneway;
+	private Button requestres;
 
 	private TTask input;
 	HumanRole selectedHumanRole;
@@ -138,6 +160,14 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private Text preElemDescInfo_lang_txt;
 	private Combo preElemDescInfo_context_type;
 	private Text preElemDescInfo_desc_txt;
+	
+	private File file;
+	private Combo comboDropDown;
+	private String selectedWsdlComboBoxItem;
+	private String filename= "WSDLLocations.txt";;
+	private WSDLReaderImpl reader;
+	private Definition definition;
+	private Object portTypes[];
 
 	private static final String[] FILTER_EXTS = { "*.wsdl","*.*" };
 	
@@ -156,6 +186,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		this.adaptorFactory = editor.getAdapterFactory();
 		this.tasks = tasks;
 		this.humanInteractions = humanInteractions;
+		
+		reader=new WSDLReaderImpl();
 
 	}
 
@@ -381,14 +413,17 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		import_lb_gd.horizontalSpan =1;
 		import_label.setLayoutData(import_lb_gd);
 		
-		Combo comboDropDown = new Combo(wsdl_import_comp, SWT.DROP_DOWN | SWT.BORDER);
-		comboDropDown.add("test 1");
-		comboDropDown.add("test 2");
-		comboDropDown.add("test 3");
+		 comboDropDown = new Combo(wsdl_import_comp, SWT.DROP_DOWN | SWT.BORDER);
 		GridData combo_lb_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
 		combo_lb_gd.horizontalSpan = 2;
 		comboDropDown.setLayoutData(combo_lb_gd);
+		try {
+			configImportedWsdl(comboDropDown);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		Label select_wsdl_label = new Label(wsdl_import_comp, SWT.WRAP);
 		select_wsdl_label.setText("Select the WSDL");
@@ -404,6 +439,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			
 			public void widgetSelected(SelectionEvent event) {
 				
+			
 				FileDialog dlg = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
 			  //dlg.setFilterNames(FILTER_NAMES);
 				dlg.setFilterExtensions(FILTER_EXTS);
@@ -411,6 +447,14 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				if (fn != null) {
 					filename.setText(fn);
 				}
+				try{
+				saveToFile(filename.getText()); //url is saved to a text file
+				}
+				catch(IOException e)
+				{
+					System.out.println(e);
+				}
+				updateDetailsAccordingToWSDL();
 			}
 			
 		});
@@ -448,12 +492,12 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		Composite radiocomposite = toolkit.createComposite(sectionClient);
 		FillLayout fl = new FillLayout(SWT.HORIZONTAL);
 		radiocomposite.setLayout(fl);
-		Button oneway = new Button(radiocomposite, SWT.RADIO);
+		oneway = new Button(radiocomposite, SWT.RADIO);
 		oneway.setText(Messages
 				.getString("TaskPage.interfaceTab.Section.onewayradiolable"));
 		oneway.setSelection(true);
 
-		Button requestres = new Button(radiocomposite, SWT.RADIO);
+		requestres = new Button(radiocomposite, SWT.RADIO);
 		requestres.setText(Messages
 				.getString("TaskPage.interfaceTab.Section.reqresradiolable"));
 		requestres.setSelection(false);
@@ -2431,6 +2475,102 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 	}
 
 	
+	
+	private void configImportedWsdl(final Combo WsdlComboBox)
+			throws IOException {
+		
+		BufferedReader br;
+		try {
+			br= new BufferedReader(new InputStreamReader(
+					new DataInputStream(new FileInputStream(filename))));
+			String strLine;
+			while ((strLine = br.readLine()) != null) {
+				WsdlComboBox.add(strLine);
+			}
+			br.close();
+			
+		} catch (IOException e) {
+			System.err.println("Error: " + e.getMessage());
+		}
+		
+		selectedWsdlComboBoxItem = WsdlComboBox.getItem(0);
+			  
+			
+			WsdlComboBox.addModifyListener(new ModifyListener() {
+		public void modifyText(ModifyEvent e) {
+			//validateInput();
+			selectedWsdlComboBoxItem= WsdlComboBox.getItem(WsdlComboBox.getSelectionIndex());
+			//WSDLReaderImpl reader =new WSDLReaderImpl();
+			
+			updateDetailsAccordingToWSDL();
+			
+			
+		}
+	});
+	
+		
+	}
+	
+	
+
+	private void saveToFile(String location) throws IOException {
+		FileWriter fw = null;
+		try {
+
+			fw = new FileWriter(filename, true); // the true will append the new
+													// data
+
+		} catch (IOException ioe) {
+			File f;
+			f = new File("WSDLLocations.txt");
+			if (!f.exists()) {
+				f.createNewFile();
+			}
+			fw = new FileWriter(filename, true);
+		}
+		fw.write(location + "\n");// appends the string to the file
+		fw.close();
+		
+		comboDropDown.add(location);
+		int count = comboDropDown.getItemCount();
+		comboDropDown.select(count - 1);
+		selectedWsdlComboBoxItem = comboDropDown.getItem(comboDropDown
+				.getSelectionIndex());
+		
+	}
+	
+	private void updateDetailsAccordingToWSDL()
+	{
+		try {
+			definition= reader.readWSDL(selectedWsdlComboBoxItem);
+		} catch (WSDLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		 portTypes= definition.getPortTypes().keySet().toArray();
+		//System.out.println(definition.getPortType((QName) portTypes[0]).getQName().toString());
+		portTextBox.setText(definition.getPortType((QName) portTypes[0]).getQName().toString());
+		OperationImpl operation= (OperationImpl)definition.getPortType((QName) portTypes[0]).getOperations().get(0);
+		operationTextBox.setText(operation.getName());
+		if(operation.getStyle().equals("REQUEST_RESPONSE"))
+		{
+			oneway.setSelection(true);
+			requestres.setSelection(false);
+		}
+		else
+		{
+			requestres.setSelection(true);
+			oneway.setSelection(false);
+			OresponseTextBox.setText("");
+			OresponseTextBox.setEnabled(false);
+			OportTextBox.setText("");
+			OportTextBox.setEnabled(false);
+		}
+		
+		//oneway.setSelection(selected);
+		
+	}
+	
 	private void clearText(Text text)
 	{
 		
@@ -2457,6 +2597,8 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 		}
 
 	}
+	
+	
 
 	
 	
