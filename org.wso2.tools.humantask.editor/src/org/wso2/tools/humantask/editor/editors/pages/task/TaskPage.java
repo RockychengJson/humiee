@@ -170,6 +170,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private WSDLReaderImpl reader;
 	private Definition definition;
 	private Object portTypes[];
+	
+	private Combo roal_type;
 
 	private static final String[] FILTER_EXTS = { "*.wsdl","*.*" };
 	
@@ -273,26 +275,26 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 		TabContent section2 = new TabContent(createPeopelAssiTableSection(
 				toolkit, form));
-		TabContent section3 = new TabContent(createPeopleAssiSection(toolkit,
-				form));
+	/*	TabContent section3 = new TabContent(createPeopleAssiSection(toolkit,
+				form));*/
 		TabContent section1 = new TabContent(taskTableSection);
 
 		via_logical_ppl = createLogicalPplSection(toolkit, form);
 		TabContent section4 = new TabContent(via_logical_ppl);
 
-		via_exp = createExpSection(toolkit, form);
+		/*via_exp = createExpSection(toolkit, form);
 		TabContent section5 = new TabContent(via_exp);
 
 		via_literal = createLiteralsSection(toolkit, form);
-		TabContent section6 = new TabContent(via_literal);
+		TabContent section6 = new TabContent(via_literal);*/
 
-		TabContent[] sectionArray = new TabContent[6];
+		TabContent[] sectionArray = new TabContent[3];
 		sectionArray[0] = section1;
 		sectionArray[1] = section2;
-		sectionArray[2] = section3;
-		sectionArray[3] = section4;
-		sectionArray[4] = section5;
-		sectionArray[5] = section6;
+		//sectionArray[2] = section3;
+		sectionArray[2] = section4;
+/*		sectionArray[4] = section5;
+		sectionArray[5] = section6;*/
 		item.setText(Messages.getString("TaskPage.peopleassingmentTab.title"));
 		item.setData(sectionArray);
 	}
@@ -729,7 +731,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	// Create people assignments
 
-	private Section createPeopleAssiSection(final FormToolkit toolkit,
+/*	private Section createPeopleAssiSection(final FormToolkit toolkit,
 			final ScrolledForm form) {
 
 		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
@@ -870,7 +872,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		});
 
 		return section;
-	}
+	}*/
 
 	private Section createPeopelAssiTableSection(final FormToolkit toolkit,
 			final ScrolledForm form) {
@@ -934,7 +936,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	private void createColumnsPeopleAssiTable(Composite parent,
 			TableViewer viewer) {
-		String[] titles = { "People Assignment", "Detail" };
+		String[] titles = { "Role Type", "Logical People Group" };
 		int[] bounds = { 100, 100 };
 
 		// first column
@@ -958,7 +960,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			public String getText(Object element) {
 
 				HumanRole role = (HumanRole) element;
-				return role.getPeopleAssignMethodology();
+				return role.getLogicalPeopleGroup();
+				
 			}
 
 		});
@@ -1002,6 +1005,62 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 		sectionClient.setLayout(layout);
 
+	
+		
+		
+		Label selectRoleLabel = new Label(sectionClient, SWT.WRAP);
+		selectRoleLabel.setText("Choose Role Type");
+
+		GridData gd1 = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL
+				| GridData.GRAB_VERTICAL);
+		gd1.horizontalSpan = 1;
+		// gd.verticalSpan =2;
+		selectRoleLabel.setLayoutData(gd1);
+		
+		
+		roal_type = new Combo(sectionClient, SWT.READ_ONLY);
+		roal_type.setLayoutData(gd1);
+		
+		roal_type
+				.add(Messages
+						.getString("TaskPage.peopleassingmentTab.Section.radiobtnset.potentialownerslable"),
+						0);
+		roal_type
+				.add(Messages
+						.getString("TaskPage.peopleassingmentTab.Section.radiobtnset.excludedowners"),
+						1);
+		roal_type
+				.add(Messages
+						.getString("TaskPage.peopleassingmentTab.Section.radiobtnset.taskinitiator"),
+						2);
+		roal_type
+				.add(Messages
+						.getString("TaskPage.peopleassingmentTab.Section.radiobtnset.taskstakeholders"),
+						3);
+		roal_type
+				.add(Messages
+						.getString("TaskPage.peopleassingmentTab.Section.radiobtnset.businessadministrators"),
+						4);
+		roal_type
+				.add(Messages
+						.getString("TaskPage.peopleassingmentTab.Section.radiobtnset.notificationrecipients"),
+						5);
+
+		roal_type.select(0);
+		
+		
+		GridData cgd1 = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL);
+		// cgd.verticalIndent = 5;
+		// cgd.verticalSpan =2;
+		roal_type.setLayoutData(cgd1);
+		
+		
+		
+		
+		
+		
 		Label selectppllabel = new Label(sectionClient, SWT.WRAP);
 		selectppllabel.setText("Select Logical group");
 
@@ -1011,6 +1070,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		gd.horizontalSpan = 1;
 		// gd.verticalSpan =2;
 		selectppllabel.setLayoutData(gd);
+		
 
 		// Should be reviewed
 		Combo combo = new Combo(sectionClient, SWT.READ_ONLY);
@@ -1046,7 +1106,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		return section;
 	}
 
-	private Section createExpSection(final FormToolkit toolkit,
+/*	private Section createExpSection(final FormToolkit toolkit,
 			final ScrolledForm form) {
 		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
 				| Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
@@ -1099,9 +1159,9 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 		return section;
 
-	}
+	}*/
 
-	private Section createLiteralsSection(final FormToolkit toolkit,
+	/*private Section createLiteralsSection(final FormToolkit toolkit,
 			final ScrolledForm form) {
 		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
 				| Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
@@ -1151,7 +1211,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		section.setClient(sectionClient);
 
 		return section;
-	}
+	}*/
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	void configPeopleAssignSection_exp_lang(final Text exp_langTextBox) {
@@ -1193,7 +1253,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 		if (ssel.size() == 1) {
 			selectedHumanRole = (HumanRole) ssel.getFirstElement();
-			System.out.println(selectedHumanRole.getPeopleAssignMethodology());
+			//System.out.println(selectedHumanRole.getPeopleAssignMethodology());
 		} else {
 			selectedHumanRole = null;
 		}
@@ -1203,6 +1263,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	private void update_peopleAssingment() {
 
+		if (selectedHumanRole!=null)
+		{
 		if (selectedHumanRole.getPeopleAssignMethodology() != null) {
 
 			if ((selectedHumanRole.getPeopleAssignMethodology())
@@ -1220,6 +1282,9 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			}
 
 		}
+		}	
+		
+		
 
 		if (input.getInterface().getPortType() != null) {
 			portTextBox.setText(input.getInterface().getPortType().toString());
@@ -1246,15 +1311,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			input = null;
 		}
 
-		table_peopleAssingment.removeAll();
-		ArrayList<HumanRole> list = (ArrayList<HumanRole>) getPeopleAssignmentList(input);
-		for (int i = 0; i < list.size(); i++) {
-
-			TableItem item = new TableItem(table_peopleAssingment, SWT.NONE);
-			item.setText(0, list.get(i).getType());
-			item.setText(1, list.get(i).getPeopleAssignMethodology());
-
-		}
+		viewer_peopleAssignment.setInput(createModleForPeopleAssinment());
+		table_peopleAssingment.setSelection(0);
 
 		
 		updateInterfaceTab();
