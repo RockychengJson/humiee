@@ -533,9 +533,10 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		oneway.addMouseListener(new MouseAdapter() {
 			public void mouseDown(MouseEvent e) {
 
-				OportTextBox.setEnabled(true);
-
-				OresponseTextBox.setEnabled(true);
+				OportTextBox.setText("");
+				OportTextBox.setEnabled(false);
+				OresponseTextBox.setText("");
+				OresponseTextBox.setEnabled(false);
 			}
 
 		});
@@ -543,9 +544,9 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		requestres.addMouseListener(new MouseAdapter() {
 			public void mouseDown(MouseEvent e) {
 
-				OportTextBox.setEnabled(false);
+				OportTextBox.setEnabled(true);
 
-				OresponseTextBox.setEnabled(false);
+				OresponseTextBox.setEnabled(true);
 			}
 		});
 		//section.setClient(wsdl_import_comp);
@@ -698,6 +699,25 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			} else {
 				OportTextBox.setText("");
 			}
+			
+			if((input.getInterface().getResponseOperation().equals("") )&(input.getInterface().getResponsePortType().toString().equals("")))
+			{
+				oneway.setSelection(true);
+				requestres.setSelection(false);			
+				OresponseTextBox.setText("");
+				OresponseTextBox.setEnabled(false);
+				OportTextBox.setText("");
+				OportTextBox.setEnabled(false);
+			}
+			else
+			{
+				oneway.setSelection(false);
+				requestres.setSelection(true);	
+				OresponseTextBox.setEnabled(true);
+				OportTextBox.setEnabled(true);
+			}
+			
+			
 		} else {
 			portTextBox.setText("");
 			operationTextBox.setText("");
@@ -2552,19 +2572,27 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 			e1.printStackTrace();
 		}
 		 portTypes= definition.getPortTypes().keySet().toArray();
-		//System.out.println(definition.getPortType((QName) portTypes[0]).getQName().toString());
+		
 		portTextBox.setText(definition.getPortType((QName) portTypes[0]).getQName().toString());
 		OperationImpl operation= (OperationImpl)definition.getPortType((QName) portTypes[0]).getOperations().get(0);
 		operationTextBox.setText(operation.getName());
-		if(operation.getStyle().equals("REQUEST_RESPONSE"))
+		System.out.println(operation.getStyle());
+		if(operation.getStyle().toString().equals("REQUEST_RESPONSE"))
 		{
-			oneway.setSelection(true);
-			requestres.setSelection(false);
-		}
-		else
-		{
-			requestres.setSelection(true);
+			
 			oneway.setSelection(false);
+			requestres.setSelection(true);
+			OportTextBox.setEnabled(true);
+			OresponseTextBox.setEnabled(true);
+			
+			//OportTextBox.setText("")
+			
+		}
+		 if(operation.getStyle().toString().equals("ONE_WAY"))
+		{
+			
+			oneway.setSelection(true);
+			requestres.setSelection(false);			
 			OresponseTextBox.setText("");
 			OresponseTextBox.setEnabled(false);
 			OportTextBox.setText("");
