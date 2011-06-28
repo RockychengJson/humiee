@@ -1,8 +1,10 @@
 package org.wso2.tools.humantask.editor.editors.pages.logicalpeoplegroups;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.xml.type.internal.QName;
+
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
@@ -42,88 +44,84 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
 
-
-
 public class LogicalPeopleGroupPage extends FormPage {
 
+	private LogicalPeopleGroupPage logicalPeopleGroupPage;
 	protected HTMultiPageEditor editor;
 	protected EditingDomain domain;
-	protected THumanInteractions  humanInteractions;
-	
+	protected THumanInteractions humanInteractions;
+
 	protected FormToolkit toolkit;
 	protected ComposedAdapterFactory adapterFactory;
 	protected String pageTitle;
-	
+
 	private ScrolledForm form;
 	private TableViewer logicalPplviewer;
 	private TableViewer parameterViewer;
 	private Table para_table;
-	
-	private TLogicalPeopleGroup selectedLogicalPplGroup;
+
+	TLogicalPeopleGroup selectedLogicalPplGroup;
 	private TParameter selectedParameter;
-	
-	
+
 	private Text name_txt;
 	private Text para_name_txt;
 	private Text para_type_txt;
-	
+
 	private boolean isResourceChanged = false;
-	
-	
-	
-	
-	public LogicalPeopleGroupPage(HTMultiPageEditor editor,THumanInteractions  humanInteractions){
+
+	public LogicalPeopleGroupPage(HTMultiPageEditor editor,
+			THumanInteractions humanInteractions) {
 		super(editor, "HTLP", "Logical People Groups");
 		this.pageTitle = super.getTitle();
 		this.editor = editor;
 		this.domain = this.editor.getEditingDomain();
 		this.adapterFactory = editor.getAdapterFactory();
 		this.humanInteractions = humanInteractions;
-		
+		this.logicalPeopleGroupPage=this;
+
 	}
-	
-	
+
 	public String getTitle() {
 		return this.pageTitle;
 	}
-	
+
 	/*
-	 * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
+	 * @see
+	 * org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui
+	 * .forms.IManagedForm)
 	 */
 	protected void createFormContent(IManagedForm managedForm) {
-		
+
 		form = managedForm.getForm();
 		form.setText("Logical People Group");
 		toolkit = managedForm.getToolkit();
-		
+
 		GridLayout layout = new GridLayout(); // layout for the form body
 		layout.numColumns = 1;
 		layout.marginWidth = 10;
 		form.getBody().setLayout(layout);
-		
+
 		checkAvailability_LogicalPeopleGroup();
 		checkAvailability_Parameter();
-		
+
 		createLogicalPeopleTableSection(form.getBody());
 		createPrameterTableSection(form.getBody());
 		createOverallDetailSection(form.getBody());
-		
+
 	}
 
-	
-	
-	private void createLogicalPeopleTableSection(Composite parent){
-		
-		
+	private void createLogicalPeopleTableSection(Composite parent) {
+
 		Section section = toolkit.createSection(parent, Section.DESCRIPTION
 				| Section.TITLE_BAR);
 		section.setText("Logical People Groups");
 		section.setDescription("add later");
 		section.marginWidth = 10;
 		section.marginHeight = 5;
-		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_BOTH);
+		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.FILL_BOTH);
 		section.setLayoutData(sectiondata);
-		
+
 		Composite client = toolkit.createComposite(section, SWT.WRAP);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
@@ -134,12 +132,11 @@ public class LogicalPeopleGroupPage extends FormPage {
 		toolkit.paintBordersFor(client);
 		section.setClient(client);
 
-		
-		logicalPplviewer = new TableViewer(client, SWT.MULTI
-				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		
+		logicalPplviewer = new TableViewer(client, SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+
 		createLogicalPplColumns(client, logicalPplviewer);
-		
+
 		Table grp_table = logicalPplviewer.getTable();
 
 		GridData gd = new GridData(GridData.FILL_BOTH);
@@ -150,7 +147,8 @@ public class LogicalPeopleGroupPage extends FormPage {
 		grp_table.setHeaderVisible(true);
 		grp_table.setLinesVisible(true);
 
-		logicalPplviewer.addSelectionChangedListener(new ISelectionChangedListener() {
+		logicalPplviewer
+				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
 						logiclPplTableitemSelecter(event.getSelection());
 
@@ -160,10 +158,10 @@ public class LogicalPeopleGroupPage extends FormPage {
 		logicalPplviewer
 				.setContentProvider(new LogicalPeopleGroupTableContentProvider());
 		logicalPplviewer.setInput(createLogicalPplModle());
-		
+
 		grp_table.setSelection(0);
 
-		Button add_btn = toolkit.createButton(client, "Add", SWT.PUSH); 
+		Button add_btn = toolkit.createButton(client, "Add", SWT.PUSH);
 		GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		add_btn.setLayoutData(btn_gd);
 
@@ -172,7 +170,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 			@Override
 			public void handleEvent(Event event) {
 
-				AddLogicalPeopleGroupWizard wizard = new AddLogicalPeopleGroupWizard();
+				AddLogicalPeopleGroupWizard wizard = new AddLogicalPeopleGroupWizard(humanInteractions,domain,logicalPplviewer);
 				WizardDialog wizardDialog = new WizardDialog(Display
 						.getCurrent().getActiveShell(), wizard);
 				wizardDialog.create();
@@ -180,13 +178,10 @@ public class LogicalPeopleGroupPage extends FormPage {
 
 			}
 		});
-		
-		
+
 	}
-	
-	
-	private void createPrameterTableSection(Composite parent){
-		
+
+	private void createPrameterTableSection(Composite parent) {
 
 		Section section = toolkit.createSection(parent, Section.DESCRIPTION
 				| Section.TITLE_BAR);
@@ -194,10 +189,10 @@ public class LogicalPeopleGroupPage extends FormPage {
 		section.setDescription("add later");
 		section.marginWidth = 10;
 		section.marginHeight = 5;
-		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_BOTH);
+		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.FILL_BOTH);
 		section.setLayoutData(sectiondata);
-		
-		
+
 		Composite client = toolkit.createComposite(section, SWT.WRAP);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
@@ -207,37 +202,35 @@ public class LogicalPeopleGroupPage extends FormPage {
 
 		toolkit.paintBordersFor(client);
 		section.setClient(client);
-		
-		parameterViewer = new TableViewer(client, SWT.MULTI
-				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+
+		parameterViewer = new TableViewer(client, SWT.MULTI | SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 		createPrameterColumns(client, parameterViewer);
 
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 20;
 		gd.widthHint = 100;
-		
+
 		para_table = parameterViewer.getTable();
 		para_table.setLayoutData(gd);
 
 		para_table.setHeaderVisible(true);
 		para_table.setLinesVisible(true);
 
-		
-
 		parameterViewer.setContentProvider(new ParameterTableContentProvider());
 		parameterViewer.setInput(createPramModle());
-		
+
 		para_table.setSelection(0);
-		parameterViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				
-				parameterViewerItemSelecter(event.getSelection());
-			}
-		});
-		
-		
-		Button add_btn = toolkit.createButton(client, "Add", SWT.PUSH); 
+		parameterViewer
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+					@Override
+					public void selectionChanged(SelectionChangedEvent event) {
+
+						parameterViewerItemSelecter(event.getSelection());
+					}
+				});
+
+		Button add_btn = toolkit.createButton(client, "Add", SWT.PUSH);
 		GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		add_btn.setLayoutData(btn_gd);
 
@@ -246,7 +239,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 			@Override
 			public void handleEvent(Event event) {
 
-				AddParmWizard wizard = new AddParmWizard();
+				AddParmWizard wizard = new AddParmWizard(humanInteractions,domain,parameterViewer,logicalPeopleGroupPage);
 				WizardDialog wizardDialog = new WizardDialog(Display
 						.getCurrent().getActiveShell(), wizard);
 				wizardDialog.create();
@@ -256,71 +249,72 @@ public class LogicalPeopleGroupPage extends FormPage {
 		});
 
 	}
-	
-	
-	private void createOverallDetailSection(Composite parent){
-		final  Section detail_section = toolkit.createSection(parent, Section.DESCRIPTION |
-				Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
-		 detail_section.setText("Genaral Information");
-		 detail_section.setDescription("add later");
-		
-		 detail_section.addExpansionListener(new ExpansionAdapter() {
+
+	private void createOverallDetailSection(Composite parent) {
+		final Section detail_section = toolkit.createSection(parent,
+				Section.DESCRIPTION | Section.TITLE_BAR | Section.TWISTIE
+						| Section.EXPANDED);
+		detail_section.setText("Genaral Information");
+		detail_section.setDescription("add later");
+
+		detail_section.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
-				if( detail_section.getParent() instanceof ScrolledForm){
-					ScrolledForm form =(ScrolledForm) detail_section.getParent();
+				if (detail_section.getParent() instanceof ScrolledForm) {
+					ScrolledForm form = (ScrolledForm) detail_section
+							.getParent();
 					form.reflow(true);
 				}
 			}
 		});
-		
+
 		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_BOTH); 
-		 detail_section.setLayoutData(sectiondata);
-		
-		Composite sectionClient = toolkit.createComposite( detail_section);
+				| GridData.FILL_BOTH);
+		detail_section.setLayoutData(sectiondata);
+
+		Composite sectionClient = toolkit.createComposite(detail_section);
 		GridLayout layout = new GridLayout(); // layout for the sectionClient
 		layout.numColumns = 2;
 		layout.marginWidth = 2;
 		layout.marginHeight = 5;
-		
+
 		sectionClient.setLayout(layout);
-		
+
 		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan =1;
-		
+		gd.horizontalSpan = 1;
+
 		Label name_lb = new Label(sectionClient, SWT.WRAP);
 		name_lb.setText("Name");
 		name_lb.setLayoutData(gd);
-		
-		name_txt = new Text(sectionClient, SWT.SINGLE|SWT.BORDER);
+
+		name_txt = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		name_txt.setLayoutData(gd);
 		config_logicalPplGroupNameField(name_txt);
-		
+
 		Label para_name = new Label(sectionClient, SWT.WRAP);
 		para_name.setText("Parameter Name");
 		para_name.setLayoutData(gd);
-		
-		para_name_txt = new Text(sectionClient, SWT.SINGLE|SWT.BORDER);
+
+		para_name_txt = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		para_name_txt.setLayoutData(gd);
 		config_parmNameField(para_name_txt);
-		
+
 		Label para_type_label = new Label(sectionClient, SWT.WRAP);
 		para_type_label.setText("Parameter Type");
 		para_type_label.setLayoutData(gd);
-		
-		para_type_txt = new Text(sectionClient, SWT.SINGLE|SWT.BORDER);
+
+		para_type_txt = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		para_type_txt.setLayoutData(gd);
-		
-		//TODO config the type field
-		
-		//config_parmTypeField(para_type_txt);
-		
-		 detail_section.setClient(sectionClient);
-	
+		config_parmTypeField(para_type_txt);
+
+		// TODO config the type field
+
+		// config_parmTypeField(para_type_txt);
+
+		detail_section.setClient(sectionClient);
+
 	}
-	
-	
+
 	private void createLogicalPplColumns(Composite parent, TableViewer viewer) {
 		String[] titles = { "Logical People Group" };
 		int[] bounds = { 100 };
@@ -338,7 +332,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 		});
 
 	}
-	
+
 	private void createPrameterColumns(Composite parent, TableViewer viewer) {
 
 		String[] titles = { "Parameters" };
@@ -355,8 +349,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 
 		});
 	}
-	
-	
+
 	private TableViewerColumn createTableViewerColumn(TableViewer viewer,
 			String title, int bound) {
 		final TableViewerColumn viewerColumn = new TableViewerColumn(viewer,
@@ -369,204 +362,202 @@ public class LogicalPeopleGroupPage extends FormPage {
 		return viewerColumn;
 
 	}
-	
-	
+
 	private void logiclPplTableitemSelecter(ISelection selection) {
 
 		IStructuredSelection ssel = (IStructuredSelection) selection;
 
 		if (ssel.size() == 1) {
-			selectedLogicalPplGroup = (TLogicalPeopleGroup) ssel.getFirstElement();
+			selectedLogicalPplGroup = (TLogicalPeopleGroup) ssel
+					.getFirstElement();
 
 		} else {
 			selectedLogicalPplGroup = null;
 		}
-	
+
 		parameterViewer.setInput(createPramModle());
 		para_table.setSelection(0);
-		
-		if(selectedLogicalPplGroup.getParameter().size()!=0)
-		{
-			selectedParameter=selectedLogicalPplGroup.getParameter().get(0);
-		}
-		else
-		{
+
+		if (selectedLogicalPplGroup.getParameter().size() != 0) {
+			selectedParameter = selectedLogicalPplGroup.getParameter().get(0);
+		} else {
 			clearTextBox();
 		}
-		
+
 		updateParameters(selectedParameter);
-	
+
 	}
-	
-	
-	private void parameterViewerItemSelecter(ISelection selection)
-	{
+
+	private void parameterViewerItemSelecter(ISelection selection) {
 		IStructuredSelection ssel = (IStructuredSelection) selection;
-		//System.out.println("ssel.size()  "+ssel.size());
-		
+		// System.out.println("ssel.size()  "+ssel.size());
+
 		if (ssel.size() == 1) {
 			selectedParameter = (TParameter) ssel.getFirstElement();
-			
+
 		} else {
 			selectedParameter = null;
 		}
-		//System.out.println(selectedParameter.getName());
+		// System.out.println(selectedParameter.getName());
 		updateParameters(selectedParameter);
 	}
-	
+
 	public Object createLogicalPplModle() {
 		return humanInteractions.getLogicalPeopleGroups();
 
 	}
-	
+
 	public Object createPramModle() {
 
 		return selectedLogicalPplGroup;
 
 	}
-	
 
 	public void updateParameters(TParameter selectedParameter) {
 		if (selectedLogicalPplGroup != null) {
 
-		name_txt.setText(selectedLogicalPplGroup.getName());
+			if(selectedLogicalPplGroup.getName()!=null)
+			{
+			name_txt.setText(selectedLogicalPplGroup.getName());
+			}
 
 		}
 		if (selectedParameter != null) {
-		para_name_txt.setText(selectedParameter.getName());
-		para_type_txt.setText(selectedParameter.getType().toString());
+			if (selectedParameter.getName() != null) {
+				para_name_txt.setText(selectedParameter.getName());
+			}
+			else
+			{
+				para_name_txt.setText("");
+			}
+			if (selectedParameter.getType() != null) {
+				para_type_txt.setText(selectedParameter.getType().toString());
+			}
+			else
+			{
+				para_type_txt.setText("");
+			}
 		}
-	
+
 	}
 
-	
-
-	public void clearTextBox()
-	{
+	public void clearTextBox() {
 		para_name_txt.setText("");
 		para_type_txt.setText("");
 	}
 
-	
-	//functional area
-	
-	private void config_logicalPplGroupNameField(final Text nameTextBox){
-		
-		if(selectedLogicalPplGroup.getName() != null)
-		{
+	// functional area
+
+	private void config_logicalPplGroupNameField(final Text nameTextBox) {
+
+		if (selectedLogicalPplGroup.getName() != null) {
 			nameTextBox.setText(selectedLogicalPplGroup.getName());
-		}
-		else
-		{
+		} else {
 			nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
-		
+
 		nameTextBox.addModifyListener(new ModifyListener() {
-			
+
 			@Override
 			public void modifyText(ModifyEvent e) {
-				
-				setAttribute_logicalPplGroup(htdPackage.eINSTANCE.getTLogicalPeopleGroup_Name(), nameTextBox.getText());
+
+				setAttribute_logicalPplGroup(
+						htdPackage.eINSTANCE.getTLogicalPeopleGroup_Name(),
+						nameTextBox.getText());
 			}
 		});
 	}
-	
-	private void config_parmNameField(final Text parmNameTextBox)
-	{
-		if(selectedParameter != null)
-		{
-			if(selectedParameter.getName() != null)
-			{
+
+	private void config_parmNameField(final Text parmNameTextBox) {
+		if (selectedParameter != null) {
+			if (selectedParameter.getName() != null) {
 				parmNameTextBox.setText(selectedParameter.getName());
-			}
-			else
-			{
-				parmNameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-				
+			} else {
+				parmNameTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
 			}
 		}
-		
+
 		parmNameTextBox.addModifyListener(new ModifyListener() {
-			
-			@Override
-			public void modifyText(ModifyEvent e) 
-			{
-				
-				setAttribute_parmName(htdPackage.eINSTANCE.getTParameter_Name(), parmNameTextBox.getText());
-			}
-		});
-	}
-	
-	private void config_parmTypeField(final Text parmTypeTextBox)
-	{
-		if(selectedParameter != null)
-		{
-			if(selectedParameter.getType() != null)
-			{
-				parmTypeTextBox.setText(selectedParameter.getType().toString());
-			}
-			else
-			{
-				parmTypeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-			}
-		}
-		
-		parmTypeTextBox.addModifyListener(new ModifyListener() {
-			
+
 			@Override
 			public void modifyText(ModifyEvent e) {
-				
-				setAttribute_parmType(htdPackage.eINSTANCE.getTParameter_Type(), new QName(parmTypeTextBox.getText()));
-				
+
+				setAttribute_parmName(
+						htdPackage.eINSTANCE.getTParameter_Name(),
+						parmNameTextBox.getText());
 			}
 		});
 	}
-	
-	
-	private void setAttribute_logicalPplGroup(EAttribute tTaskInterface_Attribute, String text) 
-	{
-		
-		Command setAttribCommand = SetCommand.create(domain,selectedLogicalPplGroup, tTaskInterface_Attribute, text);
+
+	private void config_parmTypeField(final Text parmTypeTextBox) {
+		if (selectedParameter != null) {
+			if (selectedParameter.getType() != null) {
+				parmTypeTextBox.setText(selectedParameter.getType().toString());
+			} else {
+				parmTypeTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+		}
+
+		parmTypeTextBox.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+
+				setAttribute_parmType(htdPackage.eINSTANCE.getTParameter_Type(), new QName(parmTypeTextBox.getText()));
+
+			}
+		});
+	}
+
+	private void setAttribute_logicalPplGroup(
+			EAttribute tTaskInterface_Attribute, String text) {
+
+		Command setAttribCommand = SetCommand.create(domain,
+				selectedLogicalPplGroup, tTaskInterface_Attribute, text);
 
 		if (setAttribCommand.canExecute()) {
-		domain.getCommandStack().execute(setAttribCommand);
-		
-		} else {
-		System.out.println("can't modify Attribute: " + tTaskInterface_Attribute.getName());
-		}
-	}
-	
-	
-	private void setAttribute_parmName(EAttribute tTaskInterface_Attribute, String text)
-	{
-		Command setAttribCommand = SetCommand.create(domain, selectedParameter,tTaskInterface_Attribute ,text);
-		
-		if (setAttribCommand.canExecute()) {
-		domain.getCommandStack().execute(setAttribCommand);
-		
-		} else {
-		System.out.println("can't modify Attribute: " + tTaskInterface_Attribute.getName());
-		}
-		
-	}
-	
-	private void setAttribute_parmType(EAttribute tTaskInterface_Attribute, QName text)
-	{
-		Command setAttribCommand = SetCommand.create(domain, selectedParameter, tTaskInterface_Attribute, text);
-		
-		if (setAttribCommand.canExecute()) 
-		{
 			domain.getCommandStack().execute(setAttribCommand);
-			
-		} else 
-		{
-			System.out.println("can't modify Attribute: " + tTaskInterface_Attribute.getName());
+
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tTaskInterface_Attribute.getName());
 		}
 	}
-	
-	private void checkAvailability_LogicalPeopleGroup() 
-	{
-		
+
+	private void setAttribute_parmName(EAttribute tTaskInterface_Attribute,
+			String text) {
+		Command setAttribCommand = SetCommand.create(domain, selectedParameter,
+				tTaskInterface_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tTaskInterface_Attribute.getName());
+		}
+
+	}
+
+	private void setAttribute_parmType(EAttribute tTaskInterface_Attribute,
+			QName text) {
+		Command setAttribCommand = SetCommand.create(domain, selectedParameter,
+				tTaskInterface_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tTaskInterface_Attribute.getName());
+		}
+	}
+
+	private void checkAvailability_LogicalPeopleGroup() {
+
 		if (humanInteractions.getLogicalPeopleGroups() == null) {
 			// Error message
 
@@ -576,32 +567,24 @@ public class LogicalPeopleGroupPage extends FormPage {
 		}
 
 	}
-	
-	
-	private void checkAvailability_Parameter()
-	{
-		
-		if (humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().get(0).getParameter() != null){
+
+	private void checkAvailability_Parameter() {
+
+		if (humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup()
+				.get(0).getParameter() != null) {
 			// Error message
-		}
-		else
-		{
-			selectedParameter = humanInteractions.getLogicalPeopleGroups().
-									getLogicalPeopleGroup().get(0).getParameter().get(0);
+		} else {
+			selectedParameter = humanInteractions.getLogicalPeopleGroups()
+					.getLogicalPeopleGroup().get(0).getParameter().get(0);
 		}
 	}
-	
-	
-	public void setResourceChanged(boolean value) 
-	{
+
+	public void setResourceChanged(boolean value) {
 		this.isResourceChanged = value;
 	}
 
-	
-	public boolean isResourceChanged() 
-	{
+	public boolean isResourceChanged() {
 		return this.isResourceChanged;
 	}
 
-	
 }
