@@ -227,6 +227,7 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 	 */
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
+		
 		// Save only resources that have actually changed.
 		final Map<Object, Object> saveOptions = new HashMap<Object, Object>();
 		saveOptions.put(Resource.OPTION_SAVE_ONLY_IF_CHANGED, Resource.OPTION_SAVE_ONLY_IF_CHANGED_MEMORY_BUFFER);
@@ -275,6 +276,15 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 			//TODO: Correct exception handling
 			e.printStackTrace();
 		}
+		
+		
+		//update the tables when save button pressed
+		
+		logicalPeopleGroupPage.updatePeopleAssignmentTable();
+		logicalPeopleGroupPage.updateParameterTable();
+		
+		
+		
 		
 	}
 	
