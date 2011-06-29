@@ -31,8 +31,12 @@ public class testpage extends FormPage {
 	public testpage(FormEditor editor, String title) {
 		super(editor, "test", title);
 		int i;
+		for(int j=0;j<10;++j)
+		{
+			System.out.println();
+		}
 		
-		for(int j= 0 ;j<5 ; j++){
+		for(int k= 0 ;k<5 ; k++){
 			
 			
 		}
