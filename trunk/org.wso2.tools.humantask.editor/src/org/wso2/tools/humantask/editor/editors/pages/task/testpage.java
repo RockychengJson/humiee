@@ -36,12 +36,15 @@ public class testpage extends FormPage {
 			System.out.println();
 		}
 		
+
+
 		for(int k= 0 ;k<5 ; k++){
-			
+		
+			int h;
 			
 		}
 		
-		 // TODO Auto-generated constructor stub
+ // TODO Auto-generated constructor stub
 	}
 
 	protected void createFormContent(IManagedForm managedform) {
