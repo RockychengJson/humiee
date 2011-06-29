@@ -172,6 +172,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private Object portTypes[];
 	
 	private Combo roal_type;
+	private Combo selectLogicalPeopleGroup_combo;
 
 	private static final String[] FILTER_EXTS = { "*.wsdl","*.*" };
 	
@@ -275,26 +276,18 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 		TabContent section2 = new TabContent(createPeopelAssiTableSection(
 				toolkit, form));
-	/*	TabContent section3 = new TabContent(createPeopleAssiSection(toolkit,
-				form));*/
+	
 		TabContent section1 = new TabContent(taskTableSection);
 
 		via_logical_ppl = createLogicalPplSection(toolkit, form);
 		TabContent section4 = new TabContent(via_logical_ppl);
 
-		/*via_exp = createExpSection(toolkit, form);
-		TabContent section5 = new TabContent(via_exp);
-
-		via_literal = createLiteralsSection(toolkit, form);
-		TabContent section6 = new TabContent(via_literal);*/
 
 		TabContent[] sectionArray = new TabContent[3];
 		sectionArray[0] = section1;
 		sectionArray[1] = section2;
-		//sectionArray[2] = section3;
 		sectionArray[2] = section4;
-/*		sectionArray[4] = section5;
-		sectionArray[5] = section6;*/
+
 		item.setText(Messages.getString("TaskPage.peopleassingmentTab.title"));
 		item.setData(sectionArray);
 	}
@@ -731,148 +724,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	// Create people assignments
 
-/*	private Section createPeopleAssiSection(final FormToolkit toolkit,
-			final ScrolledForm form) {
 
-		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
-				| Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
-
-		section.addExpansionListener(new ExpansionAdapter() {
-			public void expansionStateChanged(ExpansionEvent e) {
-				form.reflow(true);
-			}
-		});
-		section.setText(Messages
-				.getString("TaskPage.peopleassingmentTab.Section.title"));
-		section.setDescription(Messages
-				.getString("TaskPage.peopleassingmentTab.Section.description"));
-		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		sectiondata.horizontalSpan = 2;
-		section.setLayoutData(sectiondata);
-
-		final Composite sectionClient = toolkit.createComposite(section);
-		GridLayout layout = new GridLayout(2, true);
-		layout.marginWidth = 2;
-		layout.marginHeight = 5;
-		// layout.makeColumnsEqualWidth = true;
-		sectionClient.setLayout(layout);
-
-		final Composite combo = toolkit.createComposite(sectionClient);
-		GridData rgd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL);
-		rgd.horizontalSpan = 1;
-		// rgd.verticalSpan =1;
-		combo.setLayoutData(rgd);
-		FillLayout fl = new FillLayout(SWT.VERTICAL);
-		combo.setLayout(fl);
-
-		Label radiolabel = new Label(combo, SWT.WRAP);
-		radiolabel
-				.setText(Messages
-						.getString("TaskPage.peopleassingmentTab.Section.radiobtnsetlabel"));
-
-		Combo roal_type = new Combo(combo, SWT.READ_ONLY);
-		roal_type
-				.add(Messages
-						.getString("TaskPage.peopleassingmentTab.Section.radiobtnset.potentialownerslable"),
-						0);
-		roal_type
-				.add(Messages
-						.getString("TaskPage.peopleassingmentTab.Section.radiobtnset.excludedowners"),
-						1);
-		roal_type
-				.add(Messages
-						.getString("TaskPage.peopleassingmentTab.Section.radiobtnset.taskinitiator"),
-						2);
-		roal_type
-				.add(Messages
-						.getString("TaskPage.peopleassingmentTab.Section.radiobtnset.taskstakeholders"),
-						3);
-		roal_type
-				.add(Messages
-						.getString("TaskPage.peopleassingmentTab.Section.radiobtnset.businessadministrators"),
-						4);
-		roal_type
-				.add(Messages
-						.getString("TaskPage.peopleassingmentTab.Section.radiobtnset.notificationrecipients"),
-						5);
-
-		roal_type.select(0);
-		section.setClient(sectionClient);
-
-		Composite dynamic = toolkit.createComposite(sectionClient);
-		GridData dydata = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		dydata.horizontalSpan = 1;
-		dynamic.setLayoutData(dydata);
-
-		FillLayout fld = new FillLayout(SWT.VERTICAL);
-		dynamic.setLayout(fld);
-
-		Label combolabel = new Label(dynamic, SWT.WRAP);
-		combolabel
-				.setText(Messages
-						.getString("TaskPage.peopleassingmentTab.Section.dynamic.combolabel"));
-		final Combo vialist = new Combo(dynamic, SWT.READ_ONLY);
-		vialist.add(
-				Messages.getString("TaskPage.peopleassingmentTab.Section.dynamic.vialist.methodone"),
-				0);
-		vialist.add(
-				Messages.getString("TaskPage.peopleassingmentTab.Section.dynamic.vialist.methodtwo"),
-				1);
-		vialist.add(
-				Messages.getString("TaskPage.peopleassingmentTab.Section.dynamic.vialist.methodthree"),
-				2);
-		vialist.select(0);
-
-		// TODO FOCUs Problem.
-
-		vialist.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				// System.out.println(vialist.getSelectionIndex());
-				int index = vialist.getSelectionIndex();
-				if (index == 0) {
-					if (via_exp.isEnabled()) {
-
-						via_exp.setEnabled(false);
-					}
-					if (via_literal.isEnabled()) {
-
-						via_literal.setEnabled(false);
-					}
-					via_logical_ppl.setEnabled(true);
-
-				} else if (index == 1) {
-					if (via_logical_ppl.isEnabled()) {
-
-						via_logical_ppl.setEnabled(false);
-					}
-					if (via_literal.isEnabled()) {
-
-						via_literal.setEnabled(false);
-					}
-
-					via_exp.setEnabled(true);
-
-				} else if (index == 2) {
-					if (via_logical_ppl.isEnabled()) {
-
-						via_logical_ppl.setEnabled(false);
-					}
-					if (via_exp.isEnabled()) {
-
-						via_exp.setEnabled(false);
-					}
-
-					via_literal.setEnabled(true);
-				}
-
-			}
-
-		});
-
-		return section;
-	}*/
 
 	private Section createPeopelAssiTableSection(final FormToolkit toolkit,
 			final ScrolledForm form) {
@@ -1058,9 +910,6 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		
 		
 		
-		
-		
-		
 		Label selectppllabel = new Label(sectionClient, SWT.WRAP);
 		selectppllabel.setText("Select Logical group");
 
@@ -1073,17 +922,21 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		
 
 		// Should be reviewed
-		Combo combo = new Combo(sectionClient, SWT.READ_ONLY);
-		combo.setLayoutData(gd);
-		combo.add("This shoud provide via ", 0);
-		combo.add("This shoud provide via ", 1);
-		combo.add("This shoud provide via ", 2);
-		combo.select(0);
+		selectLogicalPeopleGroup_combo = new Combo(sectionClient, SWT.READ_ONLY);
+		selectLogicalPeopleGroup_combo.setLayoutData(gd);
+		
+		int size= humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().size();
+		for(int i=0;i<size;++i)
+		{
+			selectLogicalPeopleGroup_combo.add(humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().get(i).getName(),i);
+		}
+		
+		selectLogicalPeopleGroup_combo.select(0);
 		GridData cgd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
 		// cgd.verticalIndent = 5;
 		// cgd.verticalSpan =2;
-		combo.setLayoutData(cgd);
+		selectLogicalPeopleGroup_combo.setLayoutData(cgd);
 
 		Label namelabel = new Label(sectionClient, SWT.WRAP);
 		namelabel.setText("Name");
@@ -1106,112 +959,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		return section;
 	}
 
-/*	private Section createExpSection(final FormToolkit toolkit,
-			final ScrolledForm form) {
-		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
-				| Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
-		section.addExpansionListener(new ExpansionAdapter() {
-			public void expansionStateChanged(ExpansionEvent e) {
-				form.reflow(true);
-			}
-		});
-		section.setText(Messages
-				.getString("TaskPage.peopleassingmentTab.Section.dynamic.vialist.methodtwo"));
-		section.setDescription("THIS SHOULD BE ADDED LATER");
-		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		sectiondata.horizontalSpan = 2;
-		section.setLayoutData(sectiondata);
 
-		Composite sectionClient = toolkit.createComposite(section);
-		GridLayout layout = new GridLayout(2, true);
-		layout.marginWidth = 2;
-		layout.marginHeight = 5;
-
-		Label exp_lang_label = new Label(sectionClient, SWT.WRAP);
-		exp_lang_label
-				.setText(Messages
-						.getString("TaskPage.peopleassingmentTab.expSection.explang_label"));
-		GridData explbgd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL
-				| GridData.GRAB_VERTICAL);
-		explbgd.horizontalSpan = 1;
-		exp_lang_label.setLayoutData(explbgd);
-
-		exp_lang_text = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		exp_lang_text.setLayoutData(explbgd);
-		configPeopleAssignSection_exp_lang(exp_lang_text);
-
-		Label exp_label = new Label(sectionClient, SWT.WRAP);
-		exp_label
-				.setText(Messages
-						.getString("TaskPage.peopleassingmentTab.expSection.exp_label"));
-		exp_label.setLayoutData(explbgd);
-
-		// TODO get the <>internals<>
-		Text exp_text = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		exp_text.setLayoutData(explbgd);
-
-		sectionClient.setLayout(layout);
-
-		// section.setExpanded(false);
-		section.setEnabled(false);
-		section.setClient(sectionClient);
-
-		return section;
-
-	}*/
-
-	/*private Section createLiteralsSection(final FormToolkit toolkit,
-			final ScrolledForm form) {
-		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
-				| Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
-		section.addExpansionListener(new ExpansionAdapter() {
-			public void expansionStateChanged(ExpansionEvent e) {
-				form.reflow(true);
-			}
-		});
-		section.setText(Messages
-				.getString("TaskPage.peopleassingmentTab.Section.dynamic.vialist.methodthree"));
-		section.setDescription("THIS SHOULD BE ADDED LATER");
-		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		sectiondata.horizontalSpan = 2;
-		section.setLayoutData(sectiondata);
-
-		Composite sectionClient = toolkit.createComposite(section);
-		GridLayout layout = new GridLayout(2, true);
-		layout.marginWidth = 2;
-		layout.marginHeight = 5;
-
-		sectionClient.setLayout(layout);
-
-		Label user_label = new Label(sectionClient, SWT.WRAP);
-		user_label
-				.setText(Messages
-						.getString("TaskPage.peopleassingmentTab.literalSection.user_label"));
-		GridData ulbdata = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL
-				| GridData.GRAB_VERTICAL);
-		ulbdata.horizontalSpan = 1;
-
-		user_label.setLayoutData(ulbdata);
-
-		Text user_text_box = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		user_text_box.setLayoutData(ulbdata);
-
-		Label group_label = new Label(sectionClient, SWT.WRAP);
-		group_label
-				.setText(Messages
-						.getString("TaskPage.peopleassingmentTab.literalSection.group_label"));
-		group_label.setLayoutData(ulbdata);
-
-		Text group_text_box = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		group_text_box.setLayoutData(ulbdata);
-
-		section.setEnabled(false);
-		section.setClient(sectionClient);
-
-		return section;
-	}*/
 
 	// /////////////////////////////////////////////////////////////////////////////////
 	void configPeopleAssignSection_exp_lang(final Text exp_langTextBox) {
