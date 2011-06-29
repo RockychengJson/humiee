@@ -30,6 +30,8 @@ public class testpage extends FormPage {
 
 	public testpage(FormEditor editor, String title) {
 		super(editor, "test", title);
+		int i;
+		
 		 // TODO Auto-generated constructor stub
 	}
 
