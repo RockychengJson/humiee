@@ -66,6 +66,8 @@ public class LogicalPeopleGroupPage extends FormPage {
 	private Text name_txt;
 	private Text para_name_txt;
 	private Text para_type_txt;
+	
+	private Table grp_table;
 
 	private boolean isResourceChanged = false;
 
@@ -137,7 +139,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 
 		createLogicalPplColumns(client, logicalPplviewer);
 
-		Table grp_table = logicalPplviewer.getTable();
+		grp_table = logicalPplviewer.getTable();
 
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 20;
@@ -578,6 +580,17 @@ public class LogicalPeopleGroupPage extends FormPage {
 					.getLogicalPeopleGroup().get(0).getParameter().get(0);
 		}
 	}
+	
+	public void updatePeopleAssignmentTable()
+	{
+		logicalPplviewer.setInput(createLogicalPplModle());
+	}
+	
+	public void updateParameterTable()
+	{
+		parameterViewer.setInput(createPramModle());
+	}
+	
 
 	public void setResourceChanged(boolean value) {
 		this.isResourceChanged = value;
