@@ -2,19 +2,14 @@ package org.wso2.tools.humantask.editor.editors.pages.task;
 
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-
 
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
@@ -35,6 +30,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -58,9 +54,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -79,7 +73,6 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TText;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
-import org.wso2.tools.humantask.editor.editors.pages.humanInteractions.HumanInteractionsPage;
 import org.wso2.tools.humantask.editor.editors.pages.util.Messages;
 
 import com.ibm.wsdl.OperationImpl;
@@ -88,6 +81,7 @@ import com.ibm.wsdl.xml.WSDLReaderImpl;
 public class TaskPage extends FormPage implements IResourceChangeListener,
 		Listener {
 
+	private TaskPage taskPage;
 	private CTabFolder tabFolder;
 
 	protected HTMultiPageEditor editor;
@@ -116,7 +110,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private Button oneway;
 	private Button requestres;
 
-	private TTask input;
+	TTask input;
 	HumanRole selectedHumanRole;
 
 	private Section taskTableSection;
@@ -191,7 +185,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		this.adaptorFactory = editor.getAdapterFactory();
 		this.tasks = tasks;
 		this.humanInteractions = humanInteractions;
-		
+		this.taskPage = this;
 		reader=new WSDLReaderImpl();
 		
 		
@@ -1240,7 +1234,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				| SWT.BORDER);
 		preElem_GenInfo_name_txt.setLayoutData(gd);
 
-		//configPElemGeneralInfoSection_name(preElem_GenInfo_name_txt);
+		configPElemGeneralInfoSection_name(preElem_GenInfo_name_txt);
 		
 		Label language_lb = new Label(sectionClient, SWT.WRAP);
 		language_lb.setText("Language");
@@ -1317,13 +1311,12 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 			@Override
 			public void handleEvent(Event event) {
-				/*
-				 * TaskCreatWizard wizard = new
-				 * TaskCreatWizard(humanInteractions,domain,viewer );
-				 * WizardDialog wizardDialog = new WizardDialog(Display
-				 * .getCurrent().getActiveShell(),wizard);
-				 * wizardDialog.create(); wizardDialog.open();
-				 */
+				
+				AddPresentationParmWizard wizard = new AddPresentationParmWizard(taskPage, domain, PresentationParameterViewer);
+				 WizardDialog wizardDialog = new WizardDialog(Display
+				  .getCurrent().getActiveShell(),wizard);
+				  wizardDialog.create(); wizardDialog.open();
+				 
 			}
 		});
 		section.setClient(sectionClient);
@@ -1362,6 +1355,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 		preParm_nametext = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		preParm_nametext.setLayoutData(gd);
+		configPParm_name(preParm_nametext);
 
 		Label typelabel = new Label(sectionClient, SWT.WRAP);
 		typelabel.setText("Type");
@@ -1369,7 +1363,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 		preParm_typetext = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		preParm_typetext.setLayoutData(gd);
-
+		cinfigPparm_type(preParm_typetext);
+		
 		Label explabel = new Label(sectionClient, SWT.WRAP);
 		explabel.setText("Expression");
 		explabel.setLayoutData(gd);
@@ -1498,6 +1493,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		preElemSubInfo_lang_txt = new Text(sectionClient, SWT.SINGLE
 				| SWT.BORDER);
 		preElemSubInfo_lang_txt.setLayoutData(gd);
+		configPElem_SubInfo_lang(preElemSubInfo_lang_txt);
 
 		sub_section.setClient(sectionClient);
 
@@ -1614,7 +1610,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		preElemDescInfo_lang_txt = new Text(sectionClient, SWT.SINGLE
 				| SWT.BORDER);
 		preElemDescInfo_lang_txt.setLayoutData(gd);
-
+		configPElem_DescInfo_lang(preElemDescInfo_lang_txt);
+		
 		GridData combo_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
 		combo_gd.verticalSpan = 2;
@@ -1628,7 +1625,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		preElemDescInfo_context_type.add("text/html", 1);
 		preElemDescInfo_context_type.select(0);
 		preElemDescInfo_context_type.setLayoutData(combo_gd);
-
+		configPElemDescInfo_contextType(preElemDescInfo_context_type);
 		creatSpacer(sectionClient, 2);
 
 		Label dec_lb = new Label(sectionClient, SWT.WRAP);
@@ -1693,7 +1690,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-
+				
 				TPresentationParameter parm = (TPresentationParameter) element;
 				return parm.getName();
 			}
@@ -1707,7 +1704,12 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			@Override
 			public String getText(Object element) {
 				TPresentationParameter parm = (TPresentationParameter) element;
+				if(parm.getType() != null){
 				return parm.getType().toString();
+				}
+				else{
+					return EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE;
+				}
 			}
 
 		});
@@ -1719,7 +1721,18 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			@Override
 			public String getText(Object element) {
 				TPresentationParameter parm = (TPresentationParameter) element;
-				return parm.getMixed().get(0).toString();
+				if (parm.getMixed() != null) {
+					
+					if (parm.getMixed().size() != 0) {
+						
+						return parm.getMixed().get(0).toString();
+					}
+					else{
+						return EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE;
+					}
+				} else {
+					return EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE;
+				}
 			}
 		});
 	}
@@ -2110,7 +2123,7 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 			  if(selectedElemName!= null)
 			  { 
 				  nameTextBox.setText((tasks.getTask().get(0).getPresentationElements().
-						  getPresentationParameters().getPresentationParameter().get(0).getName())); 
+						  getName().get(0).getMixed().get(0).getValue().toString())); 
 			  } 
 			  else 
 			  {
@@ -2139,7 +2152,7 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 			domain.getCommandStack().execute(setAttribCommand);
 		} else
 		{
-			System.out.println("can't modify Attribute: " + tParameter_attribute.getName());
+			System.out.println("can't modify Attribute:from configPElemGeneralInfoSection_name" + tParameter_attribute.getName());
 		}
 	}
 	
@@ -2180,7 +2193,7 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 	
 	
 	
-	/*private void configPresentationInfoSection_name(final Text nameTextBox) 
+	private void configPParm_name(final Text nameTextBox) 
 	{
 	  if (tasks != null)
 	  {
@@ -2202,18 +2215,16 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 	  			public void modifyText(ModifyEvent e) 
 	  			{
 	  			// validateInput(); 
-	  				setAttribute_tParameter(htdPackage.eINSTANCE.getTParameter_Name(), nameTextBox.getText()); 
+	  				setAttribute_PpramName(htdPackage.eINSTANCE.getTParameter_Name(), nameTextBox.getText()); 
 	  				
 	  			}
 	  		});
 	  
 	  }
 
-	private void setAttribute_tParameter(EAttribute tParameter_attribute,String text)
+	private void setAttribute_PpramName(EAttribute tParameter_attribute,String text)
 	{
-		Command setAttribCommand = SetCommand.create(domain, tasks.getTask().get(0).
-				getPresentationElements().getPresentationParameters()
-				.getPresentationParameter(), tParameter_attribute, text);
+		Command setAttribCommand = SetCommand.create(domain, selectedParam, tParameter_attribute, text);
 
 		if (setAttribCommand.canExecute()) 
 		{
@@ -2223,7 +2234,164 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 			System.out.println("can't modify Attribute: " + tParameter_attribute.getName());
 		}
 	}
-	 */
+	 
+	
+	private void cinfigPparm_type(final Text typeTextBox){
+		
+		if (tasks != null)
+		  {
+			  if((tasks.getTask().get(0).getPresentationElements().getPresentationParameters()
+					  .getPresentationParameter() .get(0).getType() != null))
+			  { 
+				  typeTextBox.setText((tasks.getTask().get(0).getPresentationElements().
+						  getPresentationParameters().getPresentationParameter().get(0).getType().toString())); 
+			  } 
+			  else 
+			  {
+				  typeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); 
+				
+			  } 
+			  
+		  }
+		  		
+		typeTextBox.addModifyListener(new ModifyListener() {
+		  			public void modifyText(ModifyEvent e) 
+		  			{
+		  			// validateInput(); 
+		  				setAttribute_PparmType(htdPackage.eINSTANCE.getTParameter_Type(), new QName(typeTextBox.getText())); 
+		  				
+		  			}
+		  		});
+	}
+	
+	private void setAttribute_PparmType(EAttribute tTaskInterface_Attribute,
+			QName text) {
+		Command setAttribCommand = SetCommand.create(domain, selectedParam,
+				tTaskInterface_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tTaskInterface_Attribute.getName());
+		}
+	}
+	
+	
+	
+	private void configPElem_SubInfo_lang(final Text languageTextBox){
+		if (tasks != null) {
+			if (tasks.getTask().get(0).getPresentationElements() != null) {
+				if ((tasks.getTask().get(0).getPresentationElements().getSubject().get(0) != null)) {
+					languageTextBox.setText((tasks.getTask().get(0).getPresentationElements().getSubject().get(0).getLang()));
+				} else {
+					languageTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}
+		}
+		languageTextBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_pElemSub_lang(
+						htdPackage.eINSTANCE.getTText_Lang(),languageTextBox.getText());
+			}
+		});
+	}
+	
+	private void setAttribute_pElemSub_lang(EAttribute tText_attribute, String text){
+		Command setAttribCommand = SetCommand.create(domain,selectedElemSubject, tText_attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tText_attribute.getName());
+		}
+		
+	}
+	
+	
+	private void configPElem_DescInfo_lang(final Text languageTextBox){
+		
+		if (tasks != null) {
+			if (tasks.getTask().get(0).getPresentationElements() != null) {
+				if ((tasks.getTask().get(0).getPresentationElements().getDescription().get(0) != null)) {
+					languageTextBox.setText((tasks.getTask().get(0).getPresentationElements().getDescription().get(0).getLang()));
+				} else {
+					languageTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}
+		}
+		languageTextBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_pElemDesc_lang(
+						htdPackage.eINSTANCE.getTDescription_Lang(),languageTextBox.getText());
+			}
+		});
+		
+	}
+	
+	
+	private void setAttribute_pElemDesc_lang(EAttribute tText_attribute, String text){
+		
+		Command setAttribCommand = SetCommand.create(domain,selectedElemDesc, tText_attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tText_attribute.getName());
+		}
+	}
+	
+	
+	private void configPElemDescInfo_contextType(final Combo contextTypeComboBox)
+ {
+		if (tasks != null) {
+			if (tasks.getTask().get(0).getPresentationElements() != null) {
+				if ((tasks.getTask().get(0).getPresentationElements()
+						.getDescription().get(0) != null)) {
+					contextTypeComboBox.select(tasks.getTask().get(0)
+							.getPresentationElements().getDescription().get(0)
+							.getContentType().compareTo("text/plain") == 0 ? 0
+							: 1);
+
+				} else {
+
+					contextTypeComboBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}
+		}
+
+		contextTypeComboBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_PElemDescInfo_contextType(htdPackage.eINSTANCE
+						.getTDescription_ContentType(), (contextTypeComboBox
+						.getSelectionIndex() == 0) ? "text/plain" : "text/html");
+			}
+		});
+	
+		
+	}
+	
+	
+	private void setAttribute_PElemDescInfo_contextType(EAttribute tExtension_Attribute, String text) {
+		Command setAttribCommand = SetCommand.create(domain, selectedElemDesc, tExtension_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+		
+		} else {
+			System.out.println("can't modify Attribute: " + tExtension_Attribute.getName());
+		}
+	}
+	
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	
@@ -2455,7 +2623,7 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 
 	@Override
 	public void resourceChanged(IResourceChangeEvent event) {
-		// TODO Auto-generated method stub
+		isResourceChanged = true;
 
 	}
 }
