@@ -6,12 +6,17 @@ public class HumanRole {
 
 	private TGenericHumanRole genericHumanRole;
 	private String type;
+	private int indexOfEList;
 	
-	public HumanRole(TGenericHumanRole genericHumanRole,String type)
+	
+	public HumanRole(TGenericHumanRole genericHumanRole,String type,int index)
 	{
 		this.genericHumanRole=genericHumanRole;
 		this.type=type;
+		this.indexOfEList=index;
 	}
+	
+	
 	
 	public void setGenericHumanRole(TGenericHumanRole genericHumanRole)
 	{
@@ -21,6 +26,7 @@ public class HumanRole {
 	{
 		this.type=type;
 	}
+	
 	public TGenericHumanRole getGenericHumanRole()
 	{
 		return genericHumanRole;
@@ -29,8 +35,14 @@ public class HumanRole {
 	{
 		return type;
 	}
+	public int getIndexOfEList()
+	{
+		return indexOfEList;
+	}
 	public String getLogicalPeopleGroup()
 	{
+		if(genericHumanRole.getFrom()!=null)
+		{
 		if(genericHumanRole.getFrom().getLogicalPeopleGroup()!=null)
 		{
 			return genericHumanRole.getFrom().getLogicalPeopleGroup().toString();
@@ -38,6 +50,11 @@ public class HumanRole {
 		else
 		{		
 		return "";
+		}
+		}
+		else
+		{
+			return "";
 		}
 	}
 	
@@ -59,6 +76,40 @@ public class HumanRole {
 		}
 		return s;
 		
+		
+	}
+	
+	public int getTypeByIndex()
+	{
+		if("PotentialOwners".equals(getType()))
+		{
+			return 0;
+		}
+		else	if("ExcludedOwners".equals(getType()))
+		{
+				return 1;
+		}
+		else if("TaskInitiator".equals(getType()))
+		{
+			return 2;
+		}	
+	
+		else if("TaskStakeholders".equals(getType()))
+		{
+			return 3;
+		}
+			
+		else if("BusinessAdministrators".equals(getType()))
+		{
+			return 4;
+		}
+		else if("Recipients".equals(getType()))
+		{
+			return 5;
+		}
+		else{
+		return -1;
+		}
 		
 	}
 	
