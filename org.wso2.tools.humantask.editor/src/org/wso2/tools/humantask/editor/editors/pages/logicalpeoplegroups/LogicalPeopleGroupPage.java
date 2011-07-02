@@ -573,7 +573,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 	private void checkAvailability_Parameter() {
 
 		if (humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup()
-				.get(0).getParameter() != null) {
+				.get(0).getParameter() == null) {
 			// Error message
 		} else {
 			selectedParameter = humanInteractions.getLogicalPeopleGroups()
@@ -583,12 +583,18 @@ public class LogicalPeopleGroupPage extends FormPage {
 	
 	public void updatePeopleAssignmentTable()
 	{
+		if(logicalPplviewer!=null)
+		{
 		logicalPplviewer.setInput(createLogicalPplModle());
+		}
 	}
 	
 	public void updateParameterTable()
 	{
+		if(parameterViewer!=null)
+		{
 		parameterViewer.setInput(createPramModle());
+		}
 	}
 	
 
