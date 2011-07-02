@@ -37,35 +37,35 @@ public class PeopleAssignmentContentProvider implements IStructuredContentProvid
 		{
 			for(int i=0;i<t.getPeopleAssignments().getBusinessAdministrators().size();++i)
 			{
-				list.add(new HumanRole(t.getPeopleAssignments().getBusinessAdministrators().get(i),"BusinessAdministrators"));
+				list.add(new HumanRole(t.getPeopleAssignments().getBusinessAdministrators().get(i),"BusinessAdministrators",i));
 			}
 		}
 		if(t.getPeopleAssignments().getExcludedOwners()!=null)
 		{
 			for(int i=0;i<t.getPeopleAssignments().getExcludedOwners().size();++i)
 			{
-				list.add(new HumanRole(t.getPeopleAssignments().getExcludedOwners().get(i),"ExcludedOwners"));
+				list.add(new HumanRole(t.getPeopleAssignments().getExcludedOwners().get(i),"ExcludedOwners",i));
 			}
 		}
 		if(t.getPeopleAssignments().getPotentialOwners()!=null)
 		{
 			for(int i=0;i<t.getPeopleAssignments().getPotentialOwners().size();++i)
 			{
-				list.add(new HumanRole(t.getPeopleAssignments().getPotentialOwners().get(i), "PotentialOwners"));
+				list.add(new HumanRole(t.getPeopleAssignments().getPotentialOwners().get(i), "PotentialOwners",i));
 			}
 		}
 		if(t.getPeopleAssignments().getRecipients()!=null)
 		{
 			for(int i=0;i<t.getPeopleAssignments().getRecipients().size();++i)
 			{
-				list.add(new HumanRole(t.getPeopleAssignments().getRecipients().get(i), "Recipients"));
+				list.add(new HumanRole(t.getPeopleAssignments().getRecipients().get(i), "Recipients",i));
 			}
 		}
 		if(t.getPeopleAssignments().getTaskInitiator()!=null)
 		{
 			for(int i=0;i<t.getPeopleAssignments().getTaskInitiator().size();++i)
 			{
-				list.add(new HumanRole(t.getPeopleAssignments().getTaskInitiator().get(i), "TaskInitiator"));
+				list.add(new HumanRole(t.getPeopleAssignments().getTaskInitiator().get(i), "TaskInitiator",i));
 			}
 		}
 		
@@ -73,7 +73,7 @@ public class PeopleAssignmentContentProvider implements IStructuredContentProvid
 		{
 			for(int i=0;i<t.getPeopleAssignments().getTaskStakeholders().size();++i)
 			{
-				list.add(new HumanRole(t.getPeopleAssignments().getTaskStakeholders().get(i), "TaskStakeholders"));
+				list.add(new HumanRole(t.getPeopleAssignments().getTaskStakeholders().get(i), "TaskStakeholders",i));
 			}
 		}
 		}
