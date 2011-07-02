@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,18 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.notify.Adapter;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
@@ -63,13 +75,19 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.internal.DirtyPerspectiveMarker;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TArgument;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TBoolean;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TDescription;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TDocumentation;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TFrom;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TGenericHumanRole;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TPresentationParameter;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TTask;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TTasks;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TText;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdFactory;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
@@ -112,12 +130,17 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	TTask input;
 	HumanRole selectedHumanRole;
+	HumanRole pastSelectedHumanRole;
 
 	private Section taskTableSection;
 	private TaskTable taskTable;
 	private TableViewer viewer_peopleAssignment;
 	private Table table_peopleAssingment;
 	private Text exp_lang_text;
+	
+	private Text peopleAssignmentNametextbox;
+	private Text peopleAssignmentExptextbox;
+	
 
 	// private TPresentationselectedPreElement;
 	private TableViewer presentationElemNameViewer;
@@ -267,20 +290,17 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private void createPeaopleAssTab(FormToolkit toolkit, ScrolledForm form,
 			IManagedForm managedForm) {
 		CTabItem item = new CTabItem(tabFolder, SWT.NULL);
-
-		TabContent section2 = new TabContent(createPeopelAssiTableSection(
-				toolkit, form));
+	
 	
 		TabContent section1 = new TabContent(taskTableSection);
-
-		via_logical_ppl = createLogicalPplSection(toolkit, form);
-		TabContent section4 = new TabContent(via_logical_ppl);
-
+		TabContent section2 = new TabContent(createPeopelAssiTableSection(toolkit, form));
+		via_logical_ppl     = createLogicalPplSection(toolkit, form);
+		TabContent section3 = new TabContent(via_logical_ppl);
 
 		TabContent[] sectionArray = new TabContent[3];
 		sectionArray[0] = section1;
 		sectionArray[1] = section2;
-		sectionArray[2] = section4;
+		sectionArray[2] = section3;
 
 		item.setText(Messages.getString("TaskPage.peopleassingmentTab.title"));
 		item.setData(sectionArray);
@@ -552,6 +572,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 						.toString() != null)) {
 					portTextBox.setText((tasks.getTask().get(0).getInterface()
 							.getPortType().toString()));
+				
 				} else {
 					portTextBox
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
@@ -771,7 +792,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				.setContentProvider(new PeopleAssignmentContentProvider());
 		viewer_peopleAssignment.setInput(createModleForPeopleAssinment());
 		table_peopleAssingment.setSelection(0);
-
+		checkAvailability_peopleAssignment();
+		
 		section.setClient(sectionClient);
 		return section;
 	}
@@ -901,7 +923,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		// cgd.verticalIndent = 5;
 		// cgd.verticalSpan =2;
 		roal_type.setLayoutData(cgd1);
-		
+		configPeopleAssignmentSection_roleType(roal_type);
 		
 		
 		Label selectppllabel = new Label(sectionClient, SWT.WRAP);
@@ -931,20 +953,23 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		// cgd.verticalIndent = 5;
 		// cgd.verticalSpan =2;
 		selectLogicalPeopleGroup_combo.setLayoutData(cgd);
+		configPeopleAssignmentSection_logicalPeopleGroup(selectLogicalPeopleGroup_combo);
 
 		Label namelabel = new Label(sectionClient, SWT.WRAP);
 		namelabel.setText("Name");
 		namelabel.setLayoutData(gd);
 
-		Text nametextbox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		nametextbox.setLayoutData(gd);
+		peopleAssignmentNametextbox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
+		peopleAssignmentNametextbox.setLayoutData(gd);
+		configPeopleAssignmentSection_name(peopleAssignmentNametextbox);
 
 		Label explabel = new Label(sectionClient, SWT.WRAP);
 		explabel.setText("Expression");
 		explabel.setLayoutData(gd);
 
-		Text exptextbox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		exptextbox.setLayoutData(gd);
+		peopleAssignmentExptextbox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
+		peopleAssignmentExptextbox.setLayoutData(gd);
+		configPeopleAssignmentSection_expression(peopleAssignmentExptextbox);
 
 		// section.setExpanded(true);
 		section.setEnabled(true);
@@ -956,6 +981,166 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 
 	// /////////////////////////////////////////////////////////////////////////////////
+	
+	
+	
+	private void configPeopleAssignmentSection_logicalPeopleGroup(final Combo logicalPeopleGroupComboBox)
+	{
+		if (selectedHumanRole != null) {
+			if (selectedHumanRole.getGenericHumanRole().getFrom().getLogicalPeopleGroup() != null) {
+				int itemCount = logicalPeopleGroupComboBox.getItemCount();
+				for (int j = 0; j < itemCount; ++j) {
+					if ((logicalPeopleGroupComboBox.getItem(j))
+							.equals(selectedHumanRole.getLogicalPeopleGroup())) {
+						logicalPeopleGroupComboBox.select(j);
+					}
+
+				}
+				
+			} else {
+				
+			}
+		}
+
+		logicalPeopleGroupComboBox.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+
+				setAttribute_logicalPeopleGroup(htdPackage.eINSTANCE.getTFrom_LogicalPeopleGroup(),logicalPeopleGroupComboBox.getItem(logicalPeopleGroupComboBox.getSelectionIndex()) );
+			}
+		});
+	
+		
+	}
+	private void setAttribute_logicalPeopleGroup(EAttribute tArgument_Attribute,
+			String text) {
+		
+		if(selectedHumanRole.getGenericHumanRole().getFrom()!=null)
+		{
+		Command setAttribCommand = SetCommand.create(domain, selectedHumanRole.getGenericHumanRole().getFrom(),
+				tArgument_Attribute, new QName(text) );
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tArgument_Attribute.getName());
+		}
+		}
+
+	}
+	
+	
+	
+	
+	private void configPeopleAssignmentSection_roleType(final Combo roleCombo) {
+		if (selectedHumanRole != null) {
+			if (selectedHumanRole.getType()!= null) {
+				roleCombo.select(selectedHumanRole.getTypeByIndex());
+			} else {
+				roleCombo.select(-1);
+						
+
+			}
+		}
+
+		roleCombo.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+
+				//editRoleType_roleCombo();
+			}
+		});
+		
+		pastSelectedHumanRole=selectedHumanRole;
+	}
+	
+	
+	
+	private void configPeopleAssignmentSection_name(final Text nameTextBox) {
+			if (selectedHumanRole != null) {
+				if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getName() != null) {
+					nameTextBox.setText(selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getName());
+				} else {
+					nameTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+				}
+			}
+
+			nameTextBox.addModifyListener(new ModifyListener() {
+
+				@Override
+				public void modifyText(ModifyEvent e) {
+
+					setAttribute_parmName(
+							htdPackage.eINSTANCE.getTArgument_Name(),
+							nameTextBox.getText());
+				}
+			});
+		}
+	
+	
+	private void configPeopleAssignmentSection_expression(final Text expTextBox) {
+		if (selectedHumanRole != null) {
+			if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().getValue(0)  != null) {
+				expTextBox.setText(selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().getValue(0).toString());
+			} else {
+				expTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+			}
+		}
+		expTextBox.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+
+				//should be edited
+				if(selectedHumanRole.getGenericHumanRole().getFrom()!=null){
+				selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().setValue(0, expTextBox.getText());
+				}
+			}
+		});
+	}
+	
+	
+	
+	
+	
+	
+	
+	private void setAttribute_parmName(EAttribute tArgument_Attribute,
+			String text) {
+		if(selectedHumanRole.getGenericHumanRole().getFrom()!=null)
+		{
+		Command setAttribCommand = SetCommand.create(domain, selectedHumanRole.getGenericHumanRole().getFrom().getArgument(),
+				tArgument_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tArgument_Attribute.getName());
+		}
+		}
+
+	}
+	
+	private void checkAvailability_peopleAssignment() {
+
+		if (viewer_peopleAssignment.getElementAt(0) == null) {
+			// Error message
+		} else {
+			selectedHumanRole=(HumanRole)viewer_peopleAssignment.getElementAt(0);
+		}
+	}
+	
+	
 	void configPeopleAssignSection_exp_lang(final Text exp_langTextBox) {
 		if (tasks != null) {
 			if ((tasks.getTask().get(0).getInterface().getResponseOperation() != null)) {
@@ -1005,29 +1190,34 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	private void update_peopleAssingment() {
 
-		if (selectedHumanRole!=null)
-		{
-		if (selectedHumanRole.getPeopleAssignMethodology() != null) {
+		if (selectedHumanRole != null) {
 
-			if ((selectedHumanRole.getPeopleAssignMethodology())
-					.equals("By LogicalPeopleGroup")) {
+			roal_type.select(selectedHumanRole.getTypeByIndex());
+			int itemCount = selectLogicalPeopleGroup_combo.getItemCount();
+			for (int j = 0; j < itemCount; ++j) {
+				if ((selectLogicalPeopleGroup_combo.getItem(j))
+						.equals(selectedHumanRole.getLogicalPeopleGroup())) {
+					selectLogicalPeopleGroup_combo.select(j);
+				}
 
 			}
-			if ((selectedHumanRole.getPeopleAssignMethodology())
-					.equals("By Literal")) {
+			if (selectedHumanRole.getGenericHumanRole().getFrom() != null) {
+				peopleAssignmentNametextbox.setText(selectedHumanRole
+						.getGenericHumanRole().getFrom().getArgument()
+						.getName());
 
+				peopleAssignmentExptextbox.setText(selectedHumanRole
+						.getGenericHumanRole().getFrom().getArgument()
+						.getMixed().getValue(0).toString());
 			}
-			if ((selectedHumanRole.getPeopleAssignMethodology())
-					.equals("By ExpressionLanguage")) {
-				exp_lang_text.setText(selectedHumanRole.getGenericHumanRole()
-						.getFrom().getExpressionLanguage());
+			else
+			{
+				peopleAssignmentNametextbox.setText("");
+				peopleAssignmentExptextbox.setText("");
 			}
-
 		}
-		}	
-		
-		
 
+/*
 		if (input.getInterface().getPortType() != null) {
 			portTextBox.setText(input.getInterface().getPortType().toString());
 		}
@@ -1038,7 +1228,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		if (input.getInterface().getResponsePortType() != null) {
 			OportTextBox.setText(input.getInterface().getResponsePortType()
 					.toString());
-		}
+		}*/
 
 	}
 
@@ -1052,17 +1242,26 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		} else {
 			input = null;
 		}
-
-		viewer_peopleAssignment.setInput(createModleForPeopleAssinment());
-		table_peopleAssingment.setSelection(0);
-
-		
+	
 		updateInterfaceTab();
+		updatePeopleAssignmentTable();
 		updatePreElemNameTable();
 		updatePresentationPramTable();
 		updatePreElemSubjectTable();
 		updatePreElemDescTable();
 	}
+	
+	
+	private void updatePeopleAssignmentTable()
+	{
+		viewer_peopleAssignment.setInput(createModleForPeopleAssinment());
+		table_peopleAssingment.setSelection(0);
+		checkAvailability_peopleAssignment();
+		
+		update_peopleAssingment();
+		
+	}
+	
 
 	private List getPeopleAssignmentList(TTask inputElement) {
 		TTask t = inputElement;
@@ -1076,35 +1275,35 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 						.getBusinessAdministrators().size(); ++i) {
 					list.add(new HumanRole(t.getPeopleAssignments()
 							.getBusinessAdministrators().get(i),
-							"BusinessAdministrators"));
+							"BusinessAdministrators",i));
 				}
 			}
 			if (t.getPeopleAssignments().getExcludedOwners() != null) {
 				for (int i = 0; i < t.getPeopleAssignments()
 						.getExcludedOwners().size(); ++i) {
 					list.add(new HumanRole(t.getPeopleAssignments()
-							.getExcludedOwners().get(i), "ExcludedOwners"));
+							.getExcludedOwners().get(i), "ExcludedOwners",i));
 				}
 			}
 			if (t.getPeopleAssignments().getPotentialOwners() != null) {
 				for (int i = 0; i < t.getPeopleAssignments()
 						.getPotentialOwners().size(); ++i) {
 					list.add(new HumanRole(t.getPeopleAssignments()
-							.getPotentialOwners().get(i), "PotentialOwners"));
+							.getPotentialOwners().get(i), "PotentialOwners",i));
 				}
 			}
 			if (t.getPeopleAssignments().getRecipients() != null) {
 				for (int i = 0; i < t.getPeopleAssignments().getRecipients()
 						.size(); ++i) {
 					list.add(new HumanRole(t.getPeopleAssignments()
-							.getRecipients().get(i), "Recipients"));
+							.getRecipients().get(i), "Recipients",i));
 				}
 			}
 			if (t.getPeopleAssignments().getTaskInitiator() != null) {
 				for (int i = 0; i < t.getPeopleAssignments().getTaskInitiator()
 						.size(); ++i) {
 					list.add(new HumanRole(t.getPeopleAssignments()
-							.getTaskInitiator().get(i), "TaskInitiator"));
+							.getTaskInitiator().get(i), "TaskInitiator",i));
 				}
 			}
 
@@ -1112,13 +1311,29 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				for (int i = 0; i < t.getPeopleAssignments()
 						.getTaskStakeholders().size(); ++i) {
 					list.add(new HumanRole(t.getPeopleAssignments()
-							.getTaskStakeholders().get(i), "TaskStakeholders"));
+							.getTaskStakeholders().get(i), "TaskStakeholders",i));
 				}
 			}
 		}
 		return list;
 
 	}
+	
+	
+	//should be called inside the add button's finish action of add new people assignment
+	private void updateLogicalPeopleGroupCombo()
+	{
+		
+		int size= humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().size();
+		selectLogicalPeopleGroup_combo.removeAll();
+		for(int i=0;i<size;++i)
+		{
+			selectLogicalPeopleGroup_combo.add(humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().get(i).getName(),i);
+		}
+		
+		selectLogicalPeopleGroup_combo.select(0);
+	}
+	
 
 	// ///////////////////////////////////////////////////////////////////////////////////
 
@@ -2430,6 +2645,7 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 			System.out.println("checkAvailability_HumanRole() + Error message");
 		} else {
 			selectedHumanRole = (HumanRole) peopleassignment.get(0);
+			pastSelectedHumanRole=selectedHumanRole;
 
 		}
 
