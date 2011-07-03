@@ -559,26 +559,47 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			}
 		});
 		//section.setClient(wsdl_import_comp);
+		
+		configGeneralInfoSection_oneWayAndRequestResponseButton();
 		section.setClient(sectionClient);
 
 		return section;
 
 	}
 
+	private void configGeneralInfoSection_oneWayAndRequestResponseButton()
+	{
+		if (tasks != null) {
+			if ((tasks.getTask().get(0).getInterface().getResponsePortType()== null)&
+					(tasks.getTask().get(0).getInterface().getResponseOperation()== null)) {
+				oneway.setSelection(true);
+				requestres.setSelection(false);
+				OportTextBox.setText("");
+				OportTextBox.setEnabled(false);
+				OresponseTextBox.setText("");
+				OresponseTextBox.setEnabled(false);
+				
+			}else {
+				oneway.setSelection(false);
+				requestres.setSelection(true);
+				}
+			}
+	}
+	
 	private void configGeneralInfoSection_portType(final Text portTextBox) {
 		if (tasks != null) {
 			if (tasks.getTask().get(0).getInterface().getPortType() != null) {
-				if ((tasks.getTask().get(0).getInterface().getPortType()
-						.toString() != null)) {
+			/*	if ((tasks.getTask().get(0).getInterface().getPortType()
+						.toString() != null)){*/ 
 					portTextBox.setText((tasks.getTask().get(0).getInterface()
 							.getPortType().toString()));
 				
-				} else {
+			}else {
 					portTextBox
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
 			}
-		}
+		
 		portTextBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
@@ -615,8 +636,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private void configGeneralInfoSection_OportType(final Text OportTypeTextBox) {
 		if (tasks != null) {
 			if (tasks.getTask().get(0).getInterface().getResponsePortType() != null) {
-				if ((tasks.getTask().get(0).getInterface()
-						.getResponsePortType().toString() != null)) {
+		/*		if ((tasks.getTask().get(0).getInterface()
+						.getResponsePortType().toString() != null)) {*/
 					OportTypeTextBox.setText((tasks.getTask().get(0)
 							.getInterface().getResponsePortType().toString()));
 				} else {
@@ -624,7 +645,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
 			}
-		}
+		
 		OportTypeTextBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
@@ -640,7 +661,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		if (tasks != null) {
 			if ((tasks.getTask().get(0).getInterface().getResponseOperation() != null)) {
 				OresponseTextBox.setText((tasks.getTask().get(0).getInterface()
-						.getOperation()));
+						.getResponseOperation()));
 			} else {
 				OresponseTextBox
 						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
