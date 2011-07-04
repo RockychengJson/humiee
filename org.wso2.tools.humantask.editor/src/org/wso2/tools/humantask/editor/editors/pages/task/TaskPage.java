@@ -2,12 +2,15 @@ package org.wso2.tools.humantask.editor.editors.pages.task;
 
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,7 @@ import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -31,6 +35,8 @@ import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
+import org.eclipse.emf.ecore.resource.impl.URIConverterImpl;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -210,7 +216,22 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		this.humanInteractions = humanInteractions;
 		this.taskPage = this;
 		reader=new WSDLReaderImpl();
+
 		
+		File file=new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()+"/WSDLLocations.txt");
+		try{	
+		filename=file.getCanonicalPath();
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+		}
+		catch(IOException e)
+		{
+			System.out.println("Error creating file WSDLLocations.txt !");
+		}
+			
+		System.out.println(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().pathSeparator) ;
+	
 		
 	}
 
@@ -2728,7 +2749,10 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 			System.out.println("Error: " + e.getMessage());
 		}
 		System.out.println(WsdlComboBox.getItemCount());
-		selectedWsdlComboBoxItem = WsdlComboBox.getItem(0);
+		if(WsdlComboBox.getItemCount()!=0)
+		{
+			selectedWsdlComboBoxItem = WsdlComboBox.getItem(0);
+		}
 			  
 			
 			WsdlComboBox.addModifyListener(new ModifyListener() {
@@ -2750,21 +2774,18 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 
 	private void saveToFile(String location) throws IOException {
 		FileWriter fw = null;
-		try {
-
+			try {		
+		
 			fw = new FileWriter(filename, true); // the true will append the new
 													// data
 
-		} catch (IOException ioe) {
-			File f;
-			f = new File("WSDLLocations.txt");
-			if (!f.exists()) {
-				f.createNewFile();
-			}
-			fw = new FileWriter(filename, true);
+		} catch (FileNotFoundException ioe) {
+			System.out.println("File not found !");
 		}
 		fw.write(location + "\n");// appends the string to the file
 		fw.close();
+		
+		
 		
 		comboDropDown.add(location);
 		int count = comboDropDown.getItemCount();
