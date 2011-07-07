@@ -1,4 +1,4 @@
-package org.wso2.tools.humantask.editor.editors.pages.logicalpeoplegroups;
+package org.wso2.tools.humantask.editor.editors.pages.task;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -8,20 +8,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class AddParmWizardPage extends WizardPage{
+public class AddPElemNameWizardPage extends WizardPage{
 
-	
-	public static final String PAGE_NAME ="Add Pram";
-	 private Text nametextbox;
-	
-	public AddParmWizardPage(){
+	public static final String PAGE_NAME ="Add Name";
+	private Text nametextbox;
+	 
+	public AddPElemNameWizardPage(){
 		
-		 super(PAGE_NAME ,"Add Pram Page" , null);
+		 super(PAGE_NAME ,"Add Name Page" , null);
 	}
-	
+	 
 	@Override
 	public void createControl(Composite parent) {
-		
 		Composite comp = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout(2, false);
 		comp.setLayout(layout);
@@ -46,4 +44,5 @@ public class AddParmWizardPage extends WizardPage{
 	public String getNameTextBoxContent(){
 		return nametextbox.getText();
 	}
+
 }

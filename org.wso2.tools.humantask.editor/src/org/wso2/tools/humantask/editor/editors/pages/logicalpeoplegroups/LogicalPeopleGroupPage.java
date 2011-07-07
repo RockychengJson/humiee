@@ -2,6 +2,8 @@ package org.wso2.tools.humantask.editor.editors.pages.logicalpeoplegroups;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.emf.common.command.Command;
 import org.eclipse.emf.ecore.EAttribute;
 
@@ -44,7 +46,7 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
 
-public class LogicalPeopleGroupPage extends FormPage {
+public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeListener{
 
 	private LogicalPeopleGroupPage logicalPeopleGroupPage;
 	protected HTMultiPageEditor editor;
@@ -69,7 +71,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 	
 	private Table grp_table;
 
-	private boolean isResourceChanged = false;
+	private boolean isResourceChanged ;
 
 	public LogicalPeopleGroupPage(HTMultiPageEditor editor,
 			THumanInteractions humanInteractions) {
@@ -241,7 +243,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 			@Override
 			public void handleEvent(Event event) {
 
-				AddParmWizard wizard = new AddParmWizard(humanInteractions,domain,parameterViewer,logicalPeopleGroupPage);
+				AddParmWizard wizard = new AddParmWizard(domain,parameterViewer,logicalPeopleGroupPage);
 				WizardDialog wizardDialog = new WizardDialog(Display
 						.getCurrent().getActiveShell(), wizard);
 				wizardDialog.create();
@@ -309,10 +311,7 @@ public class LogicalPeopleGroupPage extends FormPage {
 		para_type_txt.setLayoutData(gd);
 		config_parmTypeField(para_type_txt);
 
-		// TODO config the type field
-
-		// config_parmTypeField(para_type_txt);
-
+		
 		detail_section.setClient(sectionClient);
 
 	}
@@ -604,6 +603,12 @@ public class LogicalPeopleGroupPage extends FormPage {
 
 	public boolean isResourceChanged() {
 		return this.isResourceChanged;
+	}
+
+	@Override
+	public void resourceChanged(IResourceChangeEvent event) {
+		//isResourceChanged = true;
+		
 	}
 
 }
