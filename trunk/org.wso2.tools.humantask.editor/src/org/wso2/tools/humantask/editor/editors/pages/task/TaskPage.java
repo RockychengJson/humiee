@@ -811,8 +811,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 		table_peopleAssingment = viewer_peopleAssignment.getTable();
 
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL
-				| GridData.FILL_VERTICAL);
+		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.verticalSpan = 10;
 		gd.heightHint = 20;
 		gd.widthHint = 100;
@@ -836,6 +835,22 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		table_peopleAssingment.setSelection(0);
 		checkAvailability_peopleAssignment();
 		
+		Button add_btn = toolkit.createButton(sectionClient, "Add", SWT.PUSH);
+		GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		add_btn.setLayoutData(btn_gd);
+
+		add_btn.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				
+				AddPeopleAssiWizard wizard = new AddPeopleAssiWizard();
+				WizardDialog wizardDialog = new WizardDialog(Display .getCurrent().getActiveShell(),wizard);
+				wizardDialog.create();
+				wizardDialog.open();
+				 
+			}
+		});
 		section.setClient(sectionClient);
 		return section;
 	}
@@ -903,20 +918,17 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		section.setText(Messages
 				.getString("TaskPage.peopleassingmentTab.Section.dynamic.vialist.methodone"));
 		section.setDescription("THIS SHOULD BE ADDED LATER");
-		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL);
 		sectiondata.horizontalSpan = 2;
 		section.setLayoutData(sectiondata);
 
 		Composite sectionClient = toolkit.createComposite(section);
 		GridLayout layout = new GridLayout(2, true);
-		layout.numColumns = 2;
 		layout.marginWidth = 2;
 		layout.marginHeight = 5;
 
 		sectionClient.setLayout(layout);
-
-	
-		
 		
 		Label selectRoleLabel = new Label(sectionClient, SWT.WRAP);
 		selectRoleLabel.setText("Choose Role Type");
@@ -925,7 +937,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				| GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL
 				| GridData.GRAB_VERTICAL);
 		gd1.horizontalSpan = 1;
-		// gd.verticalSpan =2;
+	
 		selectRoleLabel.setLayoutData(gd1);
 		
 		
@@ -992,8 +1004,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		selectLogicalPeopleGroup_combo.select(0);
 		GridData cgd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
-		// cgd.verticalIndent = 5;
-		// cgd.verticalSpan =2;
+		cgd.horizontalSpan =1;
 		selectLogicalPeopleGroup_combo.setLayoutData(cgd);
 		configPeopleAssignmentSection_logicalPeopleGroup(selectLogicalPeopleGroup_combo);
 
