@@ -6,9 +6,7 @@ import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.widgets.Listener;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TLogicalPeopleGroup;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TParameter;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdFactory;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
@@ -16,14 +14,13 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 public class AddParmWizard extends Wizard{
 
 	private AddParmWizardPage page;
-	private THumanInteractions humanInteractions;
 	private EditingDomain domain;
 	private TableViewer tableviewer;
 	private LogicalPeopleGroupPage logicalPeopleGroupPage;
 	
-	public AddParmWizard(THumanInteractions humanInteractions,EditingDomain domain,TableViewer tableviewer,LogicalPeopleGroupPage logicalPeopleGroupPage)
+	public AddParmWizard(EditingDomain domain,TableViewer tableviewer,LogicalPeopleGroupPage logicalPeopleGroupPage)
 	{
-		this.humanInteractions=humanInteractions;
+		
 		this.domain=domain;
 		this.tableviewer=tableviewer;
 		this.logicalPeopleGroupPage=logicalPeopleGroupPage;
@@ -48,7 +45,7 @@ public class AddParmWizard extends Wizard{
 		
 	
 		tableviewer.add(tParameter);
-		//tableviewer.setInput(hi_page.createModle());
+		
 		return true;
 	}
 	

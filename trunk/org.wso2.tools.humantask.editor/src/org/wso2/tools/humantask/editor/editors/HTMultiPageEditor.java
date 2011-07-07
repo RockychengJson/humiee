@@ -127,14 +127,10 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 			
 			if (!contents.isEmpty() && contents.get(0) instanceof DocumentRoot ) {
 				humanInteractions = ((DocumentRoot) contents.get(0)).getHumanInteractions();
-				//System.out.println(humanInteractions.toString());
-				
-				//logicalPeopleGroups = humanInteractions.getLogicalPeopleGroups();
-				//notifications = humanInteractions.getNotifications();
 				
 				tasks =  humanInteractions.getTasks(); //
 				logicalPeopleGroups = humanInteractions.getLogicalPeopleGroups();
-				//presentationElemnts = humanInteractions.get
+				
 			}
 		} catch (IOException e) {
 			throw new PartInitException(e.getMessage(), e);
@@ -158,24 +154,6 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 		
 		try {
 			
-			/*
-			 * Notifications view declaration
-			 */
-			/*notificationsPage = new NotificationsPage(this, notifications, logicalPeopleGroups);
-			int index = addPage(notificationsPage);
-			setPageText(index, notificationsPage.getTitle());
-			
-			 * Human Interactions view declaration
-			 
-			humanInteractionPage = new HumanInteractionsPage(this, humanInteractions);
-			index = addPage(humanInteractionPage);
-			setPageText(index, humanInteractionPage.getTitle());
-			
-			 * Logical people groups view declaration
-			 
-			logicalPeopleGroupsPage = new LogicalPeopleGroupsPage(this, logicalPeopleGroups);
-			index = addPage(logicalPeopleGroupsPage);
-			setPageText(index, logicalPeopleGroupsPage.getTitle());*/
 			
 			humanInteractionPage = new HumanInteractionsPage(this, humanInteractions);
 			int index = addPage(humanInteractionPage);
@@ -264,7 +242,7 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 			// Refresh the necessary state.
 			((BasicCommandStack)editingDomain.getCommandStack()).saveIsDone();
 			//TODO: Need to come up with a interface represent all the pages, so page specific setResourceCHanged() can be avoided
-			//logicalPeopleGroupsPage.setResourceChanged(false);
+			logicalPeopleGroupPage.setResourceChanged(true);
 			//notificationsPage.setResourceChanged(false);
 			//humanInteractionPage.setResourceChanged(false);
 			
@@ -280,8 +258,8 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 		
 		//update the tables when save button pressed
 		
-		logicalPeopleGroupPage.updatePeopleAssignmentTable();
-		logicalPeopleGroupPage.updateParameterTable();
+		//logicalPeopleGroupPage.updatePeopleAssignmentTable();
+		//logicalPeopleGroupPage.updateParameterTable();
 		
 		
 		
