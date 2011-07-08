@@ -73,6 +73,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -217,8 +218,9 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		this.taskPage = this;
 		reader=new WSDLReaderImpl();
 
+		String name= domain.getResourceSet().getResources().get(0).getURI().segment(domain.getResourceSet().getResources().get(0).getURI().segmentCount()-1);
 		
-		File file=new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()+"/WSDLLocations.txt");
+		File file=new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()+"/WSDLLocations_"+name+".txt");
 		try{	
 		filename=file.getCanonicalPath();
 			if (!file.exists()) {
@@ -227,7 +229,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		}
 		catch(IOException e)
 		{
-			System.out.println("Error creating file WSDLLocations.txt !");
+			System.out.println("Error creating file WSDLLocations_...txt !");
 		}
 			
 		System.out.println(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().pathSeparator) ;
@@ -844,7 +846,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			@Override
 			public void handleEvent(Event event) {
 				
-				AddPeopleAssiWizard wizard = new AddPeopleAssiWizard();
+				AddPeopleAssiWizard wizard = new AddPeopleAssiWizard( humanInteractions, domain, viewer_peopleAssignment,taskPage);
 				WizardDialog wizardDialog = new WizardDialog(Display .getCurrent().getActiveShell(),wizard);
 				wizardDialog.create();
 				wizardDialog.open();
@@ -1059,7 +1061,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-
+				
 				setAttribute_logicalPeopleGroup(htdPackage.eINSTANCE.getTFrom_LogicalPeopleGroup(),logicalPeopleGroupComboBox.getItem(logicalPeopleGroupComboBox.getSelectionIndex()) );
 			}
 		});
@@ -1153,9 +1155,13 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			public void modifyText(ModifyEvent e) {
 
 				//should be edited
-				if(selectedHumanRole.getGenericHumanRole().getFrom()!=null){
+				
+				/*if(selectedHumanRole.getGenericHumanRole().getFrom()!=null){
 				selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().setValue(0, expTextBox.getText());
 				}
+				firePropertyChange(IEditorPart.PROP_DIRTY);
+				}*/
+				
 			}
 		});
 	}
@@ -1259,9 +1265,17 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 						.getGenericHumanRole().getFrom().getArgument()
 						.getName());
 
+				try
+				{
 				peopleAssignmentExptextbox.setText(selectedHumanRole
 						.getGenericHumanRole().getFrom().getArgument()
 						.getMixed().getValue(0).toString());
+				}
+				catch(Exception e)
+				{
+					System.out.println(e+"  update people assignment table");
+					peopleAssignmentExptextbox.setText("");
+				}
 			}
 			else
 			{
