@@ -2,7 +2,6 @@ package org.wso2.tools.humantask.editor.editors.pages.task;
 
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,8 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,21 +20,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.command.Command;
-import org.eclipse.emf.common.notify.Adapter;
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
-import org.eclipse.emf.ecore.resource.impl.URIConverterImpl;
-import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
@@ -82,19 +65,12 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.internal.DirtyPerspectiveMarker;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TArgument;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TBoolean;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TDescription;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TDocumentation;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TFrom;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TGenericHumanRole;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TPresentationParameter;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TTask;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TTasks;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TText;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdFactory;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
@@ -127,10 +103,10 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	protected THumanInteractions humanInteractions;
 
-	private Text portTextBox;
-	private Text OportTextBox;
-	private Text OresponseTextBox;
-	private Text operationTextBox;
+	private Combo portComboBox;
+	private Combo OportComboBox;
+	private Combo OresponseComboBox;
+	private Combo operationComboBox;
 	
 	private Button oneway;
 	private Button requestres;
@@ -505,21 +481,30 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				| GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 1;
 		portTypeLabel.setLayoutData(data);
-		portTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		portTextBox.setSize(100, 20);
-		portTextBox.setLayoutData(data);
-		configGeneralInfoSection_portType(portTextBox);
-
+		//portTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
+		//portTextBox.setSize(100, 20);
+		//portTextBox.setLayoutData(data);
+		//configGeneralInfoSection_portType(portTextBox);
+		
+		portComboBox = new Combo(sectionClient, SWT.READ_ONLY);
+		portComboBox.setSize(100, 20);
+		portComboBox.setLayoutData(data);
+		
 		// Operation label and Text box
 		Label operationLabel = new Label(sectionClient, SWT.WRAP);
 		operationLabel.setText(Messages
 				.getString("TaskPage.interfaceTab.Section.operationlable"));
 		operationLabel.setLayoutData(data);
-		operationTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		operationTextBox.setSize(100, 20);
-		operationTextBox.setLayoutData(data);
-		configGeneralInfoSection_operation(operationTextBox);
-
+		
+		//operationTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
+		//operationTextBox.setSize(100, 20);
+		//operationTextBox.setLayoutData(data);
+		//configGeneralInfoSection_operation(operationTextBox);
+		
+		operationComboBox = new Combo(sectionClient, SWT.READ_ONLY);
+		portComboBox.setSize(100, 20);
+		portComboBox.setLayoutData(data);
+		
 		// Radio button
 		Label radioSectionLabel = new Label(sectionClient, SWT.WRAP);
 		radioSectionLabel.setText(Messages
@@ -545,11 +530,15 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 						.getString("TaskPage.interfaceTab.Section.onewayradio.portlable"));
 		OportTypeLabel.setLayoutData(data);
 
-		OportTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		OportTextBox.setSize(100, 20);
-		OportTextBox.setLayoutData(data);
-		configGeneralInfoSection_OportType(OportTextBox);
+		//OportTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
+		//OportTextBox.setSize(100, 20);
+		//OportTextBox.setLayoutData(data);
+		//configGeneralInfoSection_OportType(OportTextBox);
 
+		OportComboBox = new Combo(sectionClient, SWT.READ_ONLY);
+		OportComboBox.setSize(100, 20);
+		OportComboBox.setLayoutData(data);
+		
 		// Oresponse label and Text box
 		final Label OresponseLabel = new Label(sectionClient, SWT.WRAP);
 		OresponseLabel
@@ -557,11 +546,15 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 						.getString("TaskPage.interfaceTab.Section.onewayradio.responselable"));
 		OresponseLabel.setLayoutData(data);
 
-		OresponseTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		OresponseTextBox.setSize(100, 20);
-		OresponseTextBox.setLayoutData(data);
-		configGeneralInfoSection_Oresponse(OresponseTextBox);
+		//OresponseTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
+		//OresponseTextBox.setSize(100, 20);
+		//OresponseTextBox.setLayoutData(data);
+		//configGeneralInfoSection_Oresponse(OresponseTextBox);
 
+		OresponseComboBox = new Combo(sectionClient, SWT.READ_ONLY);
+		OresponseComboBox.setSize(100, 20);
+		OresponseComboBox.setLayoutData(data);
+		
 		oneway.addMouseListener(new MouseAdapter() {
 			public void mouseDown(MouseEvent e) {
 
@@ -976,8 +969,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		
 		GridData cgd1 = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
-		// cgd.verticalIndent = 5;
-		// cgd.verticalSpan =2;
+		
 		roal_type.setLayoutData(cgd1);
 		configPeopleAssignmentSection_roleType(roal_type);
 		
@@ -989,7 +981,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				| GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL
 				| GridData.GRAB_VERTICAL);
 		gd.horizontalSpan = 1;
-		// gd.verticalSpan =2;
+		
 		selectppllabel.setLayoutData(gd);
 		
 
@@ -1026,7 +1018,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		peopleAssignmentExptextbox.setLayoutData(gd);
 		configPeopleAssignmentSection_expression(peopleAssignmentExptextbox);
 
-		// section.setExpanded(true);
+		
 		section.setEnabled(true);
 		section.setClient(sectionClient);
 
