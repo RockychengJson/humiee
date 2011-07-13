@@ -486,9 +486,10 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		//portTextBox.setLayoutData(data);
 		//configGeneralInfoSection_portType(portTextBox);
 		
-		portComboBox = new Combo(sectionClient, SWT.READ_ONLY);
+		portComboBox = new Combo(sectionClient,SWT.DROP_DOWN | SWT.BORDER);
 		portComboBox.setSize(100, 20);
 		portComboBox.setLayoutData(data);
+		configGeneralInfoSection_portType(portComboBox);
 		
 		// Operation label and Text box
 		Label operationLabel = new Label(sectionClient, SWT.WRAP);
@@ -501,9 +502,10 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		//operationTextBox.setLayoutData(data);
 		//configGeneralInfoSection_operation(operationTextBox);
 		
-		operationComboBox = new Combo(sectionClient, SWT.READ_ONLY);
-		portComboBox.setSize(100, 20);
-		portComboBox.setLayoutData(data);
+		operationComboBox = new Combo(sectionClient,SWT.DROP_DOWN | SWT.BORDER);
+		operationComboBox.setSize(100, 20);
+		operationComboBox.setLayoutData(data);
+		configGeneralInfoSection_operation(operationComboBox);
 		
 		// Radio button
 		Label radioSectionLabel = new Label(sectionClient, SWT.WRAP);
@@ -535,9 +537,10 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		//OportTextBox.setLayoutData(data);
 		//configGeneralInfoSection_OportType(OportTextBox);
 
-		OportComboBox = new Combo(sectionClient, SWT.READ_ONLY);
+		OportComboBox = new Combo(sectionClient, SWT.DROP_DOWN | SWT.BORDER);
 		OportComboBox.setSize(100, 20);
 		OportComboBox.setLayoutData(data);
+		configGeneralInfoSection_OportType(OportComboBox);
 		
 		// Oresponse label and Text box
 		final Label OresponseLabel = new Label(sectionClient, SWT.WRAP);
@@ -551,17 +554,22 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		//OresponseTextBox.setLayoutData(data);
 		//configGeneralInfoSection_Oresponse(OresponseTextBox);
 
-		OresponseComboBox = new Combo(sectionClient, SWT.READ_ONLY);
+		OresponseComboBox = new Combo(sectionClient, SWT.DROP_DOWN | SWT.BORDER);
 		OresponseComboBox.setSize(100, 20);
 		OresponseComboBox.setLayoutData(data);
+		configGeneralInfoSection_Oresponse(OresponseComboBox);
 		
 		oneway.addMouseListener(new MouseAdapter() {
 			public void mouseDown(MouseEvent e) {
 
-				OportTextBox.setText("");
-				OportTextBox.setEnabled(false);
-				OresponseTextBox.setText("");
-				OresponseTextBox.setEnabled(false);
+				//OportTextBox.setText("");
+				OportComboBox.setText("");
+				//OportTextBox.setEnabled(false);
+				OportComboBox.setEnabled(false);
+				//OresponseTextBox.setText("");
+				OresponseComboBox.setText("");
+				//OresponseTextBox.setEnabled(false);
+				OresponseComboBox.setEnabled(false);
 			}
 
 		});
@@ -569,9 +577,10 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		requestres.addMouseListener(new MouseAdapter() {
 			public void mouseDown(MouseEvent e) {
 
-				OportTextBox.setEnabled(true);
-
-				OresponseTextBox.setEnabled(true);
+				//OportTextBox.setEnabled(true);
+				OportComboBox.setEnabled(true);
+				//OresponseTextBox.setEnabled(true);
+				OresponseComboBox.setEnabled(true);
 			}
 		});
 		//section.setClient(wsdl_import_comp);
@@ -590,10 +599,14 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 					(tasks.getTask().get(0).getInterface().getResponseOperation()== null)) {
 				oneway.setSelection(true);
 				requestres.setSelection(false);
-				OportTextBox.setText("");
-				OportTextBox.setEnabled(false);
-				OresponseTextBox.setText("");
-				OresponseTextBox.setEnabled(false);
+				//OportTextBox.setText("");
+				OportComboBox.setText("");
+				//OportTextBox.setEnabled(false);
+				OportComboBox.setEnabled(false);
+				//OresponseTextBox.setText("");
+				OresponseComboBox.setText("");
+				//OresponseTextBox.setEnabled(false);
+				OresponseComboBox.setEnabled(false);
 				
 			}else {
 				oneway.setSelection(false);
@@ -602,93 +615,117 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			}
 	}
 	
-	private void configGeneralInfoSection_portType(final Text portTextBox) {
+	private void configGeneralInfoSection_portType(final Combo portComboBox) {
 		if (tasks != null) {
 			if (tasks.getTask().get(0).getInterface().getPortType() != null) {
 			/*	if ((tasks.getTask().get(0).getInterface().getPortType()
 						.toString() != null)){*/ 
-					portTextBox.setText((tasks.getTask().get(0).getInterface()
-							.getPortType().toString()));
+				portComboBox.setText(tasks.getTask().get(0).getInterface().getPortType().toString()) ;
+				
 				
 			}else {
-					portTextBox
-							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
 			}
 		
-		portTextBox.addModifyListener(new ModifyListener() {
+		portComboBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
 				setAttribute_Qname(
 						htdPackage.eINSTANCE.getTTaskInterface_PortType(),
-						new QName(portTextBox.getText()));
+						new QName(portComboBox.getText()));
+				
+				if(portComboBox.getSelectionIndex()!=-1){
+				
+				List operations=definition.getPortType((QName) portTypes[portComboBox.getSelectionIndex()]).getOperations();
+				operationComboBox.removeAll();
+				for(int i=0;i<operations.size();++i){
+					operationComboBox.add(((OperationImpl)operations.get(i)).getName());
+				}
+				operationComboBox.select(0);
+				}
 			}
 		});
 
 	}
 
-	private void configGeneralInfoSection_operation(final Text operationTextBox) {
+	private void configGeneralInfoSection_operation(final Combo operationComboBox) {
 		if (tasks != null) {
 			if ((tasks.getTask().get(0).getInterface().getOperation() != null)) {
-				operationTextBox.setText((tasks.getTask().get(0).getInterface()
+				operationComboBox.setText((tasks.getTask().get(0).getInterface()
 						.getOperation()));
+				
 			} else {
-				operationTextBox
+				operationComboBox
 						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
 		}
 
-		operationTextBox.addModifyListener(new ModifyListener() {
+		operationComboBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
 				setAttribute(
 						htdPackage.eINSTANCE.getTTaskInterface_Operation(),
-						operationTextBox.getText());
+						operationComboBox.getText());
 			}
 		});
 
 	}
 
-	private void configGeneralInfoSection_OportType(final Text OportTypeTextBox) {
+	private void configGeneralInfoSection_OportType(final Combo OportTypeComboBox) {
 		if (tasks != null) {
 			if (tasks.getTask().get(0).getInterface().getResponsePortType() != null) {
 		/*		if ((tasks.getTask().get(0).getInterface()
 						.getResponsePortType().toString() != null)) {*/
-					OportTypeTextBox.setText((tasks.getTask().get(0)
+				OportTypeComboBox.setText((tasks.getTask().get(0)
 							.getInterface().getResponsePortType().toString()));
+				
 				} else {
-					OportTypeTextBox
+					OportTypeComboBox
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
 			}
 		
-		OportTypeTextBox.addModifyListener(new ModifyListener() {
+		OportTypeComboBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
 				setAttribute_Qname(htdPackage.eINSTANCE
 						.getTTaskInterface_ResponsePortType(), new QName(
-						OportTypeTextBox.getText()));
+								OportTypeComboBox.getText()));
+				
+				if(OportTypeComboBox.getSelectionIndex()!=-1){
+					
+					List operations=definition.getPortType((QName) portTypes[OportTypeComboBox.getSelectionIndex()]).getOperations();
+					OresponseComboBox.removeAll();
+					for(int i=0;i<operations.size();++i){
+						OresponseComboBox.add(((OperationImpl)operations.get(i)).getName());
+					}
+					OresponseComboBox.select(0);
+					}
+				
+				
 			}
 		});
 
 	}
 
-	private void configGeneralInfoSection_Oresponse(final Text OresponseTextBox) {
+	private void configGeneralInfoSection_Oresponse(final Combo OresponseComboBox) {
 		if (tasks != null) {
 			if ((tasks.getTask().get(0).getInterface().getResponseOperation() != null)) {
-				OresponseTextBox.setText((tasks.getTask().get(0).getInterface()
+				OresponseComboBox.setText((tasks.getTask().get(0).getInterface()
 						.getResponseOperation()));
+				
 			} else {
-				OresponseTextBox
+				OresponseComboBox
 						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
 		}
-		OresponseTextBox.addModifyListener(new ModifyListener() {
+		OresponseComboBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
 				setAttribute(htdPackage.eINSTANCE
 						.getTTaskInterface_ResponseOperation(),
-						OresponseTextBox.getText());
+						OresponseComboBox.getText());
 			}
 		});
 
@@ -720,56 +757,61 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	}
 
 	private void updateInterfaceTab() {
+		
 		if (input.getInterface() != null) {
 
-			if (input.getInterface().getPortType() != null) {
-				portTextBox.setText(input.getInterface().getPortType()
+			if (input.getInterface().getPortType() != null) {				
+				portComboBox.setText(input.getInterface().getPortType()
 						.toString());
 			} else {
-				portTextBox.setText("");
+				portComboBox.setText("");
 			}
-			if (input.getInterface().getOperation() != null) {
-				operationTextBox.setText(input.getInterface().getOperation());
+			if (input.getInterface().getOperation() != null) {				
+				operationComboBox.setText(input.getInterface().getOperation());
 			} else {
 
-				operationTextBox.setText("");
+				operationComboBox.setText("");
 			}
-			if (input.getInterface().getResponseOperation() != null) {
-				OresponseTextBox.setText(input.getInterface()
+			if (input.getInterface().getResponseOperation() != null) {				
+				OresponseComboBox.setText(input.getInterface()
 						.getResponseOperation());
 			} else {
-				OresponseTextBox.setText("");
+				OresponseComboBox.setText("");
 			}
-			if (input.getInterface().getResponsePortType() != null) {
-				OportTextBox.setText(input.getInterface().getResponsePortType()
+			if (input.getInterface().getResponsePortType() != null) {				
+				OportComboBox.setText(input.getInterface().getResponsePortType()
 						.toString());
 			} else {
-				OportTextBox.setText("");
+				OportComboBox.setText("");
 			}
 			
-			if((input.getInterface().getResponseOperation().equals("") )&(input.getInterface().getResponsePortType().toString().equals("")))
+			
+			if((input.getInterface().getResponseOperation()!=null)&(input.getInterface().getResponsePortType()!=null))
+			{
+				if((input.getInterface().getResponseOperation().equals("") )&(input.getInterface().getResponsePortType().toString().equals("")))
 			{
 				oneway.setSelection(true);
 				requestres.setSelection(false);			
-				OresponseTextBox.setText("");
-				OresponseTextBox.setEnabled(false);
-				OportTextBox.setText("");
-				OportTextBox.setEnabled(false);
+				OresponseComboBox.setText("");
+				OresponseComboBox.setEnabled(false);
+				OportComboBox.setText("");
+				OportComboBox.setEnabled(false);
 			}
 			else
 			{
 				oneway.setSelection(false);
 				requestres.setSelection(true);	
-				OresponseTextBox.setEnabled(true);
-				OportTextBox.setEnabled(true);
+				OresponseComboBox.setEnabled(true);
+				OportComboBox.setEnabled(true);
 			}
+		}
 			
 			
 		} else {
-			portTextBox.setText("");
-			operationTextBox.setText("");
-			OresponseTextBox.setText("");
-			OportTextBox.setText("");
+			portComboBox.setText("");
+			operationComboBox.setText("");
+			OresponseComboBox.setText("");
+			OportComboBox.setText("");
 		}
 
 	}
@@ -2822,17 +2864,44 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 		}
 		 portTypes= definition.getPortTypes().keySet().toArray();
 		
-		portTextBox.setText(definition.getPortType((QName) portTypes[0]).getQName().toString());
+		 
+		// portComboBox.setText(definition.getPortType((QName) portTypes[0]).getQName().toString());
+		 portComboBox.removeAll();
+		 for(int i=0;i<portTypes.length;++i){
+		 portComboBox.add(definition.getPortType((QName) portTypes[i]).getQName().toString());
+		 }
+		 portComboBox.select(0);
 		OperationImpl operation= (OperationImpl)definition.getPortType((QName) portTypes[0]).getOperations().get(0);
-		operationTextBox.setText(operation.getName());
-		System.out.println(operation.getStyle());
+		List operations=definition.getPortType((QName) portTypes[0]).getOperations();
+		operationComboBox.removeAll();
+		for(int i=0;i<operations.size();++i){
+			operationComboBox.add(((OperationImpl)operations.get(i)).getName());
+		}
+		operationComboBox.select(0);
+		
+		//operationComboBox.setText(operation.getName());
+		//System.out.println(operation.getStyle());
 		if(operation.getStyle().toString().equals("REQUEST_RESPONSE"))
 		{
 			
 			oneway.setSelection(false);
 			requestres.setSelection(true);
-			OportTextBox.setEnabled(true);
-			OresponseTextBox.setEnabled(true);
+			OportComboBox.setEnabled(true);
+			
+			OportComboBox.removeAll();
+			for(int i=0;i<portTypes.length;++i){
+				OportComboBox.add(definition.getPortType((QName) portTypes[i]).getQName().toString());
+			}
+			OportComboBox.select(0);
+			OperationImpl responseOperation= (OperationImpl)definition.getPortType((QName) portTypes[0]).getOperations().get(0);
+			List responseOperations=definition.getPortType((QName) portTypes[0]).getOperations();
+			
+			OresponseComboBox.setEnabled(true);
+			OresponseComboBox.removeAll();
+			for(int i=0;i<responseOperations.size();++i){
+				OresponseComboBox.add(((OperationImpl)responseOperations.get(i)).getName());
+			}
+			OresponseComboBox.select(0);
 			
 			//OportTextBox.setText("")
 			
@@ -2842,10 +2911,10 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 			
 			oneway.setSelection(true);
 			requestres.setSelection(false);			
-			OresponseTextBox.setText("");
-			OresponseTextBox.setEnabled(false);
-			OportTextBox.setText("");
-			OportTextBox.setEnabled(false);
+			OresponseComboBox.setText("");
+			OresponseComboBox.setEnabled(false);
+			OportComboBox.setText("");
+			OportComboBox.setEnabled(false);
 		}
 		
 		//oneway.setSelection(selected);
