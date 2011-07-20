@@ -25,6 +25,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.eclipse.ui.texteditor.TextEditorAction;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.eclipse.jface.text.source.Annotation; // this is need
 
@@ -43,6 +44,10 @@ import org.wso2.tools.humantask.editor.editors.pages.notifications.NotificationP
 import org.wso2.tools.humantask.editor.editors.pages.task.TaskPage;
 import org.wso2.tools.humantask.editor.editors.pages.task.testpage;
 
+import org.eclipse.ui.editors.text.TextEditor;
+
+import simplexmleditor.editors.HTEditor;
+
 
 public class HTMultiPageEditor extends HTMultiPageEditorBase {
 
@@ -52,7 +57,8 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 	private NotificationPage notificationPage;
 	private testpage testpage;
 	// Human Interactions source viewer
-	private StructuredTextEditor sourceViewer;
+	//private StructuredTextEditor sourceViewer;
+	private HTEditor sourceViewer;
 	
 	private THumanInteractions humanInteractions;
 	private TLogicalPeopleGroups logicalPeopleGroups;
@@ -185,12 +191,15 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 			
 			// * Source view declaration
 			 
-			sourceViewer = new StructuredTextEditor() {
+			/*sourceViewer = new StructuredTextEditor() {
 				@Override
 				public boolean isEditable() {
-					return false;
+					return true;
 				}
-			};
+			};*/
+			
+			sourceViewer=new HTEditor();
+			
 			
 			int index = addPage(sourceViewer, getEditorInput());
 			setPageText(index, sourceViewer.getTitle());
