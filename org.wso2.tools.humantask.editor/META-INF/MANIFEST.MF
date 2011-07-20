@@ -19,6 +19,11 @@ Require-Bundle: org.eclipse.core.runtime,
  javax.wsdl
 Bundle-ActivationPolicy: lazy
 Import-Package: com.ibm.wsdl,
+ org.eclipse.jface.text,
+ org.eclipse.jface.text.contentassist,
+ org.eclipse.jface.text.presentation,
+ org.eclipse.jface.text.rules,
  org.eclipse.jface.text.source,
+ org.eclipse.ui.editors.text,
  org.eclipse.ui.texteditor,
  org.eclipse.wst.sse.ui
