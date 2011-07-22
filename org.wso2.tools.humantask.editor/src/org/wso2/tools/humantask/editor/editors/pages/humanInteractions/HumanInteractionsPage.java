@@ -500,10 +500,10 @@ public class HumanInteractionsPage extends FormPage implements
 		Label name_space_label = new Label(sectionClient, SWT.WRAP);
 		name_space_label.setText("Namespace");
 		
-		GridData gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL
-				| GridData.GRAB_VERTICAL);
-		gd.horizontalSpan = 1;
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL );
+		gd.horizontalSpan =1;
+		gd.verticalSpan =2;
+		
 		name_space_label.setLayoutData(gd);
 		
 		nsp_txt_import= new Text(sectionClient, SWT.SINGLE|SWT.BORDER);
