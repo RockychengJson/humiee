@@ -12,7 +12,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -27,7 +26,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
@@ -49,22 +47,14 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TNotification;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TNotifications;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TPresentationParameter;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TTask;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TText;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
-import org.wso2.tools.humantask.editor.editors.pages.task.AddPresentationParmWizard;
-import org.wso2.tools.humantask.editor.editors.pages.task.PeopleAssignmentContentProvider;
-import org.wso2.tools.humantask.editor.editors.pages.task.PresentationElemDescContentProvider;
-import org.wso2.tools.humantask.editor.editors.pages.task.PresentationElemeSubContentProvider;
-import org.wso2.tools.humantask.editor.editors.pages.task.PresentationNameElemContentProvider;
-import org.wso2.tools.humantask.editor.editors.pages.task.PresentationParamContentProvider;
 import org.wso2.tools.humantask.editor.editors.pages.util.Messages;
 
 
 
-public class NotificationPage extends FormPage implements IResourceChangeListener,
-Listener  {
+public class NotificationPage extends FormPage implements IResourceChangeListener,Listener  {
 
 	protected HTMultiPageEditor editor;
 	protected EditingDomain domain;
@@ -255,7 +245,6 @@ Listener  {
 		item.setData(sectionArray);
 	}
 		
-	
 	private void createPresentationElementTab(FormToolkit toolkit,ScrolledForm form) {
 		CTabItem item = new CTabItem(tabFolder, SWT.NULL);
 		
@@ -285,7 +274,7 @@ Listener  {
 		
 	}
 	
-	
+	//creating sections
 	private Section createNotificationTableSection(FormToolkit toolkit,final ScrolledForm form){
 		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
 				| Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
@@ -354,283 +343,6 @@ Listener  {
 		section.setClient(sectionClient);
 		return section;
 		
-		
-	}
-	
-	private Section createPElemSubjectInfoSection(FormToolkit toolkit) {
-		Section sub_section = toolkit.createSection(tabFolder,
-				Section.DESCRIPTION | Section.TITLE_BAR);
-		sub_section.setText("Subject Information");
-		sub_section.setDescription("add later");
-
-		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL); // configure the section expanded
-												// over the form fully
-		sectiondata.horizontalSpan = 2;
-		sub_section.setLayoutData(sectiondata);
-
-		Composite sectionClient = toolkit.createComposite(sub_section);
-		GridLayout layout = new GridLayout(); // layout for the sectionClient
-		layout.numColumns = 2;
-		layout.marginWidth = 2;
-		layout.marginHeight = 5;
-
-		sectionClient.setLayout(layout);
-
-		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL
-				| GridData.GRAB_VERTICAL);
-		gd.horizontalSpan = 1;
-
-		Label subject_lb = new Label(sectionClient, SWT.WRAP);
-		subject_lb.setText("Subject");
-		subject_lb.setLayoutData(gd);
-
-		preElemSubInfo_subject_txt = new Text(sectionClient, SWT.SINGLE
-				| SWT.BORDER);
-		preElemSubInfo_subject_txt.setLayoutData(gd);
-
-		Label language_lb = new Label(sectionClient, SWT.WRAP);
-		language_lb.setText("Language");
-		language_lb.setLayoutData(gd);
-
-		preElemSubInfo_lang_txt = new Text(sectionClient, SWT.SINGLE
-				| SWT.BORDER);
-		preElemSubInfo_lang_txt.setLayoutData(gd);
-		//configPElem_SubInfo_lang(preElemSubInfo_lang_txt);
-
-		sub_section.setClient(sectionClient);
-
-		return sub_section;
-	}
-
-	private Section createPElemDescTableSection(FormToolkit toolkit) {
-		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
-				| Section.TITLE_BAR);
-
-		section.setText("Create Description");
-		section.setDescription("ADD LATER");
-		GridData sectiondata = new GridData(GridData.FILL_BOTH);
-
-		sectiondata.horizontalSpan = 2;
-		section.setLayoutData(sectiondata);
-
-		Composite sectionClient = toolkit.createComposite(section);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.marginWidth = 2;
-		layout.marginHeight = 5;
-
-		sectionClient.setLayout(layout);
-		toolkit.paintBordersFor(sectionClient);
-
-		presentationElemDescViewer = new TableViewer(sectionClient,
-				SWT.MULTI | SWT.BORDER);
-		createColumnForPresentationElemDescTable(presentationElemDescViewer);
-
-		table_PresentationElemDesc = presentationElemDescViewer.getTable();
-		GridData gd = new GridData(GridData.FILL_BOTH);
-		gd.verticalSpan = 10;
-		gd.heightHint = 20;
-		gd.widthHint = 100;
-
-		table_PresentationElemDesc.setLayoutData(gd);
-
-		table_PresentationElemDesc.setHeaderVisible(true);
-		table_PresentationElemDesc.setLinesVisible(true);
-
-		Button add_btn = toolkit.createButton(sectionClient, "Add", SWT.PUSH);
-		GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		add_btn.setLayoutData(btn_gd);
-
-		add_btn.addListener(SWT.Selection, new Listener() {
-
-			@Override
-			public void handleEvent(Event event) {
-				/*
-				 * TaskCreatWizard wizard = new
-				 * TaskCreatWizard(humanInteractions,domain,viewer );
-				 * WizardDialog wizardDialog = new WizardDialog(Display
-				 * .getCurrent().getActiveShell(),wizard);
-				 * wizardDialog.create(); wizardDialog.open();
-				 */
-			}
-		});
-
-		presentationElemDescViewer
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-
-					@Override
-					public void selectionChanged(SelectionChangedEvent event) {
-						
-						//preElemDescViewerItemSelecter(event.getSelection());
-
-					}
-				});
-
-		presentationElemDescViewer
-				.setContentProvider(new NPresentationElemDescContentProvider());
-		presentationElemDescViewer.setInput(selectedNotification);
-
-		table_PresentationElemDesc.setSelection(0);
-
-		section.setClient(sectionClient);
-		return section;
-
-	}
-	
-	private Section createPElemDesInfoSection(FormToolkit toolkit) {
-		Section desc_section = toolkit.createSection(tabFolder,
-				Section.DESCRIPTION | Section.TITLE_BAR);
-		desc_section.setText("Description Information");
-		desc_section.setDescription("add later");
-
-		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL); // configure the section expanded
-												// over the form fully
-		sectiondata.horizontalSpan = 2;
-		desc_section.setLayoutData(sectiondata);
-
-		Composite sectionClient = toolkit.createComposite(desc_section);
-		GridLayout layout = new GridLayout(2, true); // layout for the
-														// sectionClient
-		layout.numColumns = 2;
-		layout.marginWidth = 2;
-		layout.marginHeight = 5;
-
-		sectionClient.setLayout(layout);
-
-		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL
-				| GridData.GRAB_VERTICAL);
-		gd.horizontalSpan = 1;
-
-		Label language_lb = new Label(sectionClient, SWT.WRAP);
-		language_lb.setText("Language");
-
-		language_lb.setLayoutData(gd);
-
-		preElemDescInfo_lang_txt = new Text(sectionClient, SWT.SINGLE
-				| SWT.BORDER);
-		preElemDescInfo_lang_txt.setLayoutData(gd);
-		//configPElem_DescInfo_lang(preElemDescInfo_lang_txt);
-		
-		GridData combo_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL);
-		combo_gd.verticalSpan = 2;
-
-		Label context_lb = new Label(sectionClient, SWT.WRAP);
-		context_lb.setText("Context Type");
-		context_lb.setLayoutData(combo_gd);
-
-		preElemDescInfo_context_type = new Combo(sectionClient, SWT.READ_ONLY);
-		preElemDescInfo_context_type.add("text/plain", 0);
-		preElemDescInfo_context_type.add("text/html", 1);
-		preElemDescInfo_context_type.select(0);
-		preElemDescInfo_context_type.setLayoutData(combo_gd);
-		//configPElemDescInfo_contextType(preElemDescInfo_context_type);
-		creatSpacer(sectionClient, 2);
-
-		Label dec_lb = new Label(sectionClient, SWT.WRAP);
-		dec_lb.setText("Description");
-		dec_lb.setLayoutData(gd);
-
-		preElemDescInfo_desc_txt = new Text(sectionClient, SWT.WRAP | SWT.MULTI
-				| SWT.BORDER | SWT.V_SCROLL);
-		preElemDescInfo_desc_txt.setLayoutData(gd);
-
-		desc_section.setClient(sectionClient);
-
-		return desc_section;
-	}
-	
-	
-	private void createColumnForPresentationElemDescTable(TableViewer viewer) {
-		String[] titles = { "Language", "Content Type" ,"Content"};
-		int[] bounds = { 100, 100,100 };
-
-		TableViewerColumn col = createTableViewerColumn(viewer, titles[0],
-				bounds[0]);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				TDescription desc = (TDescription) element;
-				return desc.getLang();
-			}
-
-		});
-		
-		// second column
-		TableViewerColumn col2 = createTableViewerColumn(viewer, titles[1],
-				bounds[1]);
-		col2.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				TDescription desc = (TDescription) element;
-				return desc.getContentType();
-			}
-
-		});
-		//third column
-		TableViewerColumn col3 = createTableViewerColumn(viewer, titles[2], bounds[2]);
-		col3.setLabelProvider(new ColumnLabelProvider(){
-			@Override
-			public String getText(Object element) {
-				TDescription desc = (TDescription) element;
-				return desc.getMixed().getValue(0).toString();
-			}
-		});
-	}
-	
-	public Object createNotificationModle(){
-		return notifications;
-	}
-	
-	
-	private void createColumnsforNotificationTable(Composite parent, TableViewer viewer) {
-		String[] titles = { "Notifications" };
-		int[] bounds = { 100 };
-
-		// first column for the first name
-		TableViewerColumn col = createTableViewerColumn(viewer, titles[0],
-				bounds[0]);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				
-				TNotification notification = (TNotification)element;
-				return notification.getName();
-				
-			}
-
-		});
-
-	}
-	
-	private void notificationTableItemSelecter(ISelection selection) {
-
-		IStructuredSelection ssel = (IStructuredSelection) selection;
-
-		if (ssel.size() == 1) {
-			selectedNotification = (TNotification) ssel.getFirstElement();
-			 System.out.println(selectedNotification.getName());
-		} else {
-			selectedNotification = null;
-		}
-	
-		
-		updatePeopleAssignmentTable();
-		updatePreElemNameTable();
-	}
-	
-	
-	private void updatePeopleAssignmentTable()
-	{
-		viewer_peopleAssignment.setInput(createModleForPeopleAssinment());
-		table_peopleAssingment.setSelection(0);
-		//checkAvailability_peopleAssignment();
-		
-		//update_peopleAssingment();
 		
 	}
 	
@@ -877,32 +589,6 @@ Listener  {
 		return section;
 	}
 	
-	private Object createModleForPeopleAssinment(){
-		
-		return selectedNotification;
-	}
-	
-	
-	private void createColumnsPeopleAssiTable(Composite parent, TableViewer viewer) {
-		String[] titles = { "People Assingments" };
-		int[] bounds = { 100 };
-
-		// first column for the first name
-		TableViewerColumn col = createTableViewerColumn(viewer, titles[0],
-				bounds[0]);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				
-				TNotification notification = (TNotification)element;
-				return notification.getPeopleAssignments().getBusinessAdministrators().get(0).toString();
-				
-			}
-
-		});
-
-	}
-	
 	private Section createLogicalPplSection(final FormToolkit toolkit,
 			final ScrolledForm form) {
 		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
@@ -1011,8 +697,6 @@ Listener  {
 		return section;
 	}
 
-	
-	
 	private Section createPElemGenralTableSection(FormToolkit toolkit){
 		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
 				| Section.TITLE_BAR);
@@ -1338,17 +1022,242 @@ Listener  {
 
 	}
 	
-	private void updatePreElemNameTable(){
-		
-		if(selectedNotification.getPresentationElements() != null){
-			if(selectedNotification.getPresentationElements().getName() != null){
-				
-			 presentationElemNameViewer.setInput(selectedNotification);
-			 table_presentationElemName.setSelection(0);
-				
-			 //	updatePElemNameDetails();
+	private Section createPElemSubjectInfoSection(FormToolkit toolkit) {
+		Section sub_section = toolkit.createSection(tabFolder,
+				Section.DESCRIPTION | Section.TITLE_BAR);
+		sub_section.setText("Subject Information");
+		sub_section.setDescription("add later");
+
+		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL); // configure the section expanded
+												// over the form fully
+		sectiondata.horizontalSpan = 2;
+		sub_section.setLayoutData(sectiondata);
+
+		Composite sectionClient = toolkit.createComposite(sub_section);
+		GridLayout layout = new GridLayout(); // layout for the sectionClient
+		layout.numColumns = 2;
+		layout.marginWidth = 2;
+		layout.marginHeight = 5;
+
+		sectionClient.setLayout(layout);
+
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL
+				| GridData.GRAB_VERTICAL);
+		gd.horizontalSpan = 1;
+
+		Label subject_lb = new Label(sectionClient, SWT.WRAP);
+		subject_lb.setText("Subject");
+		subject_lb.setLayoutData(gd);
+
+		preElemSubInfo_subject_txt = new Text(sectionClient, SWT.SINGLE
+				| SWT.BORDER);
+		preElemSubInfo_subject_txt.setLayoutData(gd);
+
+		Label language_lb = new Label(sectionClient, SWT.WRAP);
+		language_lb.setText("Language");
+		language_lb.setLayoutData(gd);
+
+		preElemSubInfo_lang_txt = new Text(sectionClient, SWT.SINGLE
+				| SWT.BORDER);
+		preElemSubInfo_lang_txt.setLayoutData(gd);
+		//configPElem_SubInfo_lang(preElemSubInfo_lang_txt);
+
+		sub_section.setClient(sectionClient);
+
+		return sub_section;
+	}
+
+	private Section createPElemDescTableSection(FormToolkit toolkit) {
+		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
+				| Section.TITLE_BAR);
+
+		section.setText("Create Description");
+		section.setDescription("ADD LATER");
+		GridData sectiondata = new GridData(GridData.FILL_BOTH);
+
+		sectiondata.horizontalSpan = 2;
+		section.setLayoutData(sectiondata);
+
+		Composite sectionClient = toolkit.createComposite(section);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		layout.marginWidth = 2;
+		layout.marginHeight = 5;
+
+		sectionClient.setLayout(layout);
+		toolkit.paintBordersFor(sectionClient);
+
+		presentationElemDescViewer = new TableViewer(sectionClient,
+				SWT.MULTI | SWT.BORDER);
+		createColumnForPresentationElemDescTable(presentationElemDescViewer);
+
+		table_PresentationElemDesc = presentationElemDescViewer.getTable();
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		gd.verticalSpan = 10;
+		gd.heightHint = 20;
+		gd.widthHint = 100;
+
+		table_PresentationElemDesc.setLayoutData(gd);
+
+		table_PresentationElemDesc.setHeaderVisible(true);
+		table_PresentationElemDesc.setLinesVisible(true);
+
+		Button add_btn = toolkit.createButton(sectionClient, "Add", SWT.PUSH);
+		GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		add_btn.setLayoutData(btn_gd);
+
+		add_btn.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				/*
+				 * TaskCreatWizard wizard = new
+				 * TaskCreatWizard(humanInteractions,domain,viewer );
+				 * WizardDialog wizardDialog = new WizardDialog(Display
+				 * .getCurrent().getActiveShell(),wizard);
+				 * wizardDialog.create(); wizardDialog.open();
+				 */
 			}
-		}
+		});
+
+		presentationElemDescViewer
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+
+					@Override
+					public void selectionChanged(SelectionChangedEvent event) {
+						
+						//preElemDescViewerItemSelecter(event.getSelection());
+
+					}
+				});
+
+		presentationElemDescViewer
+				.setContentProvider(new NPresentationElemDescContentProvider());
+		presentationElemDescViewer.setInput(selectedNotification);
+
+		table_PresentationElemDesc.setSelection(0);
+
+		section.setClient(sectionClient);
+		return section;
+
+	}
+	
+	private Section createPElemDesInfoSection(FormToolkit toolkit) {
+		Section desc_section = toolkit.createSection(tabFolder,
+				Section.DESCRIPTION | Section.TITLE_BAR);
+		desc_section.setText("Description Information");
+		desc_section.setDescription("add later");
+
+		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL); // configure the section expanded
+												// over the form fully
+		sectiondata.horizontalSpan = 2;
+		desc_section.setLayoutData(sectiondata);
+
+		Composite sectionClient = toolkit.createComposite(desc_section);
+		GridLayout layout = new GridLayout(2, true); // layout for the
+														// sectionClient
+		layout.numColumns = 2;
+		layout.marginWidth = 2;
+		layout.marginHeight = 5;
+
+		sectionClient.setLayout(layout);
+
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL
+				| GridData.GRAB_VERTICAL);
+		gd.horizontalSpan = 1;
+
+		Label language_lb = new Label(sectionClient, SWT.WRAP);
+		language_lb.setText("Language");
+
+		language_lb.setLayoutData(gd);
+
+		preElemDescInfo_lang_txt = new Text(sectionClient, SWT.SINGLE
+				| SWT.BORDER);
+		preElemDescInfo_lang_txt.setLayoutData(gd);
+		//configPElem_DescInfo_lang(preElemDescInfo_lang_txt);
+		
+		GridData combo_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL);
+		combo_gd.verticalSpan = 2;
+
+		Label context_lb = new Label(sectionClient, SWT.WRAP);
+		context_lb.setText("Context Type");
+		context_lb.setLayoutData(combo_gd);
+
+		preElemDescInfo_context_type = new Combo(sectionClient, SWT.READ_ONLY);
+		preElemDescInfo_context_type.add("text/plain", 0);
+		preElemDescInfo_context_type.add("text/html", 1);
+		preElemDescInfo_context_type.select(0);
+		preElemDescInfo_context_type.setLayoutData(combo_gd);
+		//configPElemDescInfo_contextType(preElemDescInfo_context_type);
+		creatSpacer(sectionClient, 2);
+
+		Label dec_lb = new Label(sectionClient, SWT.WRAP);
+		dec_lb.setText("Description");
+		dec_lb.setLayoutData(gd);
+
+		preElemDescInfo_desc_txt = new Text(sectionClient, SWT.WRAP | SWT.MULTI
+				| SWT.BORDER | SWT.V_SCROLL);
+		preElemDescInfo_desc_txt.setLayoutData(gd);
+
+		desc_section.setClient(sectionClient);
+
+		return desc_section;
+	}
+	
+	
+	//creating Modles
+	public Object createNotificationModle(){
+		return notifications;
+	}
+	
+	private Object createModleForPeopleAssinment(){
+		
+		return selectedNotification;
+	}
+	//creating columns
+	private void createColumnsforNotificationTable(Composite parent, TableViewer viewer) {
+		String[] titles = { "Notifications" };
+		int[] bounds = { 100 };
+
+		// first column for the first name
+		TableViewerColumn col = createTableViewerColumn(viewer, titles[0],
+				bounds[0]);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				
+				TNotification notification = (TNotification)element;
+				return notification.getName();
+				
+			}
+
+		});
+
+	}
+	
+	private void createColumnsPeopleAssiTable(Composite parent, TableViewer viewer) {
+		String[] titles = { "People Assingments" };
+		int[] bounds = { 100 };
+
+		// first column for the first name
+		TableViewerColumn col = createTableViewerColumn(viewer, titles[0],
+				bounds[0]);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				
+				TNotification notification = (TNotification)element;
+				return notification.getPeopleAssignments().getBusinessAdministrators().get(0).toString();
+				
+			}
+
+		});
+
 	}
 	
 	private void createColumnPresantationElemNameTable(Composite parent,
@@ -1472,6 +1381,46 @@ Listener  {
 		});
 
 	}
+	
+	private void createColumnForPresentationElemDescTable(TableViewer viewer) {
+		String[] titles = { "Language", "Content Type" ,"Content"};
+		int[] bounds = { 100, 100,100 };
+
+		TableViewerColumn col = createTableViewerColumn(viewer, titles[0],
+				bounds[0]);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				TDescription desc = (TDescription) element;
+				return desc.getLang();
+			}
+
+		});
+		
+		// second column
+		TableViewerColumn col2 = createTableViewerColumn(viewer, titles[1],
+				bounds[1]);
+		col2.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				TDescription desc = (TDescription) element;
+				return desc.getContentType();
+			}
+
+		});
+
+		
+		//third column
+		TableViewerColumn col3 = createTableViewerColumn(viewer, titles[2], bounds[2]);
+		col3.setLabelProvider(new ColumnLabelProvider(){
+			@Override
+			public String getText(Object element) {
+				TDescription desc = (TDescription) element;
+				return desc.getMixed().getValue(0).toString();
+			}
+		});
+	}
+	
 	private TableViewerColumn createTableViewerColumn(TableViewer viewer,
 			String title, int bound) {
 		final TableViewerColumn viewerColumn = new TableViewerColumn(viewer,
@@ -1485,7 +1434,47 @@ Listener  {
 
 	}
 	
+	//item selectors
 	
+	private void notificationTableItemSelecter(ISelection selection) {
+
+		IStructuredSelection ssel = (IStructuredSelection) selection;
+
+		if (ssel.size() == 1) {
+			selectedNotification = (TNotification) ssel.getFirstElement();
+			 System.out.println(selectedNotification.getName());
+		} else {
+			selectedNotification = null;
+		}
+	
+		
+		updatePeopleAssignmentTable();
+		updatePreElemNameTable();
+	}
+	//updaters
+	private void updatePreElemNameTable(){
+		
+		if(selectedNotification.getPresentationElements() != null){
+			if(selectedNotification.getPresentationElements().getName() != null){
+				
+			 presentationElemNameViewer.setInput(selectedNotification);
+			 table_presentationElemName.setSelection(0);
+				
+			 //	updatePElemNameDetails();
+			}
+		}
+	}
+
+	
+	private void updatePeopleAssignmentTable()
+	{
+		viewer_peopleAssignment.setInput(createModleForPeopleAssinment());
+		table_peopleAssingment.setSelection(0);
+		//checkAvailability_peopleAssignment();
+		
+		//update_peopleAssingment();
+		
+	}
 	// Availability checks
 	
 	private void checkAvailability_Notifications() {
