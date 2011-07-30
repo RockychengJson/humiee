@@ -97,9 +97,9 @@ public class TaskTable {
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
-		if(table.getSelectionIndex()==-1)
-		{System.out.println(table.getSelectionIndex());}
-		else{System.out.println(table.getSelectionIndex());}
+		//if(table.getSelectionIndex()==-1)
+		//{System.out.println(table.getSelectionIndex());}
+		//else{System.out.println(table.getSelectionIndex());}
 
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
