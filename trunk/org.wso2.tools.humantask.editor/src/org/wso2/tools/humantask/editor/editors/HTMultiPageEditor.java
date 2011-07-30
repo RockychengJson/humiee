@@ -42,7 +42,7 @@ import org.wso2.tools.humantask.editor.editors.pages.humanInteractions.HumanInte
 import org.wso2.tools.humantask.editor.editors.pages.logicalpeoplegroups.LogicalPeopleGroupPage;
 import org.wso2.tools.humantask.editor.editors.pages.notifications.NotificationPage;
 import org.wso2.tools.humantask.editor.editors.pages.task.TaskPage;
-import org.wso2.tools.humantask.editor.editors.pages.task.testpage;
+
 
 import org.eclipse.ui.editors.text.TextEditor;
 
@@ -55,7 +55,7 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 	private LogicalPeopleGroupPage logicalPeopleGroupPage;
 	private TaskPage taskPage;
 	private NotificationPage notificationPage;
-	private testpage testpage;
+	
 	// Human Interactions source viewer
 	//private StructuredTextEditor sourceViewer;
 	private HTEditor sourceViewer;
@@ -176,11 +176,7 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 			notificationPage = new NotificationPage(this,humanInteractions);
 			index = addPage(notificationPage);
 			setPageText(index, notificationPage.getTitle());
-			
-			testpage = new testpage(this,"testpage");
-			index = addPage(testpage);
-			setPageText(index, "testpage");
-			
+		
 			
 		} catch (PartInitException e) {
 			e.printStackTrace();
