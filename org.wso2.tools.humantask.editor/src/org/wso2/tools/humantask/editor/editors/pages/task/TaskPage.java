@@ -56,7 +56,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -98,8 +97,6 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private boolean isFirst = true;
 
 	private Section via_logical_ppl;
-	private Section via_exp;
-	private Section via_literal;
 
 	protected THumanInteractions humanInteractions;
 
@@ -256,10 +253,11 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 					tabFolder, form, tasks);
 			taskTableSection = taskTable.createTaskTableSection(managedform);
 
-			createGenarelInfoTab(toolkit, form, managedform);
-			createPeaopleAssTab(toolkit, form, managedform);
-			createPresentationElementTab(toolkit, form, managedform);
-
+			createGenarelInfoTab(toolkit, form);
+			createPeaopleAssTab(toolkit, form);
+			createPresentationElementTab(toolkit);
+			createDeadlineTab(toolkit);
+			
 			tabFolder.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					updateSelection();
@@ -271,12 +269,10 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		}
 	}
 
-	private void createGenarelInfoTab(FormToolkit toolkit, ScrolledForm form,
-			IManagedForm managedform) {
+	private void createGenarelInfoTab(FormToolkit toolkit, ScrolledForm form) {
 		CTabItem item = new CTabItem(tabFolder, SWT.NULL);
 
-		TabContent section2 = new TabContent(createGenaralInfoSection(toolkit,
-				form, managedform));
+		TabContent section2 = new TabContent(createGenaralInfoSection(toolkit,form));
 		TabContent section1 = new TabContent(taskTableSection);
 		TabContent[] sectionArray = new TabContent[2];
 		sectionArray[0] = section1;
@@ -286,8 +282,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	}
 
-	private void createPeaopleAssTab(FormToolkit toolkit, ScrolledForm form,
-			IManagedForm managedForm) {
+	private void createPeaopleAssTab(FormToolkit toolkit, ScrolledForm form) {
 		CTabItem item = new CTabItem(tabFolder, SWT.NULL);
 	
 	
@@ -305,26 +300,25 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		item.setData(sectionArray);
 	}
 
-	private void createPresentationElementTab(FormToolkit toolkit,
-			ScrolledForm form, IManagedForm managedForm) {
+	private void createPresentationElementTab(FormToolkit toolkit) {
 		CTabItem item = new CTabItem(tabFolder, SWT.NULL);
 
 		TabContent section1 = new TabContent(taskTableSection);
 		TabContent section2 = new TabContent(createPElemGenralTableSection(toolkit));
 		
-		TabContent section3 = new TabContent(createPElemGeneralInfoSection(toolkit, form));
+		TabContent section3 = new TabContent(createPElemGeneralInfoSection(toolkit));
 		
-		TabContent section4 = new TabContent(createPParamTableSection(toolkit, form));
+		TabContent section4 = new TabContent(createPParamTableSection(toolkit));
 		
-		TabContent section5 = new TabContent(createPParmDetailSection(toolkit,form));
+		TabContent section5 = new TabContent(createPParmDetailSection(toolkit));
 		
 		TabContent section6 = new TabContent(createPElemSubjectTableSection(toolkit));
 		
-		TabContent section7 = new TabContent(createPElemSubjectInfoSection(toolkit, form));
+		TabContent section7 = new TabContent(createPElemSubjectInfoSection(toolkit));
 		
 		TabContent section8 = new TabContent(createPElemDescTableSection(toolkit));
 		
-		TabContent section9 = new TabContent(createPElemDesInfoSection(toolkit,form));
+		TabContent section9 = new TabContent(createPElemDesInfoSection(toolkit));
 
 		TabContent[] sectionArray = new TabContent[9];
 
@@ -342,6 +336,20 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				.getString("TaskPage.presentationElementTab.title"));
 		item.setData(sectionArray);
 	}
+	
+	private void createDeadlineTab(FormToolkit toolkit){
+		CTabItem item = new CTabItem(tabFolder, SWT.NULL);
+		
+		TabContent section1 = new TabContent(taskTableSection);
+		
+		TabContent[] sectionArray = new TabContent[1];
+		
+		sectionArray[0] = section1;
+		
+		item.setText("Deadlines");
+		item.setData(sectionArray);
+	}
+	
 
 	private void updateSelection() {
 
@@ -383,7 +391,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	// Create general Info
 
 	private Section createGenaralInfoSection(FormToolkit toolkit,
-			final ScrolledForm form, IManagedForm managedForm) {
+			final ScrolledForm form) {
 
 		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
 				| Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
@@ -881,10 +889,10 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			@Override
 			public void handleEvent(Event event) {
 				
-				AddPeopleAssiWizard wizard = new AddPeopleAssiWizard( humanInteractions, domain, viewer_peopleAssignment,taskPage);
-				WizardDialog wizardDialog = new WizardDialog(Display .getCurrent().getActiveShell(),wizard);
-				wizardDialog.create();
-				wizardDialog.open();
+				//AddPeopleAssiWizard wizard = new AddPeopleAssiWizard( humanInteractions, domain, viewer_peopleAssignment,taskPage);
+				//WizardDialog wizardDialog = new WizardDialog(Display .getCurrent().getActiveShell(),wizard);
+				//wizardDialog.create();
+				//wizardDialog.open();
 				 
 			}
 		});
@@ -1516,8 +1524,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		return section;
 		
 	}
-	private Section createPElemGeneralInfoSection(FormToolkit toolkit,
-			ScrolledForm form) {
+	private Section createPElemGeneralInfoSection(FormToolkit toolkit) {
 
 		Section info_section = toolkit.createSection(tabFolder,
 				Section.DESCRIPTION | Section.TITLE_BAR);
@@ -1568,7 +1575,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	}
 
 	private Section createPParamTableSection(
-			final FormToolkit toolkit, ScrolledForm form) {
+			final FormToolkit toolkit) {
 		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
 				| Section.TITLE_BAR);
 
@@ -1639,7 +1646,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		return section;
 	}
 
-	private Section createPParmDetailSection(FormToolkit toolkit, ScrolledForm form) {
+	private Section createPParmDetailSection(FormToolkit toolkit) {
 
 		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
 				| Section.TITLE_BAR);
@@ -1768,8 +1775,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	}
 
-	private Section createPElemSubjectInfoSection(FormToolkit toolkit,
-			ScrolledForm form) {
+	private Section createPElemSubjectInfoSection(FormToolkit toolkit) {
 		Section sub_section = toolkit.createSection(tabFolder,
 				Section.DESCRIPTION | Section.TITLE_BAR);
 		sub_section.setText("Subject Information");
@@ -1891,8 +1897,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	}
 
-	private Section createPElemDesInfoSection(FormToolkit toolkit,
-			ScrolledForm form) {
+	private Section createPElemDesInfoSection(FormToolkit toolkit) {
 		Section desc_section = toolkit.createSection(tabFolder,
 				Section.DESCRIPTION | Section.TITLE_BAR);
 		desc_section.setText("Description Information");
