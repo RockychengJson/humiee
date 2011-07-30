@@ -42,11 +42,11 @@ import org.wso2.tools.humantask.editor.editors.pages.humanInteractions.HumanInte
 import org.wso2.tools.humantask.editor.editors.pages.logicalpeoplegroups.LogicalPeopleGroupPage;
 import org.wso2.tools.humantask.editor.editors.pages.notifications.NotificationPage;
 import org.wso2.tools.humantask.editor.editors.pages.task.TaskPage;
+import org.wso2.tools.humantask.editor.editors.xmleditor.HTEditor;
 
 
 import org.eclipse.ui.editors.text.TextEditor;
 
-import simplexmleditor.editors.HTEditor;
 
 
 public class HTMultiPageEditor extends HTMultiPageEditorBase {
