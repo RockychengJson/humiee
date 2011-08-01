@@ -21,6 +21,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -122,8 +123,7 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 		section.setDescription("add later");
 		section.marginWidth = 10;
 		section.marginHeight = 5;
-		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_FILL
-				| GridData.FILL_BOTH);
+		GridData sectiondata = new GridData(GridData.FILL_BOTH);
 		section.setLayoutData(sectiondata);
 
 		Composite client = toolkit.createComposite(section, SWT.WRAP);
@@ -165,9 +165,13 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 
 		grp_table.setSelection(0);
 
-		Button add_btn = toolkit.createButton(client, "Add", SWT.PUSH);
-		GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		add_btn.setLayoutData(btn_gd);
+		Composite fillcomp = toolkit.createComposite(client,SWT.WRAP);
+		fillcomp.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING));
+		FillLayout fl = new FillLayout(SWT.VERTICAL);
+		fl.spacing = 5;
+		fillcomp.setLayout(fl);
+		
+		Button add_btn = toolkit.createButton(fillcomp, "Add", SWT.PUSH);
 
 		add_btn.addListener(SWT.Selection, new Listener() {
 
@@ -182,6 +186,20 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 
 			}
 		});
+		
+		Button del_btn = toolkit.createButton(fillcomp, "Delete", SWT.PUSH); 
+		//del_btn.setLayoutData(btn_gd);
+
+		del_btn.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+
+			//TODO viraj :handle the action
+
+			}
+		});
+		
 
 	}
 
@@ -233,10 +251,16 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 						parameterViewerItemSelecter(event.getSelection());
 					}
 				});
-
-		Button add_btn = toolkit.createButton(client, "Add", SWT.PUSH);
-		GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		add_btn.setLayoutData(btn_gd);
+		
+		Composite fillcomp = toolkit.createComposite(client,SWT.WRAP);
+		fillcomp.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.VERTICAL_ALIGN_BEGINNING));
+		FillLayout fl = new FillLayout(SWT.VERTICAL);
+		fl.spacing = 5;
+		fillcomp.setLayout(fl);
+		
+		Button add_btn = toolkit.createButton(fillcomp, "Add", SWT.PUSH);
+		//GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		//add_btn.setLayoutData(btn_gd);
 
 		add_btn.addListener(SWT.Selection, new Listener() {
 
@@ -249,6 +273,18 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 				wizardDialog.create();
 				wizardDialog.open();
 
+			}
+		});
+		
+		Button del_btn = toolkit.createButton(fillcomp, "Delete", SWT.PUSH);
+		//del_btn.setLayoutData(btn_gd);
+
+		del_btn.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+
+				//TODO viraj : handle the action
 			}
 		});
 
