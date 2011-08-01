@@ -104,7 +104,7 @@ public class HumanInteractionsPage extends FormPage implements
 
 			toolkit = managedform.getToolkit();
 			form = managedform.getForm();
-			form.setText("Human Task");
+			form.setText("Human Interactions");
 
 			GridLayout layout = new GridLayout(); // layout for the form body
 			layout.numColumns = 1;
@@ -333,7 +333,7 @@ public class HumanInteractionsPage extends FormPage implements
 	    
 		table.setSelection(0);
 		Button add_btn = toolkit.createButton(client, "Add", SWT.PUSH); //$NON-NLS-1$
-		GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING );
 		add_btn.setLayoutData(btn_gd);
 
 		add_btn.addListener(SWT.Selection, new Listener() {
@@ -348,6 +348,16 @@ public class HumanInteractionsPage extends FormPage implements
 			}
 		});
 
+		Button del_btn = toolkit.createButton(client, "Delete", SWT.PUSH); //$NON-NLS-1$
+		del_btn.setLayoutData(btn_gd);
+		del_btn.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+				//TODO viraj : handle the action
+
+			}
+		});
 		section.setClient(client);
 
 		return section;
@@ -427,7 +437,9 @@ public class HumanInteractionsPage extends FormPage implements
 
 		 viewer_import = new TableViewer(sectionClient, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		 
 		createColumns_import(sectionClient, viewer_import);
+		
 		final Table table = viewer_import.getTable();
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.verticalSpan = 10;
@@ -462,15 +474,26 @@ public class HumanInteractionsPage extends FormPage implements
 			public void handleEvent(Event event) {
 
 				HIImportWizard wizard = new HIImportWizard( humanInteractions, domain,viewer_import);
-
-				WizardDialog wizardDialog = new WizardDialog(Display
-						.getCurrent().getActiveShell(), wizard);
+				WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
 				wizardDialog.create();
 				wizardDialog.open();
 
 			}
 		});
 
+		Button del_btn = toolkit.createButton(sectionClient, "Delete", SWT.PUSH); 
+		del_btn.setLayoutData(gd);
+
+		del_btn.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+
+			//TODO viraj :handle the action
+
+			}
+		});
+		
 		section.setClient(sectionClient);
 
 		return section;

@@ -126,6 +126,20 @@ public class TaskTable {
 				wizardDialog.open();
 			}
 		});
+		
+		Button del_btn = toolkit.createButton(sectionClient, "Delete", SWT.PUSH); 
+		del_btn.setLayoutData(btn_gd);
+
+		del_btn.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event event) {
+
+			//TODO viraj :handle the action
+
+			}
+		});
+		
 		section.setClient(sectionClient);
 		return section;
 
