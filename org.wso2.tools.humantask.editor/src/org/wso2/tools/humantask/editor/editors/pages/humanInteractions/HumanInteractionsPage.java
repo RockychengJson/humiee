@@ -354,8 +354,10 @@ public class HumanInteractionsPage extends FormPage implements
 
 			@Override
 			public void handleEvent(Event event) {
-				//TODO viraj : handle the action
-
+				
+				boolean done=humanInteractions.getExtensions().getExtension().remove(selectedItem_extension);
+				viewer_extension.setInput(createModle());
+			
 			}
 		});
 		section.setClient(client);
@@ -490,6 +492,9 @@ public class HumanInteractionsPage extends FormPage implements
 			public void handleEvent(Event event) {
 
 			//TODO viraj :handle the action
+				
+				boolean done=humanInteractions.getImport().remove(selectedItem_import);
+				viewer_import.setInput(createModle_import());
 
 			}
 		});
@@ -686,7 +691,8 @@ public class HumanInteractionsPage extends FormPage implements
 				selectedItem_extension = (TExtension) ssel.getFirstElement();
 				//System.out.println(selectedItem.getName());
 			} else {
-				selectedItem_extension = null;
+				selectedItem_extension = (TExtension) viewer_extension.getElementAt(0);
+				viewer_extension.getTable().setSelection(0);
 			}
 			update();
 		}
@@ -849,7 +855,8 @@ public class HumanInteractionsPage extends FormPage implements
 						selectedItem_import = (TImport) ssel.getFirstElement();
 						//System.out.println(selectedItem.getName());
 					} else {
-						selectedItem_import = null;
+						selectedItem_import = (TImport) viewer_import.getElementAt(0);
+						viewer_import.getTable().setSelection(0);
 					}
 					update_import();
 				}
