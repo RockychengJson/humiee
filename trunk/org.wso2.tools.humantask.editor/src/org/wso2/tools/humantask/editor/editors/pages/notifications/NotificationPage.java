@@ -1,8 +1,15 @@
 package org.wso2.tools.humantask.editor.editors.pages.notifications;
 
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -15,6 +22,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -48,9 +57,12 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TNotification;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TNotifications;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TPresentationParameter;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TText;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
 import org.wso2.tools.humantask.editor.editors.pages.util.Messages;
+
+import com.ibm.wsdl.OperationImpl;
 
 
 
@@ -71,10 +83,8 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	private int tempindex;
 	private boolean isFirst = true;
 	
-	private Text portTextBox;
-	private Text OportTextBox;
-	private Text OresponseTextBox;
-	private Text operationTextBox;
+	private Combo portComboBox;
+	private Combo operationComboBox;
 	
 	private static final String[] FILTER_EXTS = { "*.wsdl","*.*" };
 	
@@ -446,87 +456,77 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				| GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 1;
 		portTypeLabel.setLayoutData(data);
-		portTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		portTextBox.setSize(100, 20);
-		portTextBox.setLayoutData(data);
-		//configGeneralInfoSection_portType(portTextBox);
+		portComboBox = new Combo(sectionClient,SWT.DROP_DOWN | SWT.BORDER);
+		portComboBox.setSize(100, 20);
+		portComboBox.setLayoutData(data);
+		configGeneralInfoSection_portType(portComboBox);
 
 		// Operation label and Text box
 		Label operationLabel = new Label(sectionClient, SWT.WRAP);
 		operationLabel.setText(Messages
 				.getString("TaskPage.interfaceTab.Section.operationlable"));
 		operationLabel.setLayoutData(data);
-		operationTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		operationTextBox.setSize(100, 20);
-		operationTextBox.setLayoutData(data);
-		//configGeneralInfoSection_operation(operationTextBox);
+		operationComboBox = new Combo(sectionClient,SWT.DROP_DOWN | SWT.BORDER);
+		operationComboBox.setSize(100, 20);
+		operationComboBox.setLayoutData(data);
+		//configGeneralInfoSection_operation(operationComboBox);
 
-		// Radio button
-		Label radioSectionLabel = new Label(sectionClient, SWT.WRAP);
-		radioSectionLabel.setText(Messages
-				.getString("TaskPage.interfaceTab.Section.radiosectionlable"));
-		radioSectionLabel.setLayoutData(data);
-		Composite radiocomposite = toolkit.createComposite(sectionClient);
-		FillLayout fl = new FillLayout(SWT.HORIZONTAL);
-		radiocomposite.setLayout(fl);
-		Button oneway = new Button(radiocomposite, SWT.RADIO);
-		oneway.setText(Messages
-				.getString("TaskPage.interfaceTab.Section.onewayradiolable"));
-		oneway.setSelection(true);
-
-		Button requestres = new Button(radiocomposite, SWT.RADIO);
-		requestres.setText(Messages
-				.getString("TaskPage.interfaceTab.Section.reqresradiolable"));
-		requestres.setSelection(false);
-
-		// OportType label and Text box
-		final Label OportTypeLabel = new Label(sectionClient, SWT.WRAP);
-		OportTypeLabel
-				.setText(Messages
-						.getString("TaskPage.interfaceTab.Section.onewayradio.portlable"));
-		OportTypeLabel.setLayoutData(data);
-
-		OportTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		OportTextBox.setSize(100, 20);
-		OportTextBox.setLayoutData(data);
-		//configGeneralInfoSection_OportType(OportTextBox);
-
-		//Oresponse label and Text box
-		final Label OresponseLabel = new Label(sectionClient, SWT.WRAP);
-		OresponseLabel
-				.setText(Messages
-						.getString("TaskPage.interfaceTab.Section.onewayradio.responselable"));
-		OresponseLabel.setLayoutData(data);
-
-		OresponseTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		OresponseTextBox.setSize(100, 20);
-		OresponseTextBox.setLayoutData(data);
-		//configGeneralInfoSection_Oresponse(OresponseTextBox);
-
-		oneway.addMouseListener(new MouseAdapter() {
-			public void mouseDown(MouseEvent e) {
-
-				OportTextBox.setEnabled(true);
-
-				OresponseTextBox.setEnabled(true);
-			}
-
-		});
-
-		requestres.addMouseListener(new MouseAdapter() {
-			public void mouseDown(MouseEvent e) {
-
-				OportTextBox.setEnabled(false);
-
-				OresponseTextBox.setEnabled(false);
-			}
-		});
+		
 		//section.setClient(wsdl_import_comp);
 		section.setClient(sectionClient);
 
 		return section;
 
 	}
+	
+	
+	private void configGeneralInfoSection_portType(final Combo portComboBox) {
+		if (humaninteractions.getNotifications() != null) {
+			if (humaninteractions.getNotifications().getNotification().get(0).getInterface().getPortType() != null) {
+			/*	if ((tasks.getTask().get(0).getInterface().getPortType()
+						.toString() != null)){*/ 
+				portComboBox.setText(humaninteractions.getNotifications().getNotification().get(0).getInterface().getPortType().toString()) ;
+				
+				
+			}else {
+				portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}
+		
+		portComboBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+		/*		// validateInput();
+				setAttribute_Qname(
+						htdPackage.eINSTANCE.getTNotificationInterface_PortType(),
+						new QName(portComboBox.getText()));
+				
+				if(portComboBox.getSelectionIndex()!=-1){
+				
+				List operations=definition.getPortType((QName) portTypes[portComboBox.getSelectionIndex()]).getOperations();
+				operationComboBox.removeAll();
+				for(int i=0;i<operations.size();++i){
+					operationComboBox.add(((OperationImpl)operations.get(i)).getName());
+				}
+				operationComboBox.select(0);
+				}*/
+			}
+		});
+
+	}
+	
+	private void setAttribute_Qname(EAttribute tNotificationInterface_Attribute,
+			QName text) {
+		Command setAttribCommand = SetCommand.create(domain,
+				selectedNotification.getInterface(), tNotificationInterface_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tNotificationInterface_Attribute.getName());
+		}
+	}
+	
 	
 	private Section createPeopleAssiSection(FormToolkit toolkit,
 			final ScrolledForm form){
@@ -1530,9 +1530,38 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		}
 	
 		
+		updateInterfaceTab();
 		updatePeopleAssignmentTable();
 		updatePreElemNameTable();
 	}
+	
+	private void updateInterfaceTab() {
+		
+		if (selectedNotification.getInterface() != null) {
+
+			if (selectedNotification.getInterface().getPortType() != null) {				
+				portComboBox.setText(selectedNotification.getInterface().getPortType()
+						.toString());
+			} else {
+				portComboBox.setText("");
+			}
+			if (selectedNotification.getInterface().getOperation() != null) {				
+				operationComboBox.setText(selectedNotification.getInterface().getOperation());
+			} else {
+
+				operationComboBox.setText("");
+			}
+		
+		}
+		 else {
+			portComboBox.setText("");		
+			operationComboBox.setText("");
+		}
+		
+
+	}
+	
+	
 	//updaters
 	private void updatePreElemNameTable(){
 		
