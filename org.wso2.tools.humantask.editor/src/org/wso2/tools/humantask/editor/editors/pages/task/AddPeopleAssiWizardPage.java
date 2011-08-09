@@ -44,6 +44,10 @@ public class AddPeopleAssiWizardPage extends WizardPage{
 	    setControl(comp);  
 	    setPageComplete(true);
 	    
+	    Label crt = new Label(comp, SWT.WRAP);
+	    crt.setText("Choose Roal Type");
+	    crt.setLayoutData(gd);
+		
 	    roal_type = new Combo(comp, SWT.READ_ONLY);
 		roal_type.setLayoutData(gd);
 		
