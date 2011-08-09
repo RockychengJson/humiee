@@ -1,8 +1,13 @@
 package org.wso2.tools.humantask.editor.editors.pages.notifications;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -16,6 +21,8 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -50,6 +57,7 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TNotification;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TNotifications;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TPresentationParameter;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TText;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
 import org.wso2.tools.humantask.editor.editors.pages.util.Messages;
@@ -97,12 +105,14 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	
 	private TableViewer presentationElemNameViewer;
 	private Table table_presentationElemName;
+	private TText selectedElemName;
 	
 	private Text preElem_GenInfo_name_txt;
 	private Text preElem_GenInfo_lang_txt;
 	
 	private TableViewer PresentationParameterViewer;
 	private Table table_presentationParm;
+	private TPresentationParameter selectedParam;
 	
 	private Text preParm_nametext;
 	private Text preParm_typetext;
@@ -110,9 +120,11 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	
 	private TableViewer presentationElemSubjectViewer;
 	private Table table_presentationElemSub;
+	private TText selectedElemSubject;
 	
 	private TableViewer presentationElemDescViewer;
 	private Table table_PresentationElemDesc;
+	private TDescription selectedElemDesc;
 	
 	private Text preElemSubInfo_subject_txt;
 	private Text preElemSubInfo_lang_txt;
@@ -165,6 +177,10 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			toolkit.paintBordersFor(tabFolder);
 
 			checkAvailability_Notifications();
+			chechAvailability_PElemName();
+			checkAvailability_Pparm();
+			checkAvailabilityPElemSub();
+			checkAvailabilityPElemDesc();
 			
 			notificationTableSection = createNotificationTableSection(toolkit, form);
 			
@@ -781,7 +797,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				
-			//	preElemNameViewerItemSelecter(event.getSelection());
+				preElemNameViewerItemSelecter(event.getSelection());
 				
 			}
 		});
@@ -865,8 +881,8 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		preElem_GenInfo_name_txt = new Text(sectionClient, SWT.SINGLE
 				| SWT.BORDER);
 		preElem_GenInfo_name_txt.setLayoutData(gd);
-
-		//configPElemGeneralInfoSection_name(preElem_GenInfo_name_txt);
+		
+		configPElemGeneralInfoSection_name(preElem_GenInfo_name_txt);
 		
 		Label language_lb = new Label(sectionClient, SWT.WRAP);
 		language_lb.setText("Language");
@@ -876,7 +892,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				| SWT.BORDER);
 		preElem_GenInfo_lang_txt.setLayoutData(gd);
 		
-		//configPElemGeneralInfoSection_language(preElem_GenInfo_lang_txt);
+		configPElemGeneralInfoSection_language(preElem_GenInfo_lang_txt);
 
 		info_section.setClient(sectionClient);
 
@@ -930,7 +946,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
 						
-						//preParamViewerItemSelecter(event.getSelection());
+						preParamViewerItemSelecter(event.getSelection());
 
 					}
 				});
@@ -1011,7 +1027,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 
 		preParm_nametext = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		preParm_nametext.setLayoutData(gd);
-		//configPParm_name(preParm_nametext);
+		configPParm_name(preParm_nametext);
 
 		Label typelabel = new Label(sectionClient, SWT.WRAP);
 		typelabel.setText("Type");
@@ -1019,7 +1035,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 
 		preParm_typetext = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		preParm_typetext.setLayoutData(gd);
-		//cinfigPparm_type(preParm_typetext);
+		cinfigPparm_type(preParm_typetext);
 		
 		Label explabel = new Label(sectionClient, SWT.WRAP);
 		explabel.setText("Expression");
@@ -1080,7 +1096,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
 						
-						//preElemSubViewerItemSelecter(event.getSelection());
+						preElemSubViewerItemSelecter(event.getSelection());
 
 					}
 				});
@@ -1173,7 +1189,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		preElemSubInfo_lang_txt = new Text(sectionClient, SWT.SINGLE
 				| SWT.BORDER);
 		preElemSubInfo_lang_txt.setLayoutData(gd);
-		//configPElem_SubInfo_lang(preElemSubInfo_lang_txt);
+		configPElem_SubInfo_lang(preElemSubInfo_lang_txt);
 
 		sub_section.setClient(sectionClient);
 
@@ -1257,7 +1273,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 					@Override
 					public void selectionChanged(SelectionChangedEvent event) {
 						
-						//preElemDescViewerItemSelecter(event.getSelection());
+						preElemDescViewerItemSelecter(event.getSelection());
 
 					}
 				});
@@ -1314,7 +1330,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		preElemDescInfo_lang_txt = new Text(sectionClient, SWT.SINGLE
 				| SWT.BORDER);
 		preElemDescInfo_lang_txt.setLayoutData(gd);
-		//configPElem_DescInfo_lang(preElemDescInfo_lang_txt);
+		configPElem_DescInfo_lang(preElemDescInfo_lang_txt);
 		
 		GridData combo_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
@@ -1329,7 +1345,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		preElemDescInfo_context_type.add("text/html", 1);
 		preElemDescInfo_context_type.select(0);
 		preElemDescInfo_context_type.setLayoutData(combo_gd);
-		//configPElemDescInfo_contextType(preElemDescInfo_context_type);
+		configPElemDescInfo_contextType(preElemDescInfo_context_type);
 		creatSpacer(sectionClient, 2);
 
 		Label dec_lb = new Label(sectionClient, SWT.WRAP);
@@ -1345,6 +1361,283 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		return desc_section;
 	}
 	
+	//Presentation Element Tab configurations
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	
+	private void configPElemGeneralInfoSection_name(final Text nameTextBox)
+	{
+		 if (selectedNotification != null)
+		  {
+			  if(selectedElemName!= null)
+			  { 
+				  nameTextBox.setText(notifications.getNotification().get(0).getPresentationElements()
+						  .getName().get(0).getMixed().get(0).getValue().toString());
+				
+			  } 
+			  else 
+			  {
+				nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); 
+				
+			  } 
+			  
+		  }
+		  		
+		  nameTextBox.addModifyListener(new ModifyListener() {
+		  			public void modifyText(ModifyEvent e) 
+		  			{
+		  			// validateInput(); 
+		  			   setAttribute_tParameter(htdPackage.eINSTANCE.getTExpression_Mixed(), nameTextBox.getText()); 
+		  				
+		  			}
+		  		});
+	 }
+	
+	private void setAttribute_tParameter(EAttribute tParameter_attribute,String text)
+	{
+		Command setAttribCommand = SetCommand.create(domain, selectedElemName.getMixed().getValue(0), tParameter_attribute, text);
+
+		if (setAttribCommand.canExecute()) 
+		{
+			domain.getCommandStack().execute(setAttribCommand);
+		} else
+		{
+			System.out.println("can't modify Attribute:from configPElemGeneralInfoSection_name@NotificationPage" + tParameter_attribute.getName());
+		}
+	}
+	
+	
+	private void configPElemGeneralInfoSection_language(final Text languageTextBox) {
+		if (notifications != null) {
+			if (notifications.getNotification().get(0).getPresentationElements() != null) {
+				if ((notifications.getNotification().get(0).getPresentationElements().getName().get(0).getLang() != null)) {
+					languageTextBox.setText((notifications.getNotification().get(0).getPresentationElements().getName().get(0).getLang()));
+				} else {
+					languageTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}
+		}
+		languageTextBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_presentationElement(
+						htdPackage.eINSTANCE.getTText_Lang(),languageTextBox.getText());
+			}
+		});
+
+	}
+	
+	private void setAttribute_presentationElement(EAttribute tText_attribute, String text) 
+	{
+		Command setAttribCommand = SetCommand.create(domain,selectedElemName, tText_attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tText_attribute.getName());
+		}
+	}
+	
+	
+	private void configPParm_name(final Text nameTextBox) 
+	{
+	  if (notifications != null)
+	  {
+		  if((notifications.getNotification().get(0).getPresentationElements().getPresentationParameters()
+				  .getPresentationParameter() .get(0).getName()!= null))
+		  { 
+			  nameTextBox.setText((notifications.getNotification().get(0).getPresentationElements().
+					  getPresentationParameters().getPresentationParameter().get(0).getName())); 
+		  } 
+		  else 
+		  {
+			nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); 
+			
+		  } 
+		  
+	  }
+	  		
+	  nameTextBox.addModifyListener(new ModifyListener() {
+	  			public void modifyText(ModifyEvent e) 
+	  			{
+	  			// validateInput(); 
+	  				setAttribute_PpramName(htdPackage.eINSTANCE.getTParameter_Name(), nameTextBox.getText()); 
+	  				
+	  			}
+	  		});
+	  
+	  }
+
+	private void setAttribute_PpramName(EAttribute tParameter_attribute,String text)
+	{
+		Command setAttribCommand = SetCommand.create(domain, selectedParam, tParameter_attribute, text);
+
+		if (setAttribCommand.canExecute()) 
+		{
+			domain.getCommandStack().execute(setAttribCommand);
+		} else
+		{
+			System.out.println("can't modify Attribute: " + tParameter_attribute.getName());
+		}
+	}
+	
+	
+	private void cinfigPparm_type(final Text typeTextBox){
+		
+		if (notifications != null)
+		  {
+			  if((notifications.getNotification().get(0).getPresentationElements().getPresentationParameters()
+					  .getPresentationParameter() .get(0).getType() != null))
+			  { 
+				  typeTextBox.setText((notifications.getNotification().get(0).getPresentationElements().
+						  getPresentationParameters().getPresentationParameter().get(0).getType().toString())); 
+			  } 
+			  else 
+			  {
+				  typeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); 
+				
+			  } 
+			  
+		  }
+		  		
+		typeTextBox.addModifyListener(new ModifyListener() {
+		  			public void modifyText(ModifyEvent e) 
+		  			{
+		  			// validateInput(); 
+		  				setAttribute_PparmType(htdPackage.eINSTANCE.getTParameter_Type(), new QName(typeTextBox.getText())); 
+		  				
+		  			}
+		  		});
+	}
+	
+	private void setAttribute_PparmType(EAttribute tTaskInterface_Attribute,
+			QName text) {
+		Command setAttribCommand = SetCommand.create(domain, selectedParam,
+				tTaskInterface_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tTaskInterface_Attribute.getName());
+		}
+	}
+	 
+	private void configPElem_SubInfo_lang(final Text languageTextBox){
+		if (notifications != null) {
+			if (notifications.getNotification().get(0).getPresentationElements() != null) {
+				if ((notifications.getNotification().get(0).getPresentationElements().getSubject().get(0) != null)) {
+					languageTextBox.setText((notifications.getNotification().get(0).getPresentationElements().getSubject().get(0).getLang()));
+				} else {
+					languageTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}
+		}
+		languageTextBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_pElemSub_lang(
+						htdPackage.eINSTANCE.getTText_Lang(),languageTextBox.getText());
+			}
+		});
+	}
+	
+	private void setAttribute_pElemSub_lang(EAttribute tText_attribute, String text){
+		Command setAttribCommand = SetCommand.create(domain,selectedElemSubject, tText_attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tText_attribute.getName());
+		}
+		
+	}
+	
+	
+	private void configPElem_DescInfo_lang(final Text languageTextBox){
+		
+		if (notifications != null) {
+			if (notifications.getNotification().get(0).getPresentationElements() != null) {
+				if ((notifications.getNotification().get(0).getPresentationElements().getDescription().get(0) != null)) {
+					languageTextBox.setText((notifications.getNotification().get(0).getPresentationElements().getDescription().get(0).getLang()));
+				} else {
+					languageTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}
+		}
+		languageTextBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_pElemDesc_lang(
+						htdPackage.eINSTANCE.getTDescription_Lang(),languageTextBox.getText());
+			}
+		});
+		
+	}
+	
+	
+	private void setAttribute_pElemDesc_lang(EAttribute tText_attribute, String text){
+		
+		Command setAttribCommand = SetCommand.create(domain,selectedElemDesc, tText_attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tText_attribute.getName());
+		}
+	}
+	
+	
+	private void configPElemDescInfo_contextType(final Combo contextTypeComboBox)
+ {
+		if (notifications != null) {
+			if (notifications.getNotification().get(0).getPresentationElements() != null) {
+				if ((notifications.getNotification().get(0).getPresentationElements()
+						.getDescription().get(0) != null)) {
+					contextTypeComboBox.select(notifications.getNotification().get(0)
+							.getPresentationElements().getDescription().get(0)
+							.getContentType().compareTo("text/plain") == 0 ? 0
+							: 1);
+
+				} else {
+
+					contextTypeComboBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}
+		}
+
+		contextTypeComboBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_PElemDescInfo_contextType(htdPackage.eINSTANCE
+						.getTDescription_ContentType(), (contextTypeComboBox
+						.getSelectionIndex() == 0) ? "text/plain" : "text/html");
+			}
+		});
+	
+		
+	}
+	
+	
+	private void setAttribute_PElemDescInfo_contextType(EAttribute tExtension_Attribute, String text) {
+		Command setAttribCommand = SetCommand.create(domain, selectedElemDesc, tExtension_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+		
+		} else {
+			System.out.println("can't modify Attribute: " + tExtension_Attribute.getName());
+		}
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////
 	
 	//creating Modles
 	public Object createNotificationModle(){
@@ -1582,7 +1875,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		} else {
 			selectedNotification = null;
 		}
-	
+		
 		
 		//updatePeopleAssignmentTable();
 		updatePreElemNameTable();
@@ -1591,6 +1884,71 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		updatePElemDescTable();
 	}
 	
+	private void preElemNameViewerItemSelecter(ISelection selection) {
+
+		IStructuredSelection ssel = (IStructuredSelection) selection;
+
+		if (ssel.size() == 1) {
+			selectedElemName = (TText) ssel.getFirstElement();
+		} else {
+
+			selectedElemName = (TText) presentationElemNameViewer.getElementAt(0);
+			presentationElemNameViewer.getTable().setSelection(0);
+
+		}
+		
+		 updatePElemNameDetails();
+	}
+
+	private void preParamViewerItemSelecter(ISelection selection) {
+
+		IStructuredSelection ssel = (IStructuredSelection) selection;
+
+		if (ssel.size() == 1) {
+
+			selectedParam = (TPresentationParameter) ssel.getFirstElement();
+
+		} else {
+
+			selectedParam = (TPresentationParameter) PresentationParameterViewer
+					.getElementAt(0);
+			PresentationParameterViewer.getTable().setSelection(0);
+
+		}
+		updatePparmDetails();
+	}
+	
+	private void preElemSubViewerItemSelecter(ISelection selection) {
+
+		IStructuredSelection ssel = (IStructuredSelection) selection;
+
+		if (ssel.size() == 1) {
+
+			selectedElemSubject = (TText) ssel.getFirstElement();
+		} else {
+			selectedElemSubject = null;
+		}
+
+		
+		updatePElemSubDetail();
+
+	}
+	
+	private void preElemDescViewerItemSelecter(ISelection selection) {
+		IStructuredSelection ssel = (IStructuredSelection) selection;
+
+		if (ssel.size() == 1) {
+
+			selectedElemDesc = (TDescription) ssel.getFirstElement();
+		} else {
+			selectedElemDesc = null;
+		}
+
+		 updatePElemDescDetail();
+	}
+
+		//updatePparmDetails();
+
 	
 	//updaters
 	
@@ -1663,6 +2021,139 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		}
 	}
 
+	private void updatePElemNameDetails() {
+
+		if (selectedElemName != null) {
+			if (selectedElemName.getMixed() != null
+					&& selectedElemName.getMixed().size() != 0) {
+
+				preElem_GenInfo_name_txt.setText(selectedElemName.getMixed()
+						.getValue(0).toString());
+
+			} else {
+				preElem_GenInfo_name_txt
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+			}
+			if (selectedElemName.getLang() != null) {
+
+				preElem_GenInfo_lang_txt.setText(selectedElemName.getLang());
+			} else {
+
+				preElem_GenInfo_lang_txt
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+		}
+	}
+	
+	private void updatePparmDetails() {
+		
+		if(selectedParam != null){
+		if(selectedParam.getName() != null )
+		{
+			preParm_nametext.setText(selectedParam.getName());
+			
+		}
+		else
+		{
+			
+			preParm_nametext.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			
+		}
+		if(selectedParam.getType() != null)
+		{
+			preParm_typetext.setText(selectedParam.getType().toString());
+			
+		}else
+		{
+			
+			preParm_typetext.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+		if(selectedParam.getMixed() != null && selectedParam.getMixed().size() != 0)
+		{
+			preParm_exptext.setText(selectedParam.getMixed().getValue(0).toString());
+			
+		}else
+		{
+			preParm_exptext.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+		}
+	 
+	}
+
+	private void updatePElemSubDetail()
+	{
+		if(selectedElemSubject != null)
+		{
+		if(selectedElemSubject.getMixed() != null && selectedElemSubject.getMixed().size() != 0)
+		{
+			
+			preElemSubInfo_subject_txt.setText(selectedElemSubject.getMixed().getValue(0).toString());
+			
+		}
+		else
+		{
+			preElemSubInfo_subject_txt.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			
+		}
+		
+		if(selectedElemSubject.getLang() != null)
+		{
+			
+			preElemSubInfo_lang_txt.setText(selectedElemSubject.getLang());
+			
+		}
+		else
+		{
+			
+			preElemSubInfo_lang_txt.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+		}
+	}
+	
+	private void updatePElemDescDetail()
+	{
+		if(selectedElemDesc != null)
+		{
+		if(selectedElemDesc.getLang() != null)
+		{
+			
+			preElemDescInfo_lang_txt.setText(selectedElemDesc.getLang());
+		}
+		else
+		{
+			
+			preElemDescInfo_lang_txt.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+		
+		if(selectedElemDesc.getContentType() != null)
+		{
+			if(selectedElemDesc.getContentType().compareTo("text/plain") == 0)
+			{
+				preElemDescInfo_context_type.select(0);
+			}
+			else
+			{
+				preElemDescInfo_context_type.select(1);
+			}
+			
+		}
+		
+		if(selectedElemDesc.getMixed() != null && selectedElemDesc.getMixed().size() != 0)
+		{
+			
+			preElemDescInfo_desc_txt.setText(selectedElemDesc.getMixed().getValue(0).toString());
+			
+		}
+		else
+		{
+			
+			preElemDescInfo_desc_txt.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			
+		}
+		
+		}
+	}
 	
 	// Availability checks
 	
@@ -1676,6 +2167,58 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		}
 
 	}
+	
+	private void chechAvailability_PElemName(){
+		
+		if (selectedNotification == null){
+			System.out.println("chechAvailability_PElemName()+ Error message");
+			//Error message
+		}
+		else{
+			if(selectedNotification.getPresentationElements() !=  null){
+				selectedElemName = selectedNotification.getPresentationElements().getName().get(0);
+			}
+		}
+	}
+	
+	private void checkAvailability_Pparm() {
+
+		if (selectedNotification == null) {
+			System.out.println("checkAvailability_Pparm() +Error message");
+			// Error message
+		} else {
+			if(selectedNotification.getPresentationElements().getPresentationParameters().getPresentationParameter() != null){
+			selectedParam = selectedNotification.getPresentationElements()
+					.getPresentationParameters().getPresentationParameter()
+					.get(0);
+			}
+		}
+	}
+
+	private void checkAvailabilityPElemSub() {
+		if (selectedNotification == null) {
+			System.out.println("checkAvailabilityPElemSubTable() + Error message");
+			//Error message
+		} else {
+			if(selectedNotification.getPresentationElements().getSubject() != null){
+			selectedElemSubject = selectedNotification.getPresentationElements().getSubject()
+					.get(0);
+			}
+		}
+	}
+
+	private void checkAvailabilityPElemDesc() {
+		if (selectedNotification == null) {
+			System.out.println("checkAvailabilityPElemDescTable() +Error message");
+		} else {
+			if(selectedNotification.getPresentationElements().getDescription() != null){
+			selectedElemDesc = selectedNotification.getPresentationElements().getDescription()
+					.get(0);
+			}
+		}
+	}
+	
+	
 	
 	class TabContent {
 
