@@ -65,6 +65,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TDescription;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TExtension;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TPresentationParameter;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TTask;
@@ -250,7 +251,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			checkAvailabilityPElemDescTable();
 
 			taskTable = new TaskTable(humanInteractions, domain, this, toolkit,
-					tabFolder, form, tasks);
+					tabFolder, form, tasks,input);
 			taskTableSection = taskTable.createTaskTableSection(managedform);
 
 			createGenarelInfoTab(toolkit, form);
@@ -889,10 +890,10 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			@Override
 			public void handleEvent(Event event) {
 				
-				//AddPeopleAssiWizard wizard = new AddPeopleAssiWizard( humanInteractions, domain, viewer_peopleAssignment,taskPage);
-				//WizardDialog wizardDialog = new WizardDialog(Display .getCurrent().getActiveShell(),wizard);
-				//wizardDialog.create();
-				//wizardDialog.open();
+				AddPeopleAssiWizard wizard = new AddPeopleAssiWizard( humanInteractions, domain, viewer_peopleAssignment,taskPage);
+				WizardDialog wizardDialog = new WizardDialog(Display .getCurrent().getActiveShell(),wizard);
+				wizardDialog.create();
+				wizardDialog.open();
 				 
 			}
 		});
@@ -906,6 +907,27 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			public void handleEvent(Event event) {
 
 			//TODO viraj :handle the action
+				if(selectedHumanRole.getTypeByIndex()==0){
+					boolean done=input.getPeopleAssignments().getPotentialOwners().remove(selectedHumanRole.getGenericHumanRole());
+				}
+				if(selectedHumanRole.getTypeByIndex()==1){
+					boolean done=input.getPeopleAssignments().getExcludedOwners().remove(selectedHumanRole.getGenericHumanRole());
+				}
+				if(selectedHumanRole.getTypeByIndex()==2){
+					boolean done=input.getPeopleAssignments().getTaskInitiator().remove(selectedHumanRole.getGenericHumanRole());
+				}
+				if(selectedHumanRole.getTypeByIndex()==3){
+					boolean done=input.getPeopleAssignments().getTaskStakeholders().remove(selectedHumanRole.getGenericHumanRole());
+				}
+				if(selectedHumanRole.getTypeByIndex()==4){
+					boolean done=input.getPeopleAssignments().getBusinessAdministrators().remove(selectedHumanRole.getGenericHumanRole());
+				}
+				if(selectedHumanRole.getTypeByIndex()==5){
+					boolean done=input.getPeopleAssignments().getRecipients().remove(selectedHumanRole.getGenericHumanRole());
+				}
+				
+		
+				viewer_peopleAssignment.setInput(createModleForPeopleAssinment());
 
 			}
 		});
@@ -1354,7 +1376,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	}
 
-	void taskTableItemSelecter(ISelection selection) {
+	void taskTableItemSelecter(ISelection selection,TableViewer tableViewer) {
 
 		IStructuredSelection ssel = (IStructuredSelection) selection;
 
@@ -1362,7 +1384,9 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			input = (TTask) ssel.getFirstElement();
 			// System.out.println(input.getName());
 		} else {
-			input = null;
+			input = (TTask) tableViewer.getElementAt(0);
+			tableViewer.getTable().setSelection(0);
+			
 		}
 	
 		updateInterfaceTab();
@@ -1543,6 +1567,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			public void handleEvent(Event event) {
 
 			//TODO viraj :handle the action
+				boolean done=input.getPresentationElements().getName().remove(selectedElemName); 
+				presentationElemNameViewer.setInput(input);
 
 			}
 		});
@@ -2298,7 +2324,9 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 		}
 		else
 		{
-			selectedElemName = null;
+			selectedElemName = (TText) presentationElemNameViewer.getElementAt(0);
+			presentationElemNameViewer.getTable().setSelection(0);
+			
 			
 		}
 		
@@ -3021,6 +3049,12 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 
 	}
 	
+	
+	public void deleteTask(TableViewer viewer,TTasks tasks){
+		boolean done= humanInteractions.getTasks().getTask().remove(input);
+		viewer.setInput(tasks);
+		
+	}
 	
 
 	
