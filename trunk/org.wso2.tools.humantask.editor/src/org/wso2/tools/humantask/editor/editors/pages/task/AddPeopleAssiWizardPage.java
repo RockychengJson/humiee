@@ -85,7 +85,7 @@ public class AddPeopleAssiWizardPage extends WizardPage{
 		return nametextbox.getText();
 	}
 	
-	public String getRoalType(){
+	public String getRoleType(){
 		
 	
 		int index = roal_type.getSelectionIndex();
