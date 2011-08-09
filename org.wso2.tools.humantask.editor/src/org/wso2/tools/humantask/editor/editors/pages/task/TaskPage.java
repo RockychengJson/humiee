@@ -1181,9 +1181,14 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		roleCombo.addModifyListener(new ModifyListener() {
 
 			@Override
-			public void modifyText(ModifyEvent e) {
+			public void modifyText(ModifyEvent e) {				
+				
+				editRoleType_roleCombo();
+				
+				firePropertyChange(PROP_DIRTY);
+				System.out.println( isDirty());
 
-				//editRoleType_roleCombo();
+				
 			}
 		});
 		
@@ -1191,6 +1196,234 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	}
 	
 	
+	
+	
+	private void editRoleType_roleCombo() {
+
+		if (roal_type.getSelectionIndex() == 0) {
+
+			if (selectedHumanRole.getTypeByIndex() == 0) {
+
+			}
+			if (selectedHumanRole.getTypeByIndex() == 1) {
+				input.getPeopleAssignments().getExcludedOwners()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getPotentialOwners()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 2) {
+				input.getPeopleAssignments().getTaskInitiator()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getPotentialOwners()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 3) {
+				input.getPeopleAssignments().getTaskStakeholders()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getPotentialOwners()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 4) {
+				input.getPeopleAssignments().getBusinessAdministrators()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getPotentialOwners()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 5) {
+				input.getPeopleAssignments().getRecipients()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getPotentialOwners()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			System.out.println("00000000");
+
+		}
+		if (roal_type.getSelectionIndex() == 1) {
+			if (selectedHumanRole.getTypeByIndex() == 0) {
+				input.getPeopleAssignments().getPotentialOwners()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getExcludedOwners()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 1) {
+
+			}
+			if (selectedHumanRole.getTypeByIndex() == 2) {
+				input.getPeopleAssignments().getTaskInitiator()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getExcludedOwners()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 3) {
+				input.getPeopleAssignments().getTaskStakeholders()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getExcludedOwners()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 4) {
+				input.getPeopleAssignments().getBusinessAdministrators()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getExcludedOwners()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 5) {
+				input.getPeopleAssignments().getRecipients()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getExcludedOwners()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			System.out.println("1111111111");
+		}
+		if (roal_type.getSelectionIndex() == 2) {
+
+			if (selectedHumanRole.getTypeByIndex() == 0) {
+				input.getPeopleAssignments().getPotentialOwners()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getTaskInitiator()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 1) {
+				input.getPeopleAssignments().getExcludedOwners()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getTaskInitiator()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 2) {
+
+			}
+			if (selectedHumanRole.getTypeByIndex() == 3) {
+				input.getPeopleAssignments().getTaskStakeholders()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getTaskInitiator()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 4) {
+				input.getPeopleAssignments().getBusinessAdministrators()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getTaskInitiator()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 5) {
+				input.getPeopleAssignments().getRecipients()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getTaskInitiator()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+
+			System.out.println("222222222");
+		}
+		if (roal_type.getSelectionIndex() == 3) {
+			if (selectedHumanRole.getTypeByIndex() == 0) {
+				input.getPeopleAssignments().getPotentialOwners()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getTaskStakeholders()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 1) {
+				input.getPeopleAssignments().getExcludedOwners()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getTaskStakeholders()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 2) {
+				input.getPeopleAssignments().getTaskInitiator()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getTaskStakeholders()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 3) {
+
+			}
+			if (selectedHumanRole.getTypeByIndex() == 4) {
+				input.getPeopleAssignments().getBusinessAdministrators()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getTaskStakeholders()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 5) {
+				input.getPeopleAssignments().getRecipients()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getTaskStakeholders()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+
+			System.out.println("3333333");
+		}
+		if (roal_type.getSelectionIndex() == 4) {
+			if (selectedHumanRole.getTypeByIndex() == 0) {
+				input.getPeopleAssignments().getPotentialOwners()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getBusinessAdministrators()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 1) {
+				input.getPeopleAssignments().getExcludedOwners()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getBusinessAdministrators()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 2) {
+				input.getPeopleAssignments().getTaskInitiator()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getBusinessAdministrators()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 3) {
+				input.getPeopleAssignments().getTaskStakeholders()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getBusinessAdministrators()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 4) {
+
+			}
+			if (selectedHumanRole.getTypeByIndex() == 5) {
+				input.getPeopleAssignments().getRecipients()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getBusinessAdministrators()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			System.out.println("444444444");
+		}
+		if (roal_type.getSelectionIndex() == 5) {
+			if (selectedHumanRole.getTypeByIndex() == 0) {
+				input.getPeopleAssignments().getPotentialOwners()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getRecipients()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 1) {
+				input.getPeopleAssignments().getExcludedOwners()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getRecipients()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 2) {
+				input.getPeopleAssignments().getTaskInitiator()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getRecipients()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 3) {
+				input.getPeopleAssignments().getTaskStakeholders()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getRecipients()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 4) {
+				input.getPeopleAssignments().getBusinessAdministrators()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				input.getPeopleAssignments().getRecipients()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			if (selectedHumanRole.getTypeByIndex() == 5) {
+
+			}
+
+			System.out.println("55555555");
+		}
+
+	}
 	
 	private void configPeopleAssignmentSection_name(final Text nameTextBox) {
 			if (selectedHumanRole != null) {
@@ -1218,12 +1451,16 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	
 	private void configPeopleAssignmentSection_expression(final Text expTextBox) {
 		if (selectedHumanRole != null) {
+			
+			if(selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().size()!=0){
+			
 			if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().getValue(0)  != null) {
 				expTextBox.setText(selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().getValue(0).toString());
 			} else {
 				expTextBox
 						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 
+			}
 			}
 		}
 		expTextBox.addModifyListener(new ModifyListener() {
