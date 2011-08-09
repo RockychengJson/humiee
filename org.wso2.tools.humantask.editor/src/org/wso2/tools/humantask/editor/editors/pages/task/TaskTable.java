@@ -41,8 +41,9 @@ public class TaskTable {
 	TaskPage taskPage;
 	private THumanInteractions humanInteractions;
 	private  EditingDomain domain;
+	private TTask selectedTask;
 	
-	TaskTable(THumanInteractions humanInteractions,EditingDomain domain, TaskPage taskPage ,FormToolkit toolkit,CTabFolder tabFolder,ScrolledForm form,TTasks tasks)
+	TaskTable(THumanInteractions humanInteractions,EditingDomain domain, TaskPage taskPage ,FormToolkit toolkit,CTabFolder tabFolder,ScrolledForm form,TTasks tasks,TTask selectedTask)
 	{
 	this.toolkit=toolkit;
 	this.tabFolder=tabFolder;
@@ -51,6 +52,7 @@ public class TaskTable {
 	this.taskPage=taskPage;
 	this.humanInteractions=humanInteractions;
 	this.domain=domain;
+	this.selectedTask=selectedTask;
 	
 	}
 
@@ -103,7 +105,7 @@ public class TaskTable {
 
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				taskPage.taskTableItemSelecter(event.getSelection());
+				taskPage.taskTableItemSelecter(event.getSelection(),viewer);
 
 			}
 		});
@@ -136,6 +138,9 @@ public class TaskTable {
 			public void handleEvent(Event event) {
 
 			//TODO viraj :handle the action
+				taskPage.deleteTask(viewer,tasks);
+				
+			
 
 			}
 		});
