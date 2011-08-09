@@ -40,6 +40,7 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TExtension;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TLogicalPeopleGroup;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TParameter;
@@ -196,6 +197,8 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 			public void handleEvent(Event event) {
 
 			//TODO viraj :handle the action
+				boolean done=humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().remove(selectedLogicalPplGroup);
+				logicalPplviewer.setInput(createLogicalPplModle());
 
 			}
 		});
@@ -285,6 +288,9 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 			public void handleEvent(Event event) {
 
 				//TODO viraj : handle the action
+				boolean done=selectedLogicalPplGroup.getParameter().remove(selectedParameter);
+				parameterViewer.setInput(createPramModle());
+				
 			}
 		});
 
@@ -409,13 +415,15 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 					.getFirstElement();
 
 		} else {
-			selectedLogicalPplGroup = null;
+			selectedLogicalPplGroup = (TLogicalPeopleGroup) logicalPplviewer.getElementAt(0);
+			logicalPplviewer.getTable().setSelection(0);
+			
 		}
 
 		parameterViewer.setInput(createPramModle());
 		para_table.setSelection(0);
 
-		if (selectedLogicalPplGroup.getParameter().size() != 0) {
+		if (selectedLogicalPplGroup.getParameter()!=null) {
 			selectedParameter = selectedLogicalPplGroup.getParameter().get(0);
 		} else {
 			clearTextBox();
@@ -433,7 +441,8 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 			selectedParameter = (TParameter) ssel.getFirstElement();
 
 		} else {
-			selectedParameter = null;
+			selectedParameter = (TParameter) parameterViewer.getElementAt(0);
+			parameterViewer.getTable().setSelection(0);
 		}
 		// System.out.println(selectedParameter.getName());
 		updateParameters(selectedParameter);
