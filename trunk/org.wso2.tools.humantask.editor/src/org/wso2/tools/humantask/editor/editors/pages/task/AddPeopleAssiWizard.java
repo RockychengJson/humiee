@@ -1,6 +1,9 @@
 package org.wso2.tools.humantask.editor.editors.pages.task;
 
+import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.Wizard;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 
 public class AddPeopleAssiWizard extends Wizard {
 
@@ -8,7 +11,7 @@ public class AddPeopleAssiWizard extends Wizard {
 	
 	
 	
-	public AddPeopleAssiWizard(){
+	public AddPeopleAssiWizard(THumanInteractions humanInteractions, EditingDomain domain, TableViewer viewer_peopleAssignment, TaskPage taskPage){
 		
 	}
 	
