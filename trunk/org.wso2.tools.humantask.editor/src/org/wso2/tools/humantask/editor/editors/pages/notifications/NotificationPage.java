@@ -1562,7 +1562,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	private void configPElem_DescInfo_lang(final Text languageTextBox){
 		
 		if (notifications != null) {
-			if (notifications.getNotification().get(0).getPresentationElements() != null) {
+			if (notifications.getNotification().get(0).getPresentationElements().getDescription().size() !=0) {
 				if ((notifications.getNotification().get(0).getPresentationElements().getDescription().get(0) != null)) {
 					languageTextBox.setText((notifications.getNotification().get(0).getPresentationElements().getDescription().get(0).getLang()));
 				} else {
@@ -1598,7 +1598,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	private void configPElemDescInfo_contextType(final Combo contextTypeComboBox)
  {
 		if (notifications != null) {
-			if (notifications.getNotification().get(0).getPresentationElements() != null) {
+			if (notifications.getNotification().get(0).getPresentationElements().getDescription().size() != 0) {
 				if ((notifications.getNotification().get(0).getPresentationElements()
 						.getDescription().get(0) != null)) {
 					contextTypeComboBox.select(notifications.getNotification().get(0)
@@ -2211,7 +2211,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		if (selectedNotification == null) {
 			System.out.println("checkAvailabilityPElemDescTable() +Error message");
 		} else {
-			if(selectedNotification.getPresentationElements().getDescription() != null){
+			if(selectedNotification.getPresentationElements().getDescription().size()!= 0){
 			selectedElemDesc = selectedNotification.getPresentationElements().getDescription()
 					.get(0);
 			}
