@@ -1,5 +1,17 @@
 package org.wso2.tools.humantask.editor.editors.pages.notifications;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+
+import javax.wsdl.Definition;
+import javax.wsdl.WSDLException;
 import javax.xml.namespace.QName;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -52,6 +64,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TDescription;
+import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TExtension;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TNotification;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TNotifications;
@@ -60,7 +73,11 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TText;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
+import org.wso2.tools.humantask.editor.editors.pages.task.HumanRole;
 import org.wso2.tools.humantask.editor.editors.pages.util.Messages;
+
+import com.ibm.wsdl.OperationImpl;
+import com.ibm.wsdl.xml.WSDLReaderImpl;
 
 
 
@@ -71,11 +88,18 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	protected TNotifications notifications;
 	protected FormToolkit toolkit;
 	protected ComposedAdapterFactory adaptorFactory;
-	private THumanInteractions humaninteractions;
+	private THumanInteractions humanInteractions;
 	protected String pageTitle;
 	private TNotification selectedNotification;
 	
 	private NotificationPage notificationPage;
+	
+	private Definition definition;
+	private WSDLReaderImpl reader;
+	private String filename= "WSDLLocations.txt";
+	private String selectedWsdlComboBoxItem;
+	private Combo comboDropDown;
+	private Object portTypes[];
 	
 	private CTabFolder tabFolder;
 	private ScrolledForm form;
@@ -83,10 +107,13 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	private int tempindex;
 	private boolean isFirst = true;
 	
-	private Text portTextBox;
-	private Text OportTextBox;
-	private Text OresponseTextBox;
-	private Text operationTextBox;
+	private Combo portComboBox;
+	//private Text OportTextBox;
+	//private Text OresponseTextBox;
+	private Combo operationComboBox;
+	
+	private HumanRole selectedHumanRole;
+	
 	
 	private static final String[] FILTER_EXTS = { "*.wsdl","*.*" };
 	
@@ -142,9 +169,28 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				IResourceChangeEvent.POST_CHANGE);
 		this.domain = editor.getEditingDomain();
 		this.adaptorFactory = editor.getAdapterFactory();
-		this.humaninteractions = humanInteractions;
-		this.notifications = this.humaninteractions.getNotifications();
+		this.humanInteractions = humanInteractions;
+		this.notifications = this.humanInteractions.getNotifications();
 		this.notificationPage = this;
+		
+		
+		reader=new WSDLReaderImpl();
+
+		String name= domain.getResourceSet().getResources().get(0).getURI().segment(domain.getResourceSet().getResources().get(0).getURI().segmentCount()-1);
+		
+		File file=new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()+"/WSDLLocations_"+name+".txt");
+		try{	
+		filename=file.getCanonicalPath();
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+		}
+		catch(IOException e)
+		{
+			System.out.println("Error creating file WSDLLocations_...txt !");
+		}
+		
+		
 	}
 	
 	
@@ -355,7 +401,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			@Override
 			public void handleEvent(Event event) {
 				//TODO create New notification wizard
-				AddNotificationWizard wizard = new AddNotificationWizard(humaninteractions,notificationPage,domain,notficationViewer);
+				AddNotificationWizard wizard = new AddNotificationWizard(humanInteractions,notificationPage,domain,notficationViewer);
 				WizardDialog wizardDialog = new WizardDialog(Display .getCurrent().getActiveShell(),wizard);
 				wizardDialog.create(); 
 				wizardDialog.open();
@@ -371,6 +417,8 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			public void handleEvent(Event event) {
 
 			//TODO viraj :handle the action
+				boolean done= humanInteractions.getNotifications().getNotification().remove(selectedNotification);
+				notficationViewer.setInput(createNotificationModle());
 
 			}
 		});
@@ -423,14 +471,19 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		import_lb_gd.horizontalSpan =1;
 		import_label.setLayoutData(import_lb_gd);
 		
-		Combo comboDropDown = new Combo(wsdl_import_comp, SWT.DROP_DOWN | SWT.BORDER);
-		comboDropDown.add("test 1");
-		comboDropDown.add("test 2");
-		comboDropDown.add("test 3");
+		comboDropDown = new Combo(wsdl_import_comp, SWT.DROP_DOWN | SWT.BORDER);
+	
 		GridData combo_lb_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
 		combo_lb_gd.horizontalSpan = 2;
 		comboDropDown.setLayoutData(combo_lb_gd);
+		try {
+			configImportedWsdl(comboDropDown);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		
 		Label select_wsdl_label = new Label(wsdl_import_comp, SWT.WRAP);
 		select_wsdl_label.setText("Select the WSDL");
@@ -453,6 +506,14 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				if (fn != null) {
 					filename.setText(fn);
 				}
+				try{
+					saveToFile(filename.getText()); //url is saved to a text file
+					}
+					catch(IOException e)
+					{
+						System.out.println(e);
+					}
+					updateDetailsAccordingToWSDL();
 			}
 			
 		});
@@ -467,22 +528,27 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				| GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 1;
 		portTypeLabel.setLayoutData(data);
-		portTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		portTextBox.setSize(100, 20);
-		portTextBox.setLayoutData(data);
-		//configGeneralInfoSection_portType(portTextBox);
+		portComboBox = new Combo(sectionClient,SWT.DROP_DOWN | SWT.BORDER);
+		portComboBox.setSize(100, 20);
+		portComboBox.setLayoutData(data);
+		configGeneralInfoSection_portType(portComboBox);
+		
+		
+		
+		
+		
 
 		// Operation label and Text box
 		Label operationLabel = new Label(sectionClient, SWT.WRAP);
 		operationLabel.setText(Messages
 				.getString("TaskPage.interfaceTab.Section.operationlable"));
 		operationLabel.setLayoutData(data);
-		operationTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		operationTextBox.setSize(100, 20);
-		operationTextBox.setLayoutData(data);
-		//configGeneralInfoSection_operation(operationTextBox);
+		operationComboBox = new Combo(sectionClient,SWT.DROP_DOWN | SWT.BORDER);
+		operationComboBox.setSize(100, 20);
+		operationComboBox.setLayoutData(data);
+		configGeneralInfoSection_operation(operationComboBox);
 
-		// Radio button
+		/*// Radio button
 		Label radioSectionLabel = new Label(sectionClient, SWT.WRAP);
 		radioSectionLabel.setText(Messages
 				.getString("TaskPage.interfaceTab.Section.radiosectionlable"));
@@ -541,13 +607,102 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 
 				OresponseTextBox.setEnabled(false);
 			}
-		});
+		});*/
 		//section.setClient(wsdl_import_comp);
 		section.setClient(sectionClient);
 
 		return section;
 
 	}
+	
+	private void configGeneralInfoSection_portType(final Combo portComboBox) {
+		if (humanInteractions.getNotifications() != null) {
+			if (humanInteractions.getNotifications().getNotification().get(0).getInterface().getPortType()!= null) {
+			/*	if ((tasks.getTask().get(0).getInterface().getPortType()
+						.toString() != null)){*/ 
+				portComboBox.setText(humanInteractions.getNotifications().getNotification().get(0).getInterface().getPortType().toString()) ;
+				
+				
+			}else {
+				portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}
+		
+		portComboBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_Qname(
+						htdPackage.eINSTANCE.getTNotificationInterface_PortType(),
+						new QName(portComboBox.getText()));
+				
+				if(portComboBox.getSelectionIndex()!=-1){
+				
+				List operations=definition.getPortType((QName) portTypes[portComboBox.getSelectionIndex()]).getOperations();
+				operationComboBox.removeAll();
+				for(int i=0;i<operations.size();++i){
+					operationComboBox.add(((OperationImpl)operations.get(i)).getName());
+				}
+				operationComboBox.select(0);
+				}
+			}
+		});
+
+	}
+	
+	
+	
+	
+	private void setAttribute_Qname(EAttribute tNotificationInterface_Attribute,
+			QName text) {
+		Command setAttribCommand = SetCommand.create(domain,
+				selectedNotification.getInterface(), tNotificationInterface_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tNotificationInterface_Attribute.getName());
+		}
+	}
+	
+	
+	private void configGeneralInfoSection_operation(final Combo operationComboBox) {
+		if (humanInteractions.getNotifications() != null) {
+			if (humanInteractions.getNotifications().getNotification().get(0).getInterface().getOperation()!= null) {
+			/*	if ((tasks.getTask().get(0).getInterface().getPortType()
+						.toString() != null)){*/ 
+				operationComboBox.setText(humanInteractions.getNotifications().getNotification().get(0).getInterface().getOperation()) ;
+				
+				
+			}else {
+				operationComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}
+		
+		operationComboBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute(
+						htdPackage.eINSTANCE.getTNotificationInterface_Operation(),
+						operationComboBox.getText());
+							
+			}
+		});
+
+	}
+	
+	private void setAttribute(EAttribute tNotificationInterface_Attribute, String text) {
+		Command setAttribCommand = SetCommand.create(domain,
+				selectedNotification.getInterface(), tNotificationInterface_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tNotificationInterface_Attribute.getName());
+		}
+	}
+	
 	
 	private Section createPeopleAssiSection(FormToolkit toolkit,
 			final ScrolledForm form){
@@ -592,7 +747,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		viewer_peopleAssignment
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
-						//itemSelecter_peopleAssignment(event.getSelection());
+						itemSelecter_peopleAssignment(event.getSelection());
 
 					}
 				});
@@ -601,6 +756,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				.setContentProvider(new NPeopleAssiContentProvider());
 		viewer_peopleAssignment.setInput(createModleForPeopleAssinment());
 		table_peopleAssingment.setSelection(0);
+		checkAvailability_peopleAssignment();
 		
 		
 		Button add_btn = toolkit.createButton(sectionClient, "Add", SWT.PUSH);
@@ -637,6 +793,9 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 
 		return section;
 	}
+	
+	
+	
 	
 	private Section createLogicalPplSection(final FormToolkit toolkit,
 			final ScrolledForm form) {
@@ -710,10 +869,10 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		selectLogicalPeopleGroup_combo = new Combo(sectionClient, SWT.READ_ONLY);
 		selectLogicalPeopleGroup_combo.setLayoutData(gd);
 		
-		int size= humaninteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().size();
+		int size= humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().size();
 		for(int i=0;i<size;++i)
 		{
-			selectLogicalPeopleGroup_combo.add(humaninteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().get(i).getName(),i);
+			selectLogicalPeopleGroup_combo.add(humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().get(i).getName(),i);
 		}
 		
 		selectLogicalPeopleGroup_combo.select(0);
@@ -746,6 +905,27 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	}
 
 	
+	void itemSelecter_peopleAssignment(ISelection selection) {
+		IStructuredSelection ssel = (IStructuredSelection) selection;
+
+		if (ssel.size() == 1) {
+			selectedHumanRole = (HumanRole) ssel.getFirstElement();
+			//System.out.println(selectedHumanRole.getPeopleAssignMethodology());
+		} else {
+			selectedHumanRole = null;
+		}
+
+		//update_peopleAssingment();
+	}
+	
+	private void checkAvailability_peopleAssignment() {
+
+		if (viewer_peopleAssignment.getElementAt(0) == null) {
+			// Error message
+		} else {
+			selectedHumanRole=(HumanRole)viewer_peopleAssignment.getElementAt(0);
+		}
+	}
 	
 	
 	
@@ -1680,8 +1860,8 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			@Override
 			public String getText(Object element) {
 				
-				TNotification notification = (TNotification)element;
-				return notification.getPeopleAssignments().getBusinessAdministrators().get(0).toString();
+				HumanRole role = (HumanRole) element;
+				return role.getType();
 				
 			}
 
@@ -1873,11 +2053,14 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			selectedNotification = (TNotification) ssel.getFirstElement();
 			 System.out.println(selectedNotification.getName());
 		} else {
-			selectedNotification = null;
+			
+			selectedNotification = (TNotification)  notficationViewer.getElementAt(0);
+			notficationViewer.getTable().setSelection(0);
 		}
 		
 		
-		//updatePeopleAssignmentTable();
+		updateInterfaceTab();
+		updatePeopleAssignmentTable();
 		updatePreElemNameTable();
 		updatePParmTable();
 		updatePElemSubTable();
@@ -1957,7 +2140,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	{
 		viewer_peopleAssignment.setInput(createModleForPeopleAssinment());
 		table_peopleAssingment.setSelection(0);
-		//checkAvailability_peopleAssignment();
+		checkAvailability_peopleAssignment();
 		
 		//update_peopleAssingment();
 		
@@ -2163,7 +2346,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			// Error message
 
 		} else {
-			selectedNotification = notifications.getNotification().get(0);
+			selectedNotification = humanInteractions.getNotifications().getNotification().get(0);
 		}
 
 	}
@@ -2219,6 +2402,168 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	}
 	
 	
+	private void updateDetailsAccordingToWSDL()
+	{
+		try {
+			definition= reader.readWSDL(selectedWsdlComboBoxItem);
+		} catch (WSDLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		 portTypes= definition.getPortTypes().keySet().toArray();
+		
+		 
+		// portComboBox.setText(definition.getPortType((QName) portTypes[0]).getQName().toString());
+		 portComboBox.removeAll();
+		 for(int i=0;i<portTypes.length;++i){
+		 portComboBox.add(definition.getPortType((QName) portTypes[i]).getQName().toString());
+		 }
+		 portComboBox.select(0);
+		OperationImpl operation= (OperationImpl)definition.getPortType((QName) portTypes[0]).getOperations().get(0);
+		List operations=definition.getPortType((QName) portTypes[0]).getOperations();
+		operationComboBox.removeAll();
+		for(int i=0;i<operations.size();++i){
+			operationComboBox.add(((OperationImpl)operations.get(i)).getName());
+		}
+		operationComboBox.select(0);
+		
+		//operationComboBox.setText(operation.getName());
+		//System.out.println(operation.getStyle());
+		/*if(operation.getStyle().toString().equals("REQUEST_RESPONSE"))
+		{
+			
+			oneway.setSelection(false);
+			requestres.setSelection(true);
+			OportComboBox.setEnabled(true);
+			
+			OportComboBox.removeAll();
+			for(int i=0;i<portTypes.length;++i){
+				OportComboBox.add(definition.getPortType((QName) portTypes[i]).getQName().toString());
+			}
+			OportComboBox.select(0);
+			OperationImpl responseOperation= (OperationImpl)definition.getPortType((QName) portTypes[0]).getOperations().get(0);
+			List responseOperations=definition.getPortType((QName) portTypes[0]).getOperations();
+			
+			OresponseComboBox.setEnabled(true);
+			OresponseComboBox.removeAll();
+			for(int i=0;i<responseOperations.size();++i){
+				OresponseComboBox.add(((OperationImpl)responseOperations.get(i)).getName());
+			}
+			OresponseComboBox.select(0);
+			
+			//OportTextBox.setText("")
+			
+		}*/
+		 /*if(operation.getStyle().toString().equals("ONE_WAY"))
+		{
+			
+			oneway.setSelection(true);
+			requestres.setSelection(false);			
+			OresponseComboBox.setText("");
+			OresponseComboBox.setEnabled(false);
+			OportComboBox.setText("");
+			OportComboBox.setEnabled(false);
+		}
+		*/
+		//oneway.setSelection(selected);
+		
+	}
+	
+	private void configImportedWsdl(final Combo WsdlComboBox)
+	throws IOException {
+
+BufferedReader br;
+try {
+	br= new BufferedReader(new InputStreamReader(
+			new DataInputStream(new FileInputStream(filename))));
+	String strLine;
+	while ((strLine = br.readLine()) != null) {
+		WsdlComboBox.add(strLine);
+	}
+	br.close();
+	
+} catch (IOException e) {
+	System.out.println("Error: " + e.getMessage());
+}
+System.out.println(WsdlComboBox.getItemCount());
+if(WsdlComboBox.getItemCount()!=0)
+{
+	selectedWsdlComboBoxItem = WsdlComboBox.getItem(0);
+}
+	  
+	
+	WsdlComboBox.addModifyListener(new ModifyListener() {
+public void modifyText(ModifyEvent e) {
+	//validateInput();
+	selectedWsdlComboBoxItem= WsdlComboBox.getItem(WsdlComboBox.getSelectionIndex());
+	//WSDLReaderImpl reader =new WSDLReaderImpl();
+	
+	updateDetailsAccordingToWSDL();
+	
+	
+}
+});
+
+
+}
+
+
+
+private void saveToFile(String location) throws IOException {
+FileWriter fw = null;
+	try {		
+
+	fw = new FileWriter(filename, true); // the true will append the new
+											// data
+
+} catch (FileNotFoundException ioe) {
+	System.out.println("File not found !");
+}
+fw.write(location + "\n");// appends the string to the file
+fw.close();
+
+
+
+comboDropDown.add(location);
+int count = comboDropDown.getItemCount();
+comboDropDown.select(count - 1);
+selectedWsdlComboBoxItem = comboDropDown.getItem(comboDropDown
+		.getSelectionIndex());
+
+}
+	
+	
+
+private void updateInterfaceTab() {
+	
+	if (selectedNotification.getInterface() != null) {
+
+		if (selectedNotification.getInterface().getPortType() != null) {				
+			portComboBox.setText(selectedNotification.getInterface().getPortType()
+					.toString());
+		} else {
+			portComboBox.setText("");
+		}
+		if (selectedNotification.getInterface().getOperation() != null) {				
+			operationComboBox.setText(selectedNotification.getInterface().getOperation());
+		} else {
+
+			operationComboBox.setText("");
+		}
+		
+		}
+		
+		
+	 else {
+		portComboBox.setText("");
+		operationComboBox.setText("");
+	
+	}
+
+}
+
+
+
 	
 	class TabContent {
 
