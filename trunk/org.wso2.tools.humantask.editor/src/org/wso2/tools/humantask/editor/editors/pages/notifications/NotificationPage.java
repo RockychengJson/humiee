@@ -464,7 +464,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		wsdl_import_comp.setLayoutData(wsdl_import_comp_gd);
 		GridLayout wsdlComp_layout = new GridLayout(3 ,false);
 		wsdl_import_comp.setLayout(wsdlComp_layout);*/
-		
+	
 		Group wsdlInfo = new Group(sectionClient, SWT.NONE);
 		wsdlInfo.setText("Import WSDLs");
 		GridLayout gridLayout = new GridLayout();
@@ -481,12 +481,11 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		import_lb_gd.horizontalSpan =1;
 		import_label.setLayoutData(import_lb_gd);
 		
-
 		Combo comboDropDown = new Combo(wsdlInfo, SWT.DROP_DOWN | SWT.BORDER);
 		comboDropDown.add("test 1");
 		comboDropDown.add("test 2");
 		comboDropDown.add("test 3");
-
+		
 		GridData combo_lb_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
 		combo_lb_gd.horizontalSpan = 2;
@@ -500,7 +499,6 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		
 
 		Label select_wsdl_label = new Label(wsdlInfo, SWT.WRAP);
-
 		select_wsdl_label.setText("Select the WSDL");
 		//import_lb_gd.horizontalSpan =  1;
 		select_wsdl_label.setLayoutData(import_lb_gd);
@@ -534,8 +532,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		});
 		browse_btn.setLayoutData(import_lb_gd);
 		
-		
-		// Port Type label and Text box
+		creatSpacer(sectionClient, 2);
 		Label portTypeLabel = new Label(sectionClient, SWT.WRAP);
 		portTypeLabel.setText(Messages
 				.getString("TaskPage.interfaceTab.Section.porttypelable"));
@@ -543,87 +540,24 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				| GridData.FILL_HORIZONTAL);
 		data.horizontalSpan = 1;
 		portTypeLabel.setLayoutData(data);
+	
 		portComboBox = new Combo(sectionClient,SWT.DROP_DOWN | SWT.BORDER);
 		portComboBox.setSize(100, 20);
 		portComboBox.setLayoutData(data);
 		configGeneralInfoSection_portType(portComboBox);
 		
-		
-		
-		
-		
-
+		creatSpacer(sectionClient, 2);
 		// Operation label and Text box
 		Label operationLabel = new Label(sectionClient, SWT.WRAP);
 		operationLabel.setText(Messages
 				.getString("TaskPage.interfaceTab.Section.operationlable"));
 		operationLabel.setLayoutData(data);
+	
 		operationComboBox = new Combo(sectionClient,SWT.DROP_DOWN | SWT.BORDER);
 		operationComboBox.setSize(100, 20);
 		operationComboBox.setLayoutData(data);
 		configGeneralInfoSection_operation(operationComboBox);
-
-		/*// Radio button
-		Label radioSectionLabel = new Label(sectionClient, SWT.WRAP);
-		radioSectionLabel.setText(Messages
-				.getString("TaskPage.interfaceTab.Section.radiosectionlable"));
-		radioSectionLabel.setLayoutData(data);
-		Composite radiocomposite = toolkit.createComposite(sectionClient);
-		FillLayout fl = new FillLayout(SWT.HORIZONTAL);
-		radiocomposite.setLayout(fl);
-		Button oneway = new Button(radiocomposite, SWT.RADIO);
-		oneway.setText(Messages
-				.getString("TaskPage.interfaceTab.Section.onewayradiolable"));
-		oneway.setSelection(true);
-
-		Button requestres = new Button(radiocomposite, SWT.RADIO);
-		requestres.setText(Messages
-				.getString("TaskPage.interfaceTab.Section.reqresradiolable"));
-		requestres.setSelection(false);
-
-		// OportType label and Text box
-		final Label OportTypeLabel = new Label(sectionClient, SWT.WRAP);
-		OportTypeLabel
-				.setText(Messages
-						.getString("TaskPage.interfaceTab.Section.onewayradio.portlable"));
-		OportTypeLabel.setLayoutData(data);
-
-		OportTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		OportTextBox.setSize(100, 20);
-		OportTextBox.setLayoutData(data);
-		//configGeneralInfoSection_OportType(OportTextBox);
-
-		//Oresponse label and Text box
-		final Label OresponseLabel = new Label(sectionClient, SWT.WRAP);
-		OresponseLabel
-				.setText(Messages
-						.getString("TaskPage.interfaceTab.Section.onewayradio.responselable"));
-		OresponseLabel.setLayoutData(data);
-
-		OresponseTextBox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
-		OresponseTextBox.setSize(100, 20);
-		OresponseTextBox.setLayoutData(data);
-		//configGeneralInfoSection_Oresponse(OresponseTextBox);
-
-		oneway.addMouseListener(new MouseAdapter() {
-			public void mouseDown(MouseEvent e) {
-
-				OportTextBox.setEnabled(true);
-
-				OresponseTextBox.setEnabled(true);
-			}
-
-		});
-
-		requestres.addMouseListener(new MouseAdapter() {
-			public void mouseDown(MouseEvent e) {
-
-				OportTextBox.setEnabled(false);
-
-				OresponseTextBox.setEnabled(false);
-			}
-		});*/
-		//section.setClient(wsdl_import_comp);
+		
 		section.setClient(sectionClient);
 
 		return section;
