@@ -49,6 +49,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
@@ -456,23 +457,36 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 
 		sectionClient.setLayout(layout);
 		
-		final Composite wsdl_import_comp = toolkit.createComposite(sectionClient);
+		/*final Composite wsdl_import_comp = toolkit.createComposite(sectionClient);
 		GridData wsdl_import_comp_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
 		wsdl_import_comp_gd.horizontalSpan = 2;
 		wsdl_import_comp.setLayoutData(wsdl_import_comp_gd);
 		GridLayout wsdlComp_layout = new GridLayout(3 ,false);
-		wsdl_import_comp.setLayout(wsdlComp_layout);
+		wsdl_import_comp.setLayout(wsdlComp_layout);*/
 		
-		Label import_label = new Label(wsdl_import_comp, SWT.WRAP);
+		Group wsdlInfo = new Group(sectionClient, SWT.NONE);
+		wsdlInfo.setText("Import WSDLs");
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 3;
+		wsdlInfo.setLayout(gridLayout);
+		GridData gridData = new GridData(GridData.FILL, GridData.CENTER, true, false);
+		gridData.horizontalSpan = 2;
+		wsdlInfo.setLayoutData(gridData);
+		
+		Label import_label = new Label(wsdlInfo, SWT.WRAP);
 		import_label.setText("Imported WSDLs");
 		GridData import_lb_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
 		import_lb_gd.horizontalSpan =1;
 		import_label.setLayoutData(import_lb_gd);
 		
-		comboDropDown = new Combo(wsdl_import_comp, SWT.DROP_DOWN | SWT.BORDER);
-	
+
+		Combo comboDropDown = new Combo(wsdlInfo, SWT.DROP_DOWN | SWT.BORDER);
+		comboDropDown.add("test 1");
+		comboDropDown.add("test 2");
+		comboDropDown.add("test 3");
+
 		GridData combo_lb_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
 		combo_lb_gd.horizontalSpan = 2;
@@ -484,16 +498,17 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			e1.printStackTrace();
 		}
 		
-		
-		Label select_wsdl_label = new Label(wsdl_import_comp, SWT.WRAP);
+
+		Label select_wsdl_label = new Label(wsdlInfo, SWT.WRAP);
+
 		select_wsdl_label.setText("Select the WSDL");
 		//import_lb_gd.horizontalSpan =  1;
 		select_wsdl_label.setLayoutData(import_lb_gd);
 		
-		final Text filename = new Text(wsdl_import_comp, SWT.SINGLE | SWT.BORDER);
+		final Text filename = new Text(wsdlInfo, SWT.SINGLE | SWT.BORDER);
 		filename.setLayoutData(import_lb_gd);
 		
-		Button browse_btn = new Button(wsdl_import_comp, SWT.PUSH);
+		Button browse_btn = new Button(wsdlInfo, SWT.PUSH);
 		browse_btn.setText("Browse");
 		browse_btn.addSelectionListener(new SelectionAdapter() {
 			
