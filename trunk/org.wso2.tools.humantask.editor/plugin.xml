@@ -39,7 +39,7 @@
             class="org.wso2.tools.humantask.editor.editors.HTMultiPageEditor"
             contributorClass="org.wso2.tools.humantask.editor.editors.HTMultiPageEditorContributor"
             extensions="htd"
-            icon="icons/full/obj16/HtdModelFile.gif"
+            icon="icons/full/obj16/hte.png"
             id="org.wso2.tools.humantask.editor.editors.HTEditorID"
             name="HTEditor">
       </editor>
