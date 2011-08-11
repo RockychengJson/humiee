@@ -51,6 +51,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
@@ -65,7 +66,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TDescription;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TExtension;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TPresentationParameter;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TTask;
@@ -418,22 +418,31 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 		sectionClient.setLayout(layout);
 		
-		final Composite wsdl_import_comp = toolkit.createComposite(sectionClient);
+		/*final Composite wsdl_import_comp = toolkit.createComposite(sectionClient);
 		GridData wsdl_import_comp_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
 		wsdl_import_comp_gd.horizontalSpan = 2;
 		wsdl_import_comp.setLayoutData(wsdl_import_comp_gd);
 		GridLayout wsdlComp_layout = new GridLayout(3 ,false);
 		wsdl_import_comp.setLayout(wsdlComp_layout);
+		*/
+		Group wsdlInfo = new Group(sectionClient, SWT.NONE);
+		wsdlInfo.setText("Import WSDLs");
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 3;
+		wsdlInfo.setLayout(gridLayout);
+		GridData gridData = new GridData(GridData.FILL, GridData.CENTER, true, false);
+		gridData.horizontalSpan = 2;
+		wsdlInfo.setLayoutData(gridData);
 		
-		Label import_label = new Label(wsdl_import_comp, SWT.WRAP);
+		Label import_label = new Label(wsdlInfo, SWT.WRAP);
 		import_label.setText("Imported WSDLs");
 		GridData import_lb_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
 		import_lb_gd.horizontalSpan =1;
 		import_label.setLayoutData(import_lb_gd);
 		
-		 comboDropDown = new Combo(wsdl_import_comp, SWT.DROP_DOWN | SWT.BORDER);
+		 comboDropDown = new Combo(wsdlInfo, SWT.DROP_DOWN | SWT.BORDER);
 		GridData combo_lb_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
 		combo_lb_gd.horizontalSpan = 2;
@@ -445,15 +454,15 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			e1.printStackTrace();
 		}
 		
-		Label select_wsdl_label = new Label(wsdl_import_comp, SWT.WRAP);
+		Label select_wsdl_label = new Label(wsdlInfo, SWT.WRAP);
 		select_wsdl_label.setText("Select the WSDL");
 		//import_lb_gd.horizontalSpan =  1;
 		select_wsdl_label.setLayoutData(import_lb_gd);
 		
-		final Text filename = new Text(wsdl_import_comp, SWT.SINGLE | SWT.BORDER);
+		final Text filename = new Text(wsdlInfo, SWT.SINGLE | SWT.BORDER);
 		filename.setLayoutData(import_lb_gd);
 		
-		Button browse_btn = new Button(wsdl_import_comp, SWT.PUSH);
+		Button browse_btn = new Button(wsdlInfo, SWT.PUSH);
 		browse_btn.setText("Browse");
 		browse_btn.addSelectionListener(new SelectionAdapter() {
 			
@@ -1726,8 +1735,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	// Create Presentations
 	// TODO
 	private Section createPElemGenralTableSection(FormToolkit toolkit){
-		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
-				| Section.TITLE_BAR);
+		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION | Section.TITLE_BAR);
 
 		section.setText("Create Name");
 		section.setDescription("ADD LATER");
@@ -1745,11 +1753,9 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		sectionClient.setLayout(layout);
 		toolkit.paintBordersFor(sectionClient);
 		
-		presentationElemNameViewer = new TableViewer(sectionClient, SWT.MULTI
-				| SWT.BORDER);
+		presentationElemNameViewer = new TableViewer(sectionClient, SWT.MULTI | SWT.BORDER);
 		createColumnPresantationElemNameTable(sectionClient,presentationElemNameViewer);
-		//		PresentationParameterViewer);
-		
+	
 		table_presentationElemName= presentationElemNameViewer.getTable();
 
 		GridData gd = new GridData(GridData.FILL_BOTH);
@@ -1758,7 +1764,6 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		gd.widthHint = 100;
 
 		table_presentationElemName.setLayoutData(gd);
-
 		table_presentationElemName.setHeaderVisible(true);
 		table_presentationElemName.setLinesVisible(true);
 		
@@ -1785,13 +1790,11 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 			@Override
 			public void handleEvent(Event event) {
-				/*
-				 * TaskCreatWizard wizard = new
-				 * TaskCreatWizard(humanInteractions,domain,viewer );
-				 * WizardDialog wizardDialog = new WizardDialog(Display
-				 * .getCurrent().getActiveShell(),wizard);
-				 * wizardDialog.create(); wizardDialog.open();
-				 */
+				
+				AddPElemNameWIzard wizard = new AddPElemNameWIzard(taskPage,domain,presentationElemNameViewer);
+				WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(),wizard);
+				wizardDialog.create(); wizardDialog.open();
+				 
 			}
 		});
 		
@@ -1803,7 +1806,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			@Override
 			public void handleEvent(Event event) {
 
-			//TODO viraj :handle the action
+				input.getPresentationElements().getName().remove(selectedElemName); 
+                presentationElemNameViewer.setInput(input);
 				boolean done=input.getPresentationElements().getName().remove(selectedElemName); 
 				presentationElemNameViewer.setInput(input);
 
@@ -1814,6 +1818,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		return section;
 		
 	}
+	
 	private Section createPElemGeneralInfoSection(FormToolkit toolkit) {
 
 		Section info_section = toolkit.createSection(tabFolder,
@@ -1835,16 +1840,14 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 		sectionClient.setLayout(layout);
 
-		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL);
 		gd.horizontalSpan = 1;
 
 		Label name_lb = new Label(sectionClient, SWT.WRAP);
 		name_lb.setText("Name");
 		name_lb.setLayoutData(gd);
 
-		preElem_GenInfo_name_txt = new Text(sectionClient, SWT.SINGLE
-				| SWT.BORDER);
+		preElem_GenInfo_name_txt = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		preElem_GenInfo_name_txt.setLayoutData(gd);
 
 		configPElemGeneralInfoSection_name(preElem_GenInfo_name_txt);
@@ -1941,7 +1944,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			@Override
 			public void handleEvent(Event event) {
 
-			//TODO viraj :handle the action
+				   input.getPresentationElements().getPresentationParameters().getPresentationParameter().remove(selectedParam);
+                   PresentationParameterViewer.setInput(input);
 
 			}
 		});
@@ -2551,7 +2555,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	// item selecters
 	
-private void preElemNameViewerItemSelecter(ISelection selection){
+	private void preElemNameViewerItemSelecter(ISelection selection){
 		
 		IStructuredSelection ssel = (IStructuredSelection) selection;
 		
@@ -2563,8 +2567,7 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 		{
 			selectedElemName = (TText) presentationElemNameViewer.getElementAt(0);
 			presentationElemNameViewer.getTable().setSelection(0);
-			
-			
+		
 		}
 		
 			updatePElemNameDetails();
@@ -2581,7 +2584,8 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 		} else 
 		{
 			
-			selectedParam = null;
+			selectedParam = (TPresentationParameter) PresentationParameterViewer.getElementAt(0);
+			PresentationParameterViewer.getTable().setSelection(0);
 			
 		}
 
@@ -2767,9 +2771,6 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 	
 	
 	
-	
-	
-	
 	private void configPElemGeneralInfoSection_name(final Text nameTextBox)
 	{
 		 if (input != null)
@@ -2791,7 +2792,7 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 		  			public void modifyText(ModifyEvent e) 
 		  			{
 		  			// validateInput(); 
-		  				setAttribute_tParameter(htdPackage.eINSTANCE.getTExpression_Mixed(), nameTextBox.getText()); 
+		  				//setAttribute_tParameter(htdPackage.eINSTANCE.getTExpression_Mixed(), nameTextBox.getText()); 
 		  				
 		  			}
 		  		});
@@ -2813,6 +2814,7 @@ private void preElemNameViewerItemSelecter(ISelection selection){
 	
 	
 	//Languge of name tag
+	
 	private void configPElemGeneralInfoSection_language(final Text languageTextBox) {
 		if (tasks != null) {
 			if (tasks.getTask().get(0).getPresentationElements() != null) {
