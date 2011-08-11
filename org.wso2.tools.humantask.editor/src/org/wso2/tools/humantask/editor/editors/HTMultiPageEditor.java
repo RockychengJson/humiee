@@ -25,16 +25,8 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.eclipse.ui.texteditor.TextEditorAction;
-import org.eclipse.wst.sse.ui.StructuredTextEditor;
-import org.eclipse.jface.text.source.Annotation; // this is need
-
-
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.DocumentRoot;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TLogicalPeopleGroups;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TNotifications;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TPresentationElements;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TTasks;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.util.htdAdapterFactory;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.util.htdResourceFactoryImpl;
@@ -45,23 +37,17 @@ import org.wso2.tools.humantask.editor.editors.pages.task.TaskPage;
 import org.wso2.tools.humantask.editor.editors.xmleditor.HTEditor;
 
 
-import org.eclipse.ui.editors.text.TextEditor;
 
-
-
-public class HTMultiPageEditor extends HTMultiPageEditorBase {
+public class HTMultiPageEditor extends HTMultiPageEditorBase{
 
 	private HumanInteractionsPage humanInteractionPage;
 	private LogicalPeopleGroupPage logicalPeopleGroupPage;
 	private TaskPage taskPage;
 	private NotificationPage notificationPage;
 	
-	// Human Interactions source viewer
-	//private StructuredTextEditor sourceViewer;
 	private HTEditor sourceViewer;
 	
 	private THumanInteractions humanInteractions;
-	private TLogicalPeopleGroups logicalPeopleGroups;
 	private TTasks tasks;
 	
 	
@@ -135,7 +121,7 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 				humanInteractions = ((DocumentRoot) contents.get(0)).getHumanInteractions();
 				
 				tasks =  humanInteractions.getTasks(); //
-				logicalPeopleGroups = humanInteractions.getLogicalPeopleGroups();
+			
 				
 			}
 		} catch (IOException e) {
@@ -182,23 +168,12 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 			e.printStackTrace();
 		}
 		
-		
 		try {
-			
-			// * Source view declaration
-			 
-			/*sourceViewer = new StructuredTextEditor() {
-				@Override
-				public boolean isEditable() {
-					return true;
-				}
-			};*/
-			
-			sourceViewer=new HTEditor();
-			
-			
+
+			sourceViewer = new HTEditor();
 			int index = addPage(sourceViewer, getEditorInput());
 			setPageText(index, sourceViewer.getTitle());
+			
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
@@ -247,9 +222,8 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 			// Refresh the necessary state.
 			((BasicCommandStack)editingDomain.getCommandStack()).saveIsDone();
 			//TODO: Need to come up with a interface represent all the pages, so page specific setResourceCHanged() can be avoided
-			logicalPeopleGroupPage.setResourceChanged(true);
-			//notificationsPage.setResourceChanged(false);
-			//humanInteractionPage.setResourceChanged(false);
+			
+			sourceViewer.doSave(progressMonitor);
 			
 			firePropertyChange(IEditorPart.PROP_DIRTY);
 		} catch (InvocationTargetException e) {
@@ -259,36 +233,23 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase {
 			//TODO: Correct exception handling
 			e.printStackTrace();
 		}
-		
-		
-		//update the tables when save button pressed
-		
-		//logicalPeopleGroupPage.updatePeopleAssignmentTable();
-		//logicalPeopleGroupPage.updateParameterTable();
-		
-		
-		
-		
+			
 	}
 	
 	@Override
 	public boolean isDirty() {
-		//return ((BasicCommandStack) editingDomain.getCommandStack()).isSaveNeeded();
+		
 		if (((BasicCommandStack) editingDomain.getCommandStack()).isSaveNeeded()) {
 			return true;
-		} else if (logicalPeopleGroupPage.isResourceChanged()) { //TODO: Need to come up with a interface represent all the pages, so page specific setResourceCHanged() can be avoided
+
+		}else if (sourceViewer.isDirty()) {
 			return true;
-		} else if (taskPage.isResourceChanged()) { //TODO: Need to come up with a interface represent all the pages, so page specific setResourceCHanged() can be avoided
-			return true;
-		} else if(humanInteractionPage.isResourceChanged()) {
-			return true;
+		
 		} else {
 			return false;
 		}
 		
 	}
-	
-	
-	
-	
+
+
 }
