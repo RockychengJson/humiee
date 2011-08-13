@@ -114,6 +114,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	private Combo operationComboBox;
 	
 	private HumanRole selectedHumanRole;
+	private HumanRole pastSelectedHumanRole;
 	
 	
 	private static final String[] FILTER_EXTS = { "*.wsdl","*.*" };
@@ -716,6 +717,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 
 			@Override
 			public void handleEvent(Event event) {
+							
 				
 				//AddPeopleAssiWizard wizard = new AddPeopleAssiWizard( humanInteractions, domain, viewer_peopleAssignment,taskPage);
 				//WizardDialog wizardDialog = new WizardDialog(Display .getCurrent().getActiveShell(),wizard);
@@ -800,7 +802,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				| GridData.FILL_HORIZONTAL);
 		
 		roal_type.setLayoutData(cgd1);
-		//configPeopleAssignmentSection_roleType(roal_type);
+		configPeopleAssignmentSection_roleType(roal_type);
 		
 		
 		Label selectppllabel = new Label(sectionClient, SWT.WRAP);
@@ -828,7 +830,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		GridData cgd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
 		cgd.horizontalSpan =1;
 		selectLogicalPeopleGroup_combo.setLayoutData(cgd);
-		//configPeopleAssignmentSection_logicalPeopleGroup(selectLogicalPeopleGroup_combo);
+		configPeopleAssignmentSection_logicalPeopleGroup(selectLogicalPeopleGroup_combo);
 
 		Label namelabel = new Label(sectionClient, SWT.WRAP);
 		namelabel.setText("Name");
@@ -836,7 +838,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 
 		peopleAssignmentNametextbox = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		peopleAssignmentNametextbox.setLayoutData(gd);
-		//configPeopleAssignmentSection_name(peopleAssignmentNametextbox);
+		configPeopleAssignmentSection_name(peopleAssignmentNametextbox);
 
 		Label explabel = new Label(sectionClient, SWT.WRAP);
 		explabel.setText("Expression");
@@ -864,7 +866,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			selectedHumanRole = null;
 		}
 
-		//update_peopleAssingment();
+		update_peopleAssingment();
 	}
 	
 	private void checkAvailability_peopleAssignment() {
@@ -875,6 +877,154 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			selectedHumanRole=(HumanRole)viewer_peopleAssignment.getElementAt(0);
 		}
 	}
+	
+	private void configPeopleAssignmentSection_roleType(final Combo roleCombo) {
+		if (selectedHumanRole != null) {
+			if (selectedHumanRole.getType()!= null) {
+				roleCombo.select(selectedHumanRole.getTypeByIndex());
+			} else {
+				roleCombo.select(-1);
+						
+
+			}
+		}
+
+		roleCombo.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {				
+				
+				editRoleType_roleCombo();
+				
+				firePropertyChange(PROP_DIRTY);
+				System.out.println( isDirty());
+
+				
+			}
+		});
+		
+		pastSelectedHumanRole=selectedHumanRole;
+	}
+	
+	private void editRoleType_roleCombo() {
+
+		if (roal_type.getSelectionIndex() == 0) {
+
+			
+			if (selectedHumanRole.getTypeByIndex() == 5) {
+				selectedNotification.getPeopleAssignments().getRecipients()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				selectedNotification.getPeopleAssignments().getBusinessAdministrators()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+			
+
+		}
+		if (roal_type.getSelectionIndex() == 1) {
+			if (selectedHumanRole.getTypeByIndex() == 4) {
+				selectedNotification.getPeopleAssignments().getBusinessAdministrators()
+						.remove(selectedHumanRole.getGenericHumanRole());
+				selectedNotification.getPeopleAssignments().getRecipients()
+						.add(selectedHumanRole.getGenericHumanRole());
+			}
+		
+			
+		}
+		
+		}
+
+
+	private void configPeopleAssignmentSection_logicalPeopleGroup(final Combo logicalPeopleGroupComboBox)
+	{
+		if (selectedHumanRole != null) {
+			if (selectedHumanRole.getGenericHumanRole().getFrom().getLogicalPeopleGroup() != null) {
+				int itemCount = logicalPeopleGroupComboBox.getItemCount();
+				for (int j = 0; j < itemCount; ++j) {
+					if ((logicalPeopleGroupComboBox.getItem(j))
+							.equals(selectedHumanRole.getLogicalPeopleGroup())) {
+						logicalPeopleGroupComboBox.select(j);
+					}
+
+				}
+				
+			} else {
+				
+			}
+		}
+
+		logicalPeopleGroupComboBox.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+				
+				setAttribute_logicalPeopleGroup(htdPackage.eINSTANCE.getTFrom_LogicalPeopleGroup(),logicalPeopleGroupComboBox.getItem(logicalPeopleGroupComboBox.getSelectionIndex()) );
+			}
+		});
+	
+		
+	}
+	
+	private void configPeopleAssignmentSection_name(final Text nameTextBox) {
+		if (selectedHumanRole != null) {
+			if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getName() != null) {
+				nameTextBox.setText(selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getName());
+			} else {
+				nameTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+			}
+		}
+
+		nameTextBox.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+
+				setAttribute_parmName(
+						htdPackage.eINSTANCE.getTArgument_Name(),
+						nameTextBox.getText());
+			}
+		});
+	}
+	
+	
+	private void setAttribute_parmName(EAttribute tArgument_Attribute,
+			String text) {
+		if(selectedHumanRole.getGenericHumanRole().getFrom()!=null)
+		{
+		Command setAttribCommand = SetCommand.create(domain, selectedHumanRole.getGenericHumanRole().getFrom().getArgument(),
+				tArgument_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tArgument_Attribute.getName());
+		}
+		}
+
+	}
+	
+	private void setAttribute_logicalPeopleGroup(EAttribute tArgument_Attribute,
+			String text) {
+		
+		if(selectedHumanRole.getGenericHumanRole().getFrom()!=null)
+		{
+		Command setAttribCommand = SetCommand.create(domain, selectedHumanRole.getGenericHumanRole().getFrom(),
+				tArgument_Attribute, new QName(text) );
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tArgument_Attribute.getName());
+		}
+		}
+
+	}
+	
 	
 	
 	
@@ -2091,7 +2241,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		table_peopleAssingment.setSelection(0);
 		checkAvailability_peopleAssignment();
 		
-		//update_peopleAssingment();
+		update_peopleAssingment();
 		
 	}
 	
@@ -2508,6 +2658,58 @@ private void updateInterfaceTab() {
 		operationComboBox.setText("");
 	
 	}
+
+}
+
+private void update_peopleAssingment() {
+
+	if (selectedHumanRole != null) {		
+		
+		if(selectedHumanRole.getTypeByIndex()==4){
+			roal_type.select(0);
+		}
+		if(selectedHumanRole.getTypeByIndex()==5){
+			roal_type.select(1);
+		}
+		
+		
+		int itemCount = selectLogicalPeopleGroup_combo.getItemCount();
+		for (int j = 0; j < itemCount; ++j) {
+			if ((selectLogicalPeopleGroup_combo.getItem(j))
+					.equals(selectedHumanRole.getLogicalPeopleGroup())) {
+				selectLogicalPeopleGroup_combo.select(j);
+			}
+
+		}
+		if (selectedHumanRole.getGenericHumanRole().getFrom() != null) {
+			if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument()!=null){
+			if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getName() != null) {
+			peopleAssignmentNametextbox.setText(selectedHumanRole
+					.getGenericHumanRole().getFrom().getArgument()
+					.getName());
+			}
+			
+
+			try
+			{
+			peopleAssignmentExptextbox.setText(selectedHumanRole
+					.getGenericHumanRole().getFrom().getArgument()
+					.getMixed().getValue(0).toString());
+			}
+			catch(Exception e)
+			{
+				System.out.println(e+"  update people assignment table");
+				peopleAssignmentExptextbox.setText("");
+			}
+			}
+		}
+		else
+		{
+			peopleAssignmentNametextbox.setText("");
+			peopleAssignmentExptextbox.setText("");
+		}
+	}
+
 
 }
 
