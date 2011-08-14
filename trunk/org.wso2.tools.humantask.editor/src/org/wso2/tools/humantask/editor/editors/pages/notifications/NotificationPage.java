@@ -963,15 +963,25 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	
 		
 	}
-	
+
 	private void configPeopleAssignmentSection_name(final Text nameTextBox) {
 		if (selectedHumanRole != null) {
-			if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getName() != null) {
-				nameTextBox.setText(selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getName());
-			} else {
-				nameTextBox
-						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			if (selectedHumanRole.getGenericHumanRole() != null) {
+				if (selectedHumanRole.getGenericHumanRole().getFrom() != null) {
+					if (selectedHumanRole.getGenericHumanRole().getFrom()
+							.getArgument() != null) {
+						if (selectedHumanRole.getGenericHumanRole().getFrom()
+								.getArgument().getName() != null) {
+							nameTextBox.setText(selectedHumanRole
+									.getGenericHumanRole().getFrom()
+									.getArgument().getName());
+						} else {
+							nameTextBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 
+						}
+					}
+				}
 			}
 		}
 
