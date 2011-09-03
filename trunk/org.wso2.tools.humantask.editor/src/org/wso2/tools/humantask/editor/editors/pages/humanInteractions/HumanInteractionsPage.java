@@ -739,8 +739,16 @@ public class HumanInteractionsPage extends FormPage implements
 			{
 				if(humanInteractions.getExtensions()!=null)
 				{
-					namespaceTextBox.setText(humanInteractions.getExtensions().getExtension().get(0).getNamespace());
-					} else {
+					if(humanInteractions.getExtensions().getExtension()!=null){
+						if(humanInteractions.getExtensions().getExtension().get(0)!=null){
+							if(humanInteractions.getExtensions().getExtension().get(0).getNamespace()!=null){
+							namespaceTextBox.setText(humanInteractions.getExtensions().getExtension().get(0).getNamespace());
+						}
+						}
+						}
+					}
+					
+					else {
 						namespaceTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 					}
 				
@@ -757,9 +765,15 @@ public class HumanInteractionsPage extends FormPage implements
 			private void configExtensionDetailSection_mustUnderstand(final Combo mustUnderstansComboBox)
 			{
 				if(humanInteractions.getExtensions()!=null)
-				{				
+				{
+					if(humanInteractions.getExtensions().getExtension()!=null){
+						if(humanInteractions.getExtensions().getExtension().get(0)!=null){
+							if(humanInteractions.getExtensions().getExtension().get(0).getMustUnderstand()!=null){
 					mustUnderstansComboBox.select((humanInteractions.getExtensions().getExtension().get(0).getMustUnderstand().getValue()==0)?1:0);
-					} else {
+					} 
+						}
+					}
+				}else {
 						//mustUnderstansComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 					}
 				
@@ -836,7 +850,7 @@ public class HumanInteractionsPage extends FormPage implements
 
 			private void checkAvailability_import()
 			{
-				if(humanInteractions.getImport()==null)
+				if(humanInteractions.getImport().size()==0)
 				{
 					//Error message
 					
@@ -877,8 +891,14 @@ public class HumanInteractionsPage extends FormPage implements
 			{
 				if(humanInteractions.getImport()!=null)
 				{
+					if(humanInteractions.getImport().size()!=0){
+						if(humanInteractions.getImport().get(0).getNamespace()!=null){
+				
 					namespaceTextBox.setText(humanInteractions.getImport().get(0).getNamespace());
-					} else {
+					}
+					}
+				}
+					else {
 						namespaceTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 					}
 				
@@ -897,8 +917,14 @@ public class HumanInteractionsPage extends FormPage implements
 			{
 				if(humanInteractions.getImport()!=null)
 				{
+					if(humanInteractions.getImport().size()!=0){
+						if(humanInteractions.getImport().get(0).getLocation()!=null){
+					
 					locationTextBox.setText(humanInteractions.getImport().get(0).getLocation());
-					} else {
+					}
+					}
+					}
+						else {
 						locationTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 					}
 				
@@ -918,7 +944,12 @@ public class HumanInteractionsPage extends FormPage implements
 			{
 				if(humanInteractions.getImport()!=null)
 				{
+					if(humanInteractions.getImport().size()!=0){
+						if(humanInteractions.getImport().get(0).getImportType()!=null){
+					
 					importTypeTextBox.setText(humanInteractions.getImport().get(0).getImportType());
+				}
+					}
 				}
 				else 
 				{
