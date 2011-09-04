@@ -1083,7 +1083,19 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		selectLogicalPeopleGroup_combo = new Combo(sectionClient, SWT.READ_ONLY);
 		selectLogicalPeopleGroup_combo.setLayoutData(gd);
 		
-		int size= humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().size();
+		int size = 0;
+		if(humanInteractions != null){
+			if(humanInteractions.getLogicalPeopleGroups() != null){
+				if (humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup() != null){
+					if(humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().size() != 0){
+						size =	humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().size();
+					}
+				}
+			}
+		}
+		
+		
+		
 		for(int i=0;i<size;++i)
 		{
 			selectLogicalPeopleGroup_combo.add(humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().get(i).getName(),i);
@@ -1441,8 +1453,11 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 				} else {
 					nameTextBox
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-
 				}
+			}
+			else {
+				nameTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
 
 			nameTextBox.addModifyListener(new ModifyListener() {
@@ -1460,18 +1475,27 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	
 	private void configPeopleAssignmentSection_expression(final Text expTextBox) {
 		if (selectedHumanRole != null) {
-			
-			if(selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().size()!=0){
-			
-			if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().getValue(0)  != null) {
-				expTextBox.setText(selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().getValue(0).toString());
-			} else {
-				expTextBox
-						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 
+			if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument()
+					.getMixed().size() != 0) {
+
+				if (selectedHumanRole.getGenericHumanRole().getFrom()
+						.getArgument().getMixed().getValue(0) != null) {
+					expTextBox.setText(selectedHumanRole.getGenericHumanRole()
+							.getFrom().getArgument().getMixed().getValue(0)
+							.toString());
+				} else {
+					expTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			} else {
+				expTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
-			}
+
+		} else {
+			expTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
+		
 		expTextBox.addModifyListener(new ModifyListener() {
 
 			@Override
@@ -3080,14 +3104,23 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	}
 
 	private void checkAvailability_HumanRole() {
-		List peopleassignment = getPeopleAssignmentList(tasks.getTask().get(0));
-		if (peopleassignment.size() == 0) {
-			// Error message
-			System.out.println("checkAvailability_HumanRole() + Error message");
-		} else {
-			selectedHumanRole = (HumanRole) peopleassignment.get(0);
-			pastSelectedHumanRole=selectedHumanRole;
+		if (tasks != null) {
+			if (tasks.getTask() != null) {
+				if (tasks.getTask().get(0) != null) {
+					List peopleassignment = getPeopleAssignmentList(tasks
+							.getTask().get(0));
 
+					if (peopleassignment.size() == 0) {
+						// Error message
+						System.out
+								.println("checkAvailability_HumanRole() + Error message");
+					} else {
+						selectedHumanRole = (HumanRole) peopleassignment.get(0);
+						pastSelectedHumanRole = selectedHumanRole;
+
+					}
+				}
+			}
 		}
 
 	}

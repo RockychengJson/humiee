@@ -820,7 +820,17 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		selectLogicalPeopleGroup_combo = new Combo(sectionClient, SWT.READ_ONLY);
 		selectLogicalPeopleGroup_combo.setLayoutData(gd);
 		
-		int size= humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().size();
+		int size = 0;
+		if(humanInteractions != null){
+			if(humanInteractions.getLogicalPeopleGroups() != null){
+				if (humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup() != null){
+					if(humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().size() != 0){
+						size =	humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().size();
+					}
+				}
+			}
+		}
+		
 		for(int i=0;i<size;++i)
 		{
 			selectLogicalPeopleGroup_combo.add(humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().get(i).getName(),i);

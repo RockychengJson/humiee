@@ -60,7 +60,7 @@ public class HumanInteractionsPage extends FormPage implements
 	protected EditingDomain domain;
 	protected THumanInteractions humanInteractions;
 	protected FormToolkit toolkit;
-	protected  ComposedAdapterFactory adaptorFactory;
+	protected ComposedAdapterFactory adaptorFactory;
 	protected String pageTitle;
 	private HumanInteractionsPage hi_page;
 	private boolean isResourceChanged;
@@ -75,7 +75,7 @@ public class HumanInteractionsPage extends FormPage implements
 	private Text nsp_txt_import;
 	private Text location_txt;
 	Text im_type_txt;
-	
+
 	protected TableViewer viewer_extension;
 	private TableViewer viewer_import;
 
@@ -126,7 +126,7 @@ public class HumanInteractionsPage extends FormPage implements
 			tabFolder.setSelectionBackground(new Color[] { selectedColor,
 					toolkit.getColors().getBackground() }, new int[] { 50 });
 			toolkit.paintBordersFor(tabFolder);
-			
+
 			checkAvailability_extensions();
 			checkAvailability_import();
 
@@ -160,7 +160,6 @@ public class HumanInteractionsPage extends FormPage implements
 		} else {
 
 			if (tabFolder.getSelectionIndex() == tempindex) {
-
 
 			} else {
 
@@ -196,12 +195,13 @@ public class HumanInteractionsPage extends FormPage implements
 		CTabItem item = new CTabItem(tabFolder, SWT.NULL);
 		TabContent section1 = new TabContent(createExtentionInfoSection(
 				toolkit, form));
-		TabContent section2 = new TabContent(createExtentionDetailSection(toolkit, form));
-		
+		TabContent section2 = new TabContent(createExtentionDetailSection(
+				toolkit, form));
+
 		TabContent[] sectionArray = new TabContent[2];
 		sectionArray[0] = section1;
 		sectionArray[1] = section2;
-		
+
 		item.setText("Extentions");
 		item.setData(sectionArray);
 	}
@@ -210,13 +210,14 @@ public class HumanInteractionsPage extends FormPage implements
 		CTabItem item = new CTabItem(tabFolder, SWT.NULL);
 		TabContent section1 = new TabContent(createImportInfoSection(toolkit,
 				form));
-		TabContent section2 = new TabContent(createImportDetailSection(toolkit, form));
-		
+		TabContent section2 = new TabContent(createImportDetailSection(toolkit,
+				form));
+
 		TabContent[] sectionArray = new TabContent[2];
-		
+
 		sectionArray[0] = section1;
 		sectionArray[1] = section2;
-		
+
 		item.setText("Imports");
 		item.setData(sectionArray);
 	}
@@ -231,7 +232,7 @@ public class HumanInteractionsPage extends FormPage implements
 				form.reflow(true);
 			}
 		});
-		section.setText("Globale Properties"); 
+		section.setText("Globale Properties");
 		section.setDescription("Globle configataions going here");
 		GridData sectiondata = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 		section.setLayoutData(sectiondata);
@@ -244,11 +245,11 @@ public class HumanInteractionsPage extends FormPage implements
 
 		sectionClient.setLayout(layout);
 
-		GridData gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL | GridData.FILL_VERTICAL
 				| GridData.GRAB_VERTICAL);
 		gd.horizontalSpan = 1;
-		
+
 		Label tnslb = new Label(sectionClient, SWT.WRAP);
 		tnslb.setText("Target Name Space");
 		tnslb.setLayoutData(gd);
@@ -289,59 +290,63 @@ public class HumanInteractionsPage extends FormPage implements
 				form.reflow(true);
 			}
 		});
-		section.setText("Extention Properties"); 
+		section.setText("Extention Properties");
 		section.setDescription("Extention configataions going here");
 		GridData sectiondata = new GridData(GridData.FILL_BOTH);
 		section.setLayoutData(sectiondata);
-		
+
 		Composite client = toolkit.createComposite(section, SWT.WRAP);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.marginWidth = 2;
 		layout.marginHeight = 2;
-		
+
 		client.setLayout(layout);
-		
+
 		toolkit.paintBordersFor(client);
-		
-		 viewer_extension = new TableViewer(client, SWT.MULTI | SWT.H_SCROLL
+
+		viewer_extension = new TableViewer(client, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 		createColumns(client, viewer_extension);
 		final Table table = viewer_extension.getTable();
-		
+
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.verticalSpan = 10;
 		gd.heightHint = 20;
 		gd.widthHint = 100;
-		
+
 		table.setLayoutData(gd);
-		
+
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
-		// configure the selection changed listener to this section part for notify other sections
-		
-		viewer_extension.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				itemSelecter(event.getSelection());
-				
-			}
-		});
-		
+		// configure the selection changed listener to this section part for
+		// notify other sections
+
+		viewer_extension
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+					public void selectionChanged(SelectionChangedEvent event) {
+						itemSelecter(event.getSelection());
+
+					}
+				});
+
 		viewer_extension.setContentProvider(new ExtensionContentProvider());
 		viewer_extension.setInput(createModle());
-	    
+
 		table.setSelection(0);
 		Button add_btn = toolkit.createButton(client, "Add", SWT.PUSH); //$NON-NLS-1$
-		GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING );
+		GridData btn_gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		add_btn.setLayoutData(btn_gd);
 
 		add_btn.addListener(SWT.Selection, new Listener() {
 
 			@Override
 			public void handleEvent(Event event) {
-				HIExtentionWizard wizard = new HIExtentionWizard(humanInteractions, domain,viewer_extension);
-				WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
+				HIExtentionWizard wizard = new HIExtentionWizard(
+						humanInteractions, domain, viewer_extension);
+				WizardDialog wizardDialog = new WizardDialog(Display
+						.getCurrent().getActiveShell(), wizard);
 				wizardDialog.create();
 				wizardDialog.open();
 
@@ -354,20 +359,21 @@ public class HumanInteractionsPage extends FormPage implements
 
 			@Override
 			public void handleEvent(Event event) {
-				
-				boolean done=humanInteractions.getExtensions().getExtension().remove(selectedItem_extension);
+
+				boolean done = humanInteractions.getExtensions().getExtension()
+						.remove(selectedItem_extension);
 				viewer_extension.setInput(createModle());
-			
+
 			}
 		});
 		section.setClient(client);
 
 		return section;
 	}
-	
+
 	private Section createExtentionDetailSection(FormToolkit toolkit,
-			final ScrolledForm form){
-		
+			final ScrolledForm form) {
+
 		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
 				| Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
 		section.addExpansionListener(new ExpansionAdapter() {
@@ -375,7 +381,7 @@ public class HumanInteractionsPage extends FormPage implements
 				form.reflow(true);
 			}
 		});
-		section.setText("Extention Details"); 
+		section.setText("Extention Details");
 		section.setDescription("Extention releven details here");
 		GridData sectiondata = new GridData(GridData.FILL_BOTH);
 		section.setLayoutData(sectiondata);
@@ -386,23 +392,24 @@ public class HumanInteractionsPage extends FormPage implements
 		layout.marginWidth = 2;
 		layout.marginHeight = 5;
 		sectionClient.setLayout(layout);
-		
+
 		Label name_space_label = new Label(sectionClient, SWT.WRAP);
 		name_space_label.setText("Namespace");
-		
-		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan =1;
+
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 1;
 		name_space_label.setLayoutData(gd);
-		
-		nsp_txt_extension= new Text(sectionClient, SWT.SINGLE|SWT.BORDER);
+
+		nsp_txt_extension = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		nsp_txt_extension.setLayoutData(gd);
 		configExtensionDetailSection_namespace(nsp_txt_extension);
-		
+
 		Label must_und_lb = new Label(sectionClient, SWT.WRAP);
 		must_und_lb.setText("Must Understand");
-		
-		must_und_extension= new Combo(sectionClient, SWT.READ_ONLY);
-		must_und_extension.add("No",0);
+
+		must_und_extension = new Combo(sectionClient, SWT.READ_ONLY);
+		must_und_extension.add("No", 0);
 		must_und_extension.add("Yes", 1);
 		must_und_extension.setLayoutData(gd);
 		must_und_extension.select(1);
@@ -423,7 +430,7 @@ public class HumanInteractionsPage extends FormPage implements
 				form.reflow(true);
 			}
 		});
-		section.setText("Import Properties"); 
+		section.setText("Import Properties");
 		section.setDescription("Import configataions going here");
 		GridData sectiondata = new GridData(GridData.FILL_BOTH);
 		section.setLayoutData(sectiondata);
@@ -434,39 +441,39 @@ public class HumanInteractionsPage extends FormPage implements
 		layout.marginWidth = 2;
 		layout.marginHeight = 5;
 
-		sectionClient.setLayout(layout);		
+		sectionClient.setLayout(layout);
 		toolkit.paintBordersFor(sectionClient);
 
-		 viewer_import = new TableViewer(sectionClient, SWT.MULTI | SWT.H_SCROLL
+		viewer_import = new TableViewer(sectionClient, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		 
+
 		createColumns_import(sectionClient, viewer_import);
-		
+
 		final Table table = viewer_import.getTable();
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.verticalSpan = 10;
 		gd.heightHint = 20;
 		gd.widthHint = 100;
 		table.setLayoutData(gd);
-		
+
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		
-		
-		viewer_import.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				itemSelecter_import(event.getSelection());
-				
-			}
-		});
+
+		viewer_import
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+					public void selectionChanged(SelectionChangedEvent event) {
+						itemSelecter_import(event.getSelection());
+
+					}
+				});
 
 		viewer_import.setContentProvider(new ImportContentProvider());
-		
-		viewer_import.setInput(createModle_import()); 
-		
+
+		viewer_import.setInput(createModle_import());
+
 		table.setSelection(0);
-		
-		Button add_btn = toolkit.createButton(sectionClient, "Add", SWT.PUSH); 
+
+		Button add_btn = toolkit.createButton(sectionClient, "Add", SWT.PUSH);
 		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		add_btn.setLayoutData(gd);
 
@@ -475,15 +482,18 @@ public class HumanInteractionsPage extends FormPage implements
 			@Override
 			public void handleEvent(Event event) {
 
-				HIImportWizard wizard = new HIImportWizard( humanInteractions, domain,viewer_import);
-				WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
+				HIImportWizard wizard = new HIImportWizard(humanInteractions,
+						domain, viewer_import);
+				WizardDialog wizardDialog = new WizardDialog(Display
+						.getCurrent().getActiveShell(), wizard);
 				wizardDialog.create();
 				wizardDialog.open();
 
 			}
 		});
 
-		Button del_btn = toolkit.createButton(sectionClient, "Delete", SWT.PUSH); 
+		Button del_btn = toolkit
+				.createButton(sectionClient, "Delete", SWT.PUSH);
 		del_btn.setLayoutData(gd);
 
 		del_btn.addListener(SWT.Selection, new Listener() {
@@ -491,21 +501,22 @@ public class HumanInteractionsPage extends FormPage implements
 			@Override
 			public void handleEvent(Event event) {
 
-			//TODO viraj :handle the action
-				
-				boolean done=humanInteractions.getImport().remove(selectedItem_import);
+				// TODO viraj :handle the action
+
+				boolean done = humanInteractions.getImport().remove(
+						selectedItem_import);
 				viewer_import.setInput(createModle_import());
 
 			}
 		});
-		
+
 		section.setClient(sectionClient);
 
 		return section;
 	}
-	
+
 	private Section createImportDetailSection(FormToolkit toolkit,
-			final ScrolledForm form){
+			final ScrolledForm form) {
 		Section section = toolkit.createSection(tabFolder, Section.DESCRIPTION
 				| Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
 		section.addExpansionListener(new ExpansionAdapter() {
@@ -513,7 +524,7 @@ public class HumanInteractionsPage extends FormPage implements
 				form.reflow(true);
 			}
 		});
-		section.setText("Import Details"); 
+		section.setText("Import Details");
 		section.setDescription("Import relevent details here");
 		GridData sectiondata = new GridData(GridData.FILL_BOTH);
 		section.setLayoutData(sectiondata);
@@ -524,106 +535,113 @@ public class HumanInteractionsPage extends FormPage implements
 		layout.marginWidth = 2;
 		layout.marginHeight = 5;
 		sectionClient.setLayout(layout);
-		
+
 		Label name_space_label = new Label(sectionClient, SWT.WRAP);
 		name_space_label.setText("Namespace");
-		
-		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL );
-		gd.horizontalSpan =1;
-		gd.verticalSpan =2;
-		
+
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
+				| GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 1;
+		gd.verticalSpan = 2;
+
 		name_space_label.setLayoutData(gd);
-		
-		nsp_txt_import= new Text(sectionClient, SWT.SINGLE|SWT.BORDER);
+
+		nsp_txt_import = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		nsp_txt_import.setLayoutData(gd);
 		configImportDetailSection_namespace(nsp_txt_import);
-		
+
 		Label location_lb = new Label(sectionClient, SWT.WRAP);
 		location_lb.setText("Location");
 		location_lb.setLayoutData(gd);
-		
+
 		location_txt = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		location_txt.setLayoutData(gd);
 		configImportDetailSection_location(location_txt);
-		
+
 		Label im_type_lb = new Label(sectionClient, SWT.WRAP);
 		im_type_lb.setText("Import Type");
 		im_type_lb.setLayoutData(gd);
-		
-		im_type_txt = new Text(sectionClient, SWT.SINGLE| SWT.BORDER);
+
+		im_type_txt = new Text(sectionClient, SWT.SINGLE | SWT.BORDER);
 		im_type_txt.setLayoutData(gd);
 		configImportDetailSection_importType(im_type_txt);
-		
+
 		section.setClient(sectionClient);
 		return section;
 	}
-	
-	private void configGeneralInfoSection_expressionLanguage(final Text expressionLanguageTextBox)
-	{
-		if(humanInteractions.getExpressionLanguage()!=null)
-		{
-			expressionLanguageTextBox.setText(humanInteractions.getExpressionLanguage());
-			} else {
-				expressionLanguageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-			}
-		
+
+	private void configGeneralInfoSection_expressionLanguage(
+			final Text expressionLanguageTextBox) {
+		if (humanInteractions.getExpressionLanguage() != null) {
+			expressionLanguageTextBox.setText(humanInteractions
+					.getExpressionLanguage());
+		} else {
+			expressionLanguageTextBox
+					.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+
 		expressionLanguageTextBox.addModifyListener(new ModifyListener() {
-		public void modifyText(ModifyEvent e) {
-			//validateInput();
-			setAttribute(htdPackage.eINSTANCE.getTHumanInteractions_ExpressionLanguage(), expressionLanguageTextBox.getText());
-		}
-	});
-	
-		
-	}
-	
-	private void configGeneralInfoSection_targetNamespace(final Text targetNamespaceTextBox)
-	{
-		if(humanInteractions.getTargetNamespace()!=null)
-		{
-			targetNamespaceTextBox.setText(humanInteractions.getTargetNamespace());
-			} else {
-				targetNamespaceTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute(htdPackage.eINSTANCE
+						.getTHumanInteractions_ExpressionLanguage(),
+						expressionLanguageTextBox.getText());
 			}
-		
-		targetNamespaceTextBox.addModifyListener(new ModifyListener() {
-		public void modifyText(ModifyEvent e) {
-			//validateInput();
-			setAttribute(htdPackage.eINSTANCE.getTHumanInteractions_TargetNamespace(), targetNamespaceTextBox.getText());
-		}
-	});
-	
-		
-	}
-	
-	private void configGeneralInfoSection_queryLanguage(final Text queryLanguageTextBox)
-	{
-		if(humanInteractions.getQueryLanguage()!=null)
-		{
-			queryLanguageTextBox.setText(humanInteractions.getQueryLanguage());
-			} else {
-				queryLanguageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-			}
-		
-		queryLanguageTextBox.addModifyListener(new ModifyListener() {
-		public void modifyText(ModifyEvent e) {
-			//validateInput();
-			setAttribute(htdPackage.eINSTANCE.getTHumanInteractions_QueryLanguage(), queryLanguageTextBox.getText());
-		}
-	});
-	
-		
+		});
+
 	}
 
-	
+	private void configGeneralInfoSection_targetNamespace(
+			final Text targetNamespaceTextBox) {
+		if (humanInteractions.getTargetNamespace() != null) {
+			targetNamespaceTextBox.setText(humanInteractions
+					.getTargetNamespace());
+		} else {
+			targetNamespaceTextBox
+					.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+
+		targetNamespaceTextBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute(htdPackage.eINSTANCE
+						.getTHumanInteractions_TargetNamespace(),
+						targetNamespaceTextBox.getText());
+			}
+		});
+
+	}
+
+	private void configGeneralInfoSection_queryLanguage(
+			final Text queryLanguageTextBox) {
+		if (humanInteractions.getQueryLanguage() != null) {
+			queryLanguageTextBox.setText(humanInteractions.getQueryLanguage());
+		} else {
+			queryLanguageTextBox
+					.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+
+		queryLanguageTextBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute(htdPackage.eINSTANCE
+						.getTHumanInteractions_QueryLanguage(),
+						queryLanguageTextBox.getText());
+			}
+		});
+
+	}
+
 	private void setAttribute(EAttribute tTaskInterface_Attribute, String text) {
-		Command setAttribCommand = SetCommand.create(domain, humanInteractions, tTaskInterface_Attribute, text);
+		Command setAttribCommand = SetCommand.create(domain, humanInteractions,
+				tTaskInterface_Attribute, text);
 
 		if (setAttribCommand.canExecute()) {
 			domain.getCommandStack().execute(setAttribCommand);
 			System.out.println(humanInteractions.getAnyAttribute().size());
 		} else {
-			System.out.println("can't modify Attribute: " + tTaskInterface_Attribute.getName());
+			System.out.println("can't modify Attribute: "
+					+ tTaskInterface_Attribute.getName());
 		}
 	}
 
@@ -644,25 +662,25 @@ public class HumanInteractionsPage extends FormPage implements
 		}
 
 	}
+
 	private void createColumns(Composite parent, TableViewer viewer) {
 		String[] titles = { "Extension" };
-		int[] bounds = { 100};
+		int[] bounds = { 100 };
 
-		// first column 
+		// first column
 		TableViewerColumn col = createTableViewerColumn(viewer, titles[0],
 				bounds[0]);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				TExtension p = (TExtension) element;				
+				TExtension p = (TExtension) element;
 				return p.getNamespace();
 			}
-			
+
 		});
-	
 
 	}
-	
+
 	private TableViewerColumn createTableViewerColumn(TableViewer viewer,
 			String title, int bound) {
 		final TableViewerColumn viewerColumn = new TableViewerColumn(viewer,
@@ -676,309 +694,304 @@ public class HumanInteractionsPage extends FormPage implements
 
 	}
 
-	public Object createModle() {		
+	public Object createModle() {
 		return humanInteractions.getExtensions();
 	}
+
 	@Override
 	public void resourceChanged(IResourceChangeEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
-	 void itemSelecter(ISelection selection) {
-			IStructuredSelection ssel = (IStructuredSelection) selection;
-			
-			if (ssel.size() == 1) {
-				selectedItem_extension = (TExtension) ssel.getFirstElement();
-				//System.out.println(selectedItem.getName());
+
+	void itemSelecter(ISelection selection) {
+		IStructuredSelection ssel = (IStructuredSelection) selection;
+
+		if (ssel.size() == 1) {
+			selectedItem_extension = (TExtension) ssel.getFirstElement();
+			// System.out.println(selectedItem.getName());
+		} else {
+			selectedItem_extension = (TExtension) viewer_extension
+					.getElementAt(0);
+			viewer_extension.getTable().setSelection(0);
+		}
+		update();
+	}
+
+	private void update() {
+		if (selectedItem_extension.getNamespace() != null) {
+			nsp_txt_extension.setText(selectedItem_extension.getNamespace());
+		}
+
+		if (selectedItem_extension.getMustUnderstand() != null) {
+			if (selectedItem_extension.getMustUnderstand().getValue() == 1) {
+				must_und_extension.select(0);
 			} else {
-				selectedItem_extension = (TExtension) viewer_extension.getElementAt(0);
-				viewer_extension.getTable().setSelection(0);
+				must_und_extension.select(1);
 			}
-			update();
-		}
-		
-		private void update() {
-			if(selectedItem_extension.getNamespace()!=null)
-			{
-				nsp_txt_extension.setText(selectedItem_extension.getNamespace());
-				}
-			
-			 if(selectedItem_extension.getMustUnderstand()!=null)
-			 {
-				 if(selectedItem_extension.getMustUnderstand().getValue()==1)
-				 {					 
-					 must_und_extension.select(0);
-				 }
-				 else
-				 {
-					 must_und_extension.select(1);
-				 }
-				
-			 }
-			 
-			 
-		}
-		private void checkAvailability_extensions()
-		{
-			if(humanInteractions.getExtensions()==null)
-			{
-				//Error message
-				
-			}
-			else
-			{
-				selectedItem_extension=humanInteractions.getExtensions().getExtension().get(0);
-			}
-			
+
 		}
 
-		
-	
-			
-			private void configExtensionDetailSection_namespace(final Text namespaceTextBox)
-			{
-				if(humanInteractions.getExtensions()!=null)
-				{
-					if(humanInteractions.getExtensions().getExtension()!=null){
-						if(humanInteractions.getExtensions().getExtension().get(0)!=null){
-							if(humanInteractions.getExtensions().getExtension().get(0).getNamespace()!=null){
-							namespaceTextBox.setText(humanInteractions.getExtensions().getExtension().get(0).getNamespace());
-						}
-						}
-						}
-					}
-					
-					else {
-						namespaceTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-					}
-				
-				namespaceTextBox.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					//validateInput();
-					setAttribute_extension(htdPackage.eINSTANCE.getTExtension_Namespace(), namespaceTextBox.getText());
-				}
-			});
-			
-				
-			}
-			
-			private void configExtensionDetailSection_mustUnderstand(final Combo mustUnderstansComboBox)
-			{
-				if(humanInteractions.getExtensions()!=null)
-				{
-					if(humanInteractions.getExtensions().getExtension()!=null){
-						if(humanInteractions.getExtensions().getExtension().get(0)!=null){
-							if(humanInteractions.getExtensions().getExtension().get(0).getMustUnderstand()!=null){
-					mustUnderstansComboBox.select((humanInteractions.getExtensions().getExtension().get(0).getMustUnderstand().getValue()==0)?1:0);
-					} 
-						}
-					}
-				}else {
-						//mustUnderstansComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-					}
-				
-				mustUnderstansComboBox.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					//validateInput();
-					setAttribute_extensionMustUnderstand(htdPackage.eINSTANCE.getTExtension_MustUnderstand(), (mustUnderstansComboBox.getSelectionIndex()==0)?TBoolean.get(1):TBoolean.get(0));
-				}
-			});
-			
-				
-			}
-			
-			private void setAttribute_extension(EAttribute tExtension_Attribute, String text) {
-				Command setAttribCommand = SetCommand.create(domain, selectedItem_extension, tExtension_Attribute, text);
+	}
 
-				if (setAttribCommand.canExecute()) {
-					domain.getCommandStack().execute(setAttribCommand);
-					//System.out.println(humanInteractions.getAnyAttribute().size());
+	private void checkAvailability_extensions() {
+		if (humanInteractions.getExtensions() == null) {
+			// Error message
+
+		} else {
+			selectedItem_extension = humanInteractions.getExtensions()
+					.getExtension().get(0);
+		}
+
+	}
+
+	private void configExtensionDetailSection_namespace(
+			final Text namespaceTextBox) {
+		if (humanInteractions.getExtensions() != null) {
+			if (humanInteractions.getExtensions().getExtension() != null) {
+				if (humanInteractions.getExtensions().getExtension().get(0) != null) {
+					if (humanInteractions.getExtensions().getExtension().get(0)
+							.getNamespace() != null) {
+						namespaceTextBox.setText(humanInteractions
+								.getExtensions().getExtension().get(0)
+								.getNamespace());
+					}
+				}
+			}
+		}
+
+		else {
+			namespaceTextBox
+					.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+
+		namespaceTextBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_extension(
+						htdPackage.eINSTANCE.getTExtension_Namespace(),
+						namespaceTextBox.getText());
+			}
+		});
+
+	}
+
+	private void configExtensionDetailSection_mustUnderstand(
+			final Combo mustUnderstansComboBox) {
+		if (humanInteractions.getExtensions() != null) {
+			if (humanInteractions.getExtensions().getExtension() != null) {
+				if (humanInteractions.getExtensions().getExtension().get(0) != null) {
+					if (humanInteractions.getExtensions().getExtension().get(0)
+							.getMustUnderstand() != null) {
+						mustUnderstansComboBox.select((humanInteractions
+								.getExtensions().getExtension().get(0)
+								.getMustUnderstand().getValue() == 0) ? 1 : 0);
+					}
+				}
+			}
+		} else {
+			// mustUnderstansComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+
+		mustUnderstansComboBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_extensionMustUnderstand(
+						htdPackage.eINSTANCE.getTExtension_MustUnderstand(),
+						(mustUnderstansComboBox.getSelectionIndex() == 0) ? TBoolean
+								.get(1) : TBoolean.get(0));
+			}
+		});
+
+	}
+
+	private void setAttribute_extension(EAttribute tExtension_Attribute,
+			String text) {
+		Command setAttribCommand = SetCommand.create(domain,
+				selectedItem_extension, tExtension_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+			// System.out.println(humanInteractions.getAnyAttribute().size());
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tExtension_Attribute.getName());
+		}
+	}
+
+	private void setAttribute_extensionMustUnderstand(
+			EAttribute tExtension_Attribute, TBoolean selection) {
+		Command setAttribCommand = SetCommand.create(domain,
+				selectedItem_extension, tExtension_Attribute, selection);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+			// System.out.println(humanInteractions.getAnyAttribute().size());
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tExtension_Attribute.getName());
+		}
+	}
+
+	// import
+
+	private void createColumns_import(Composite parent, TableViewer viewer) {
+
+		String[] titles = { "Import" };
+		int[] bounds = { 100 };
+
+		// first column for the first name
+		TableViewerColumn col = createTableViewerColumn(viewer, titles[0],
+				bounds[0]);
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				TImport p = (TImport) element;
+				return p.getNamespace();
+			}
+
+		});
+
+	}
+
+	private void checkAvailability_import() {
+		if (humanInteractions.getImport().size() == 0) {
+			// Error message
+
+		} else {
+			selectedItem_import = humanInteractions.getImport().get(0);
+		}
+
+	}
+
+	void itemSelecter_import(ISelection selection) {
+		IStructuredSelection ssel = (IStructuredSelection) selection;
+
+		if (ssel.size() == 1) {
+			selectedItem_import = (TImport) ssel.getFirstElement();
+			// System.out.println(selectedItem.getName());
+		} else {
+			selectedItem_import = (TImport) viewer_import.getElementAt(0);
+			viewer_import.getTable().setSelection(0);
+		}
+		update_import();
+	}
+
+	private void update_import() {
+		nsp_txt_import.setText(selectedItem_import.getNamespace());
+		location_txt.setText(selectedItem_import.getLocation());
+		im_type_txt.setText(selectedItem_import.getImportType());
+
+	}
+
+	public Object createModle_import() {
+		return humanInteractions.getImport();
+	}
+
+	private void configImportDetailSection_namespace(final Text namespaceTextBox) {
+		if (humanInteractions.getImport() != null) {
+			if (humanInteractions.getImport().size() != 0) {
+				if (humanInteractions.getImport().get(0).getNamespace() != null) {
+
+					namespaceTextBox.setText(humanInteractions.getImport()
+							.get(0).getNamespace());
 				} else {
-					System.out.println("can't modify Attribute: " + tExtension_Attribute.getName());
+					namespaceTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
+			} else {
+				namespaceTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
-			
-			private void setAttribute_extensionMustUnderstand(EAttribute tExtension_Attribute, TBoolean selection) {
-				Command setAttribCommand = SetCommand.create(domain, selectedItem_extension, tExtension_Attribute, selection);
+		} else {
+			namespaceTextBox
+					.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
 
-				if (setAttribCommand.canExecute()) {
-					domain.getCommandStack().execute(setAttribCommand);
-					//System.out.println(humanInteractions.getAnyAttribute().size());
+		namespaceTextBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_import(
+						htdPackage.eINSTANCE.getTImport_Namespace(),
+						namespaceTextBox.getText());
+			}
+		});
+
+	}
+
+	private void configImportDetailSection_location(final Text locationTextBox) {
+		if (humanInteractions.getImport() != null) {
+			if (humanInteractions.getImport().size() != 0) {
+				if (humanInteractions.getImport().get(0).getLocation() != null) {
+
+					locationTextBox.setText(humanInteractions.getImport()
+							.get(0).getLocation());
 				} else {
-					System.out.println("can't modify Attribute: " + tExtension_Attribute.getName());
+					locationTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
+			} else {
+				locationTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			//import
-			
-			private void createColumns_import(Composite parent, TableViewer viewer) {
-				
-				String[] titles = { "Import" };
-				int[] bounds = { 100};
 
-				// first column for the first name
-				TableViewerColumn col = createTableViewerColumn(viewer, titles[0],
-						bounds[0]);
-				col.setLabelProvider(new ColumnLabelProvider() {
-					@Override
-					public String getText(Object element) {
-						TImport p = (TImport) element;						
-						return p.getNamespace();
-					}
-					
-				});
-			
+		} else {
+			locationTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
 
+		locationTextBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_import(htdPackage.eINSTANCE.getTImport_Location(),
+						locationTextBox.getText());
 			}
-			
+		});
 
-			private void checkAvailability_import()
-			{
-				if(humanInteractions.getImport().size()==0)
-				{
-					//Error message
-					
-				}
-				else
-				{
-					selectedItem_import=humanInteractions.getImport().get(0);
-				}
-				
-			}
-			
-			 void itemSelecter_import(ISelection selection) {
-					IStructuredSelection ssel = (IStructuredSelection) selection;
-					
-					if (ssel.size() == 1) {
-						selectedItem_import = (TImport) ssel.getFirstElement();
-						//System.out.println(selectedItem.getName());
-					} else {
-						selectedItem_import = (TImport) viewer_import.getElementAt(0);
-						viewer_import.getTable().setSelection(0);
-					}
-					update_import();
-				}
-				
-				private void update_import() {			
-						nsp_txt_import.setText(selectedItem_import.getNamespace());						
-						location_txt.setText(selectedItem_import.getLocation());
-						im_type_txt.setText(selectedItem_import.getImportType());	
-						
-					 
-				}
-				public Object createModle_import() {		
-					return humanInteractions.getImport();
-				}
-			
-			
-			private void configImportDetailSection_namespace(final Text namespaceTextBox)
-			{
-				if(humanInteractions.getImport()!=null)
-				{
-					if(humanInteractions.getImport().size()!=0){
-						if(humanInteractions.getImport().get(0).getNamespace()!=null){
-				
-					namespaceTextBox.setText(humanInteractions.getImport().get(0).getNamespace());
-					}
-					}
-				}
-					else {
-						namespaceTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-					}
-				
-				namespaceTextBox.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					//validateInput();
-					setAttribute_import(htdPackage.eINSTANCE.getTImport_Namespace(), namespaceTextBox.getText());
-				}
-			});
-			
-				
-			}		
-		
-			
-			private void configImportDetailSection_location(final Text locationTextBox)
-			{
-				if(humanInteractions.getImport()!=null)
-				{
-					if(humanInteractions.getImport().size()!=0){
-						if(humanInteractions.getImport().get(0).getLocation()!=null){
-					
-					locationTextBox.setText(humanInteractions.getImport().get(0).getLocation());
-					}
-					}
-					}
-						else {
-						locationTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-					}
-				
-				locationTextBox.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					//validateInput();
-					setAttribute_import(htdPackage.eINSTANCE.getTImport_Location(), locationTextBox.getText());
-				}
-			});
-			
-				
-			}
-			
-	
-			
-			private void configImportDetailSection_importType(final Text importTypeTextBox)
-			{
-				if(humanInteractions.getImport()!=null)
-				{
-					if(humanInteractions.getImport().size()!=0){
-						if(humanInteractions.getImport().get(0).getImportType()!=null){
-					
-					importTypeTextBox.setText(humanInteractions.getImport().get(0).getImportType());
-				}
-					}
-				}
-				else 
-				{
-					importTypeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-				}
-				
-				importTypeTextBox.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) 
-				{
-					//validateInput();
-					setAttribute_import(htdPackage.eINSTANCE.getTImport_ImportType(), importTypeTextBox.getText());
-				}
-			});
-			
-				
-			}
-			
-			private void setAttribute_import(EAttribute tImport_Attribute, String text) {
-				Command setAttribCommand = SetCommand.create(domain, selectedItem_import, tImport_Attribute, text);
+	}
 
-				if (setAttribCommand.canExecute()) 
-				{
-					domain.getCommandStack().execute(setAttribCommand);
-					//System.out.println(humanInteractions.getAnyAttribute().size());
-				} else
-				{
-					System.out.println("can't modify Attribute: " + tImport_Attribute.getName());
+	private void configImportDetailSection_importType(
+			final Text importTypeTextBox) {
+		if (humanInteractions.getImport() != null) {
+			if (humanInteractions.getImport().size() != 0) {
+				if (humanInteractions.getImport().get(0).getImportType() != null) {
+
+					importTypeTextBox.setText(humanInteractions.getImport()
+							.get(0).getImportType());
+				} else {
+					importTypeTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
+			} else {
+				importTypeTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
-	
-		
+		} else {
+			importTypeTextBox
+					.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+
+		importTypeTextBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				setAttribute_import(
+						htdPackage.eINSTANCE.getTImport_ImportType(),
+						importTypeTextBox.getText());
+			}
+		});
+
+	}
+
+	private void setAttribute_import(EAttribute tImport_Attribute, String text) {
+		Command setAttribCommand = SetCommand.create(domain,
+				selectedItem_import, tImport_Attribute, text);
+
+		if (setAttribCommand.canExecute()) {
+			domain.getCommandStack().execute(setAttribCommand);
+			// System.out.println(humanInteractions.getAnyAttribute().size());
+		} else {
+			System.out.println("can't modify Attribute: "
+					+ tImport_Attribute.getName());
+		}
+	}
+
 }
