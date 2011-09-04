@@ -1,5 +1,7 @@
 package org.wso2.tools.humantask.editor.editors.pages.logicalpeoplegroups;
 
+import java.awt.Image;
+
 import javax.xml.namespace.QName;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -196,7 +198,7 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 			@Override
 			public void handleEvent(Event event) {
 
-			//TODO viraj :handle the action
+			
 				boolean done=humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().remove(selectedLogicalPplGroup);
 				logicalPplviewer.setInput(createLogicalPplModle());
 
@@ -496,8 +498,12 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 
 	private void config_logicalPplGroupNameField(final Text nameTextBox) {
 
-		if (selectedLogicalPplGroup.getName() != null) {
-			nameTextBox.setText(selectedLogicalPplGroup.getName());
+		if (selectedLogicalPplGroup != null) {
+			if (selectedLogicalPplGroup.getName() != null) {
+				nameTextBox.setText(selectedLogicalPplGroup.getName());
+			} else {
+				nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
 		} else {
 			nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
@@ -523,6 +529,9 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 
 			}
+		} else {
+			parmNameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
 		}
 
 		parmNameTextBox.addModifyListener(new ModifyListener() {
@@ -545,7 +554,10 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 				parmTypeTextBox
 						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
+		} else {
+			parmTypeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
+		
 
 		parmTypeTextBox.addModifyListener(new ModifyListener() {
 
@@ -615,10 +627,9 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 	}
 
 	private void checkAvailability_Parameter() {
-
-		if (humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup()
-				.get(0).getParameter() == null) {
-			// Error message
+		if(humanInteractions.getLogicalPeopleGroups() == null){
+			//Error Message
+		
 		} else {
 			selectedParameter = humanInteractions.getLogicalPeopleGroups()
 					.getLogicalPeopleGroup().get(0).getParameter().get(0);

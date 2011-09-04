@@ -79,6 +79,7 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.provider.WSHumanTaskSc
 
 
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.content.IContentType;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
@@ -303,7 +304,7 @@ public class htdModelWizard extends Wizard implements INewWizard {
 			try {
 				page.openEditor
 					(new FileEditorInput(modelFile),
-					 workbench.getEditorRegistry().getDefaultEditor(modelFile.getFullPath().toString()).getId());					 	 
+							workbench.getEditorRegistry().getDefaultEditor(modelFile.getFullPath().toString()).getId());					 	 
 			}
 			catch (PartInitException exception) {
 				MessageDialog.openError(workbenchWindow.getShell(), WSHumanTaskSchemaEditorPlugin.INSTANCE.getString("_UI_OpenEditorError_label"), exception.getMessage());
