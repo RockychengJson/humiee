@@ -42,7 +42,21 @@
             icon="icons/full/obj16/hte.png"
             id="org.wso2.tools.humantask.editor.editors.HTEditorID"
             name="HTEditor">
+            <contentTypeBinding
+		         contentTypeId="org.wso2.tools.humantask.editor.contentType">
+		      </contentTypeBinding>
       </editor>
    </extension>
+   <extension 
+   		point="org.eclipse.core.contenttype.contentTypes">
+         <content-type
+		      id="org.wso2.tools.humantask.editor.contentType" 
+		      default-charset="UTF-8"
+		      base-type="org.eclipse.core.runtime.xml"
+		      file-extensions="htd"
+		      name="htd content type"
+		      priority="high">       
+   		</content-type> 
+</extension>
 
 </plugin>
