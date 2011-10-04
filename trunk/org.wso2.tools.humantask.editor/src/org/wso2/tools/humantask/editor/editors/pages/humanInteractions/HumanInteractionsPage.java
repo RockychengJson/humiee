@@ -827,6 +827,7 @@ public class HumanInteractionsPage extends FormPage implements
 				setAttribute_extension(
 						htdPackage.eINSTANCE.getTExtension_Namespace(),
 						namespaceTextBox.getText());
+				viewer_extension.setInput(createModle());
 			}
 		});
 
@@ -856,6 +857,7 @@ public class HumanInteractionsPage extends FormPage implements
 						htdPackage.eINSTANCE.getTExtension_MustUnderstand(),
 						(mustUnderstansComboBox.getSelectionIndex() == 0) ? TBoolean
 								.get(1) : TBoolean.get(0));
+				
 			}
 		});
 
@@ -986,6 +988,7 @@ public class HumanInteractionsPage extends FormPage implements
 				setAttribute_import(
 						htdPackage.eINSTANCE.getTImport_Namespace(),
 						namespaceTextBox.getText());
+				viewer_import.setInput(createModle_import());
 			}
 		});
 
