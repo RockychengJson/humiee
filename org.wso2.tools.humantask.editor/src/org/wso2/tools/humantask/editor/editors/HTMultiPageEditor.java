@@ -223,7 +223,7 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase{
 			((BasicCommandStack)editingDomain.getCommandStack()).saveIsDone();
 			//TODO: Need to come up with a interface represent all the pages, so page specific setResourceCHanged() can be avoided
 			
-			sourceViewer.doSave(progressMonitor);
+			//sourceViewer.doSave(progressMonitor);
 			
 			firePropertyChange(IEditorPart.PROP_DIRTY);
 		} catch (InvocationTargetException e) {
@@ -242,8 +242,8 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase{
 		if (((BasicCommandStack) editingDomain.getCommandStack()).isSaveNeeded()) {
 			return true;
 
-		}else if (sourceViewer.isDirty()) {
-			return true;
+		/*}else if (sourceViewer.isDirty()) {
+			return true;*/
 		
 		} else {
 			return false;

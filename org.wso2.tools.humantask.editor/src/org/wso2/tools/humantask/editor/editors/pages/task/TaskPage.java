@@ -1334,6 +1334,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			System.out.println("222222222");
 		}
 		if (roal_type.getSelectionIndex() == 3) {
+			
 			if (selectedHumanRole.getTypeByIndex() == 0) {
 				input.getPeopleAssignments().getPotentialOwners()
 						.remove(selectedHumanRole.getGenericHumanRole());
@@ -1369,6 +1370,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			}
 
 			System.out.println("3333333");
+		
+		
 		}
 		if (roal_type.getSelectionIndex() == 4) {
 			if (selectedHumanRole.getTypeByIndex() == 0) {
@@ -2875,14 +2878,42 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	
 	private void configPParm_name(final Text nameTextBox) 
 	{
-	  if (tasks != null)
-	  {
-		  if((tasks.getTask().get(0).getPresentationElements().getPresentationParameters()
-				  .getPresentationParameter() .get(0).getName()!= null))
-		  { 
-			  nameTextBox.setText((tasks.getTask().get(0).getPresentationElements().
-					  getPresentationParameters().getPresentationParameter().get(0).getName())); 
-		  } 
+		if (tasks != null) {
+			// if((tasks.getTask().get(0).getPresentationElements().getPresentationParameters()
+			// .getPresentationParameter() .get(0).getName()!= null))
+			// {
+			if (tasks.getTask() != null) {
+				if (tasks.getTask().get(0) != null) {
+					if (tasks.getTask().get(0).getPresentationElements() != null) {
+						if (tasks.getTask().get(0).getPresentationElements()
+								.getPresentationParameters() != null) {
+							if (tasks.getTask().get(0)
+									.getPresentationElements()
+									.getPresentationParameters()
+									.getPresentationParameter() != null) {
+								if (tasks.getTask().get(0)
+										.getPresentationElements()
+										.getPresentationParameters()
+										.getPresentationParameter().get(0) != null) {
+									if (tasks.getTask().get(0)
+											.getPresentationElements()
+											.getPresentationParameters()
+											.getPresentationParameter().get(0)
+											.getName() != null) {
+										nameTextBox.setText((tasks.getTask()
+												.get(0)
+												.getPresentationElements()
+												.getPresentationParameters()
+												.getPresentationParameter()
+												.get(0).getName()));
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
 		  else 
 		  {
 			nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); 
@@ -2920,12 +2951,24 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		
 		if (tasks != null)
 		  {
-			  if((tasks.getTask().get(0).getPresentationElements().getPresentationParameters()
+			if(tasks.getTask()!=null){ 
+				if(tasks.getTask().get(0)!=null){
+					if(tasks.getTask().get(0).getPresentationElements()!=null){
+						if(tasks.getTask().get(0).getPresentationElements().getPresentationParameters()!=null){
+							if(tasks.getTask().get(0).getPresentationElements().getPresentationParameters().getPresentationParameter()!=null){
+								if(tasks.getTask().get(0).getPresentationElements().getPresentationParameters().getPresentationParameter().get(0)!=null){
+								if((tasks.getTask().get(0).getPresentationElements().getPresentationParameters()
 					  .getPresentationParameter() .get(0).getType() != null))
 			  { 
 				  typeTextBox.setText((tasks.getTask().get(0).getPresentationElements().
 						  getPresentationParameters().getPresentationParameter().get(0).getType().toString())); 
 			  } 
+			}
+		  }
+		  }
+		  }
+		  }
+		  }
 			  else 
 			  {
 				  typeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); 
@@ -3131,11 +3174,17 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			System.out.println("checkAvailability_Pparm() +Error message");
 			// Error message
 		} else {
-			if(input.getPresentationElements().getPresentationParameters().getPresentationParameter() != null){
-			selectedParam = input.getPresentationElements()
+			//if(input.getPresentationElements().getPresentationParameters().getPresentationParameter() != null){
+			if(input.getPresentationElements()!=null){
+				if(input.getPresentationElements().getPresentationParameters()!=null){
+					if(input.getPresentationElements().getPresentationParameters().getPresentationParameter()!=null){
+				selectedParam = input.getPresentationElements()
 					.getPresentationParameters().getPresentationParameter()
 					.get(0);
 			}
+			}
+			}
+		
 		}
 	}
 
@@ -3144,10 +3193,14 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			System.out.println("checkAvailabilityPElemSubTable() + Error message");
 			//Error message
 		} else {
-			if(input.getPresentationElements().getSubject() != null){
+			//if(input.getPresentationElements().getSubject() != null){
+				if(input.getPresentationElements()!=null){
+					if(input.getPresentationElements().getSubject() != null){
 			selectedElemSubject = input.getPresentationElements().getSubject()
 					.get(0);
 			}
+				}
+		
 		}
 	}
 
@@ -3155,10 +3208,12 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		if (input == null) {
 			System.out.println("checkAvailabilityPElemDescTable() +Error message");
 		} else {
+			if(input.getPresentationElements() != null){
 			if(input.getPresentationElements().getDescription() != null){
 			selectedElemDesc = input.getPresentationElements().getDescription()
 					.get(0);
 			}
+		}
 		}
 	}
 

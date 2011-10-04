@@ -3,6 +3,7 @@ package org.wso2.tools.humantask.editor.editors.pages.humanInteractions;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -343,6 +344,10 @@ public class HumanInteractionsPage extends FormPage implements
 
 			@Override
 			public void handleEvent(Event event) {
+				if(nsp_txt_extension.getEnabled() == false || must_und_extension.getEnabled() == false){
+					nsp_txt_extension.setEnabled(true);
+					must_und_extension.setEnabled(true);
+				}
 				HIExtentionWizard wizard = new HIExtentionWizard(
 						humanInteractions, domain, viewer_extension);
 				WizardDialog wizardDialog = new WizardDialog(Display
@@ -363,6 +368,16 @@ public class HumanInteractionsPage extends FormPage implements
 				boolean done = humanInteractions.getExtensions().getExtension()
 						.remove(selectedItem_extension);
 				viewer_extension.setInput(createModle());
+				TExtensions ext = humanInteractions.getExtensions();
+				EList<TExtension> extList = ext.getExtension();
+				
+				if(extList.size() == 0){
+				
+					nsp_txt_extension.setText("");
+					nsp_txt_extension.setEnabled(false);
+					must_und_extension.setText("");
+					must_und_extension.setEnabled(false);
+				}
 
 			}
 		});
@@ -482,6 +497,14 @@ public class HumanInteractionsPage extends FormPage implements
 			@Override
 			public void handleEvent(Event event) {
 
+				if (nsp_txt_import.getEnabled() == false
+						|| location_txt.getEnabled() == false
+						|| im_type_txt.getEnabled() == false) {
+					nsp_txt_import.setEnabled(true);
+					location_txt.setEnabled(true);
+					im_type_txt.setEnabled(true);
+
+				}
 				HIImportWizard wizard = new HIImportWizard(humanInteractions,
 						domain, viewer_import);
 				WizardDialog wizardDialog = new WizardDialog(Display
@@ -506,7 +529,17 @@ public class HumanInteractionsPage extends FormPage implements
 				boolean done = humanInteractions.getImport().remove(
 						selectedItem_import);
 				viewer_import.setInput(createModle_import());
-
+				EList<TImport> imports = humanInteractions.getImport();
+				
+				if(imports.size() == 0){
+				
+					nsp_txt_import.setText("");
+					nsp_txt_import.setEnabled(false);
+					location_txt.setText("");
+					location_txt.setEnabled(false);
+					im_type_txt.setText("");
+					im_type_txt.setEnabled(false);
+				}
 			}
 		});
 
@@ -719,6 +752,7 @@ public class HumanInteractionsPage extends FormPage implements
 	}
 
 	private void update() {
+		if(selectedItem_extension != null){
 		if (selectedItem_extension.getNamespace() != null) {
 			nsp_txt_extension.setText(selectedItem_extension.getNamespace());
 		}
@@ -731,17 +765,30 @@ public class HumanInteractionsPage extends FormPage implements
 			}
 
 		}
-
+		}
 	}
 
 	private void checkAvailability_extensions() {
-		if (humanInteractions.getExtensions() == null) {
+		if(humanInteractions.getExtensions() != null){
+			if(humanInteractions.getExtensions().getExtension() != null){
+				if(humanInteractions.getExtensions().getExtension().size() != 0){
+					selectedItem_extension = humanInteractions.getExtensions()
+					.getExtension().get(0);
+				}
+			}
+		}
+		/*if (humanInteractions.getExtensions() == null) {
 			// Error message
 
 		} else {
-			selectedItem_extension = humanInteractions.getExtensions()
+			if(humanInteractions.getExtensions().getExtension() != null){
+				
+					selectedItem_extension = humanInteractions.getExtensions()
 					.getExtension().get(0);
-		}
+			
+			}
+			
+		}*/
 
 	}
 
@@ -749,14 +796,23 @@ public class HumanInteractionsPage extends FormPage implements
 			final Text namespaceTextBox) {
 		if (humanInteractions.getExtensions() != null) {
 			if (humanInteractions.getExtensions().getExtension() != null) {
-				if (humanInteractions.getExtensions().getExtension().get(0) != null) {
+				if (humanInteractions.getExtensions().getExtension().size() != 0) {
 					if (humanInteractions.getExtensions().getExtension().get(0)
 							.getNamespace() != null) {
 						namespaceTextBox.setText(humanInteractions
 								.getExtensions().getExtension().get(0)
 								.getNamespace());
+					} else {
+						namespaceTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 					}
+				} else {
+					namespaceTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
+			} else {
+				namespaceTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
 		}
 
@@ -780,7 +836,7 @@ public class HumanInteractionsPage extends FormPage implements
 			final Combo mustUnderstansComboBox) {
 		if (humanInteractions.getExtensions() != null) {
 			if (humanInteractions.getExtensions().getExtension() != null) {
-				if (humanInteractions.getExtensions().getExtension().get(0) != null) {
+				if (humanInteractions.getExtensions().getExtension().size() != 0) {
 					if (humanInteractions.getExtensions().getExtension().get(0)
 							.getMustUnderstand() != null) {
 						mustUnderstansComboBox.select((humanInteractions
@@ -878,9 +934,25 @@ public class HumanInteractionsPage extends FormPage implements
 	}
 
 	private void update_import() {
-		nsp_txt_import.setText(selectedItem_import.getNamespace());
-		location_txt.setText(selectedItem_import.getLocation());
-		im_type_txt.setText(selectedItem_import.getImportType());
+		if (selectedItem_import != null) {
+			if (selectedItem_import.getNamespace() != null) {
+				nsp_txt_import.setText(selectedItem_import.getNamespace());
+			} else {
+				nsp_txt_import
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+			if (selectedItem_import.getLocation() != null) {
+				location_txt.setText(selectedItem_import.getLocation());
+			} else {
+				location_txt
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+			if (selectedItem_import.getImportType() != null) {
+				im_type_txt.setText(selectedItem_import.getImportType());
+			} else {
+				im_type_txt.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+		}
 
 	}
 

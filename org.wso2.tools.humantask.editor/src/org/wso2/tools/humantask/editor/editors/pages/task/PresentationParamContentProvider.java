@@ -22,7 +22,19 @@ public class PresentationParamContentProvider implements IStructuredContentProvi
 	public Object[] getElements(Object inputElement) {
 		
 		TTask t = (TTask) inputElement;
-		return t.getPresentationElements().getPresentationParameters().getPresentationParameter().toArray();
+		Object[] o = {};
+		if (t.getPresentationElements() != null) {
+			if (t.getPresentationElements().getPresentationParameters() != null) {
+				if (t.getPresentationElements().getPresentationParameters()
+						.getPresentationParameter() != null) {
+					return t.getPresentationElements()
+							.getPresentationParameters()
+							.getPresentationParameter().toArray();
+
+				}
+			}
+		}
+		return o;
 	}
 
 }

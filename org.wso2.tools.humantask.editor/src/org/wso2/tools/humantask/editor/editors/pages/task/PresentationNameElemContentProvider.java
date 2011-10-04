@@ -22,7 +22,13 @@ public class PresentationNameElemContentProvider implements IStructuredContentPr
 	public Object[] getElements(Object inputElement) {
 		
 		TTask task = (TTask)inputElement;
+		Object []o={};
+		if(task.getPresentationElements()!=null){
+			if(task.getPresentationElements().getName()!=null){
 		return task.getPresentationElements().getName().toArray();
+		}
+		}
+		return o;
 		
 	}
 
