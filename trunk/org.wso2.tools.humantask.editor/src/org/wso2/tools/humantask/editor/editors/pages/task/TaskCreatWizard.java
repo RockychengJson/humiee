@@ -6,8 +6,6 @@ import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.wizard.Wizard;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TBoolean;
-import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TExtension;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TTask;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdFactory;
@@ -43,7 +41,7 @@ public class TaskCreatWizard extends Wizard{
 	
 	@Override
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
+		
 		htdFactory factory= htdFactory.eINSTANCE;
 		TTask tTask= factory.createTTask();
 		

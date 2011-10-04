@@ -426,7 +426,9 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 		para_table.setSelection(0);
 
 		if (selectedLogicalPplGroup.getParameter()!=null) {
+			if(selectedLogicalPplGroup.getParameter().size()!=0){
 			selectedParameter = selectedLogicalPplGroup.getParameter().get(0);
+			}
 		} else {
 			clearTextBox();
 		}

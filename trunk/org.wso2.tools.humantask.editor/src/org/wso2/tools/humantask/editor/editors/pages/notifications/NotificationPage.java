@@ -172,7 +172,9 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		this.domain = editor.getEditingDomain();
 		this.adaptorFactory = editor.getAdapterFactory();
 		this.humanInteractions = humanInteractions;
+		if(this.humanInteractions.getNotifications()!=null){
 		this.notifications = this.humanInteractions.getNotifications();
+		}
 		this.notificationPage = this;
 		
 		
