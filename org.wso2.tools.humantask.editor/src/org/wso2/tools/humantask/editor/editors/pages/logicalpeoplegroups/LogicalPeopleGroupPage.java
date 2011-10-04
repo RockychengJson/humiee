@@ -7,6 +7,7 @@ import javax.xml.namespace.QName;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 
 import org.eclipse.emf.edit.command.SetCommand;
@@ -180,7 +181,13 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 
 			@Override
 			public void handleEvent(Event event) {
-
+				if(name_txt.getEnabled() ==false || 
+						para_name_txt.getEnabled() == false 
+						||para_type_txt.getEnabled() == false){
+					name_txt.setEnabled(true);
+					para_name_txt.setEnabled(true);
+					para_type_txt.setEnabled(true);
+				}
 				AddLogicalPeopleGroupWizard wizard = new AddLogicalPeopleGroupWizard(humanInteractions,domain,logicalPplviewer);
 				WizardDialog wizardDialog = new WizardDialog(Display
 						.getCurrent().getActiveShell(), wizard);
@@ -198,10 +205,21 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 			@Override
 			public void handleEvent(Event event) {
 
-			
+				if(selectedLogicalPplGroup != null){
 				boolean done=humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().remove(selectedLogicalPplGroup);
 				logicalPplviewer.setInput(createLogicalPplModle());
-
+				EList<TLogicalPeopleGroup> lpglist = humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup();
+				if(lpglist.size() == 0){
+					name_txt.setText("");
+					name_txt.setEnabled(false);
+					para_name_txt.setText("");
+					para_name_txt.setEnabled(false);
+					para_type_txt.setText("");
+					para_type_txt.setEnabled(false);
+				}
+				}else{
+					//Error Message
+				}
 			}
 		});
 		
@@ -271,13 +289,15 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 
 			@Override
 			public void handleEvent(Event event) {
-
+				if(selectedLogicalPplGroup != null){
 				AddParmWizard wizard = new AddParmWizard(domain,parameterViewer,logicalPeopleGroupPage);
 				WizardDialog wizardDialog = new WizardDialog(Display
 						.getCurrent().getActiveShell(), wizard);
 				wizardDialog.create();
 				wizardDialog.open();
-
+				}else{
+					//Error Message
+				}
 			}
 		});
 		
@@ -288,11 +308,26 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 
 			@Override
 			public void handleEvent(Event event) {
+				if (selectedLogicalPplGroup != null) {
+					if (selectedLogicalPplGroup.getParameter() != null) {
+						if (selectedParameter != null) {
+							boolean done = selectedLogicalPplGroup
+									.getParameter().remove(selectedParameter);
+							parameterViewer.setInput(createPramModle());
 
-				//TODO viraj : handle the action
-				boolean done=selectedLogicalPplGroup.getParameter().remove(selectedParameter);
-				parameterViewer.setInput(createPramModle());
-				
+						} else {
+							// Error Message
+						}
+						
+						EList<TParameter> parm = selectedLogicalPplGroup.getParameter();
+						if(parm.size() == 0){
+							para_name_txt.setText("");
+							para_type_txt.setText("");
+						}
+					}
+				} else {
+					// Error Message
+				}
 			}
 		});
 
@@ -417,17 +452,23 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 					.getFirstElement();
 
 		} else {
-			selectedLogicalPplGroup = (TLogicalPeopleGroup) logicalPplviewer.getElementAt(0);
+			selectedLogicalPplGroup = (TLogicalPeopleGroup) logicalPplviewer
+					.getElementAt(0);
 			logicalPplviewer.getTable().setSelection(0);
-			
+
 		}
 
 		parameterViewer.setInput(createPramModle());
 		para_table.setSelection(0);
 
-		if (selectedLogicalPplGroup.getParameter()!=null) {
-			if(selectedLogicalPplGroup.getParameter().size()!=0){
-			selectedParameter = selectedLogicalPplGroup.getParameter().get(0);
+		if (selectedLogicalPplGroup != null) {
+			if (selectedLogicalPplGroup.getParameter() != null) {
+				if (selectedLogicalPplGroup.getParameter().size() != 0) {
+					selectedParameter = selectedLogicalPplGroup.getParameter()
+							.get(0);
+				}
+			} else {
+				clearTextBox();
 			}
 		} else {
 			clearTextBox();
@@ -620,24 +661,61 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 
 	private void checkAvailability_LogicalPeopleGroup() {
 
-		if (humanInteractions.getLogicalPeopleGroups() == null) {
-			// Error message
-
-		} else {
-			selectedLogicalPplGroup = humanInteractions
+		if(humanInteractions.getLogicalPeopleGroups() != null){
+			if(humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup() != null){
+				if(humanInteractions.getLogicalPeopleGroups().getLogicalPeopleGroup().size() != 0){
+					selectedLogicalPplGroup = humanInteractions
 					.getLogicalPeopleGroups().getLogicalPeopleGroup().get(0);
+				}else{
+					//Error Message
+				}
+			}else{
+				//Error Message
+			}
+		}else{
+			//Error Message
 		}
+		
 
 	}
 
 	private void checkAvailability_Parameter() {
-		if(humanInteractions.getLogicalPeopleGroups() == null){
-			//Error Message
 		
+		if (humanInteractions.getLogicalPeopleGroups() != null) {
+			if (humanInteractions.getLogicalPeopleGroups()
+					.getLogicalPeopleGroup() != null) {
+				if (humanInteractions.getLogicalPeopleGroups()
+						.getLogicalPeopleGroup().size() != 0) {
+					if (humanInteractions.getLogicalPeopleGroups()
+							.getLogicalPeopleGroup().get(0) != null) {
+						if (humanInteractions.getLogicalPeopleGroups()
+								.getLogicalPeopleGroup().get(0).getParameter() != null) {
+							if (humanInteractions.getLogicalPeopleGroups()
+									.getLogicalPeopleGroup().get(0)
+									.getParameter().size() != 0) {
+								selectedParameter = humanInteractions
+										.getLogicalPeopleGroups()
+										.getLogicalPeopleGroup().get(0)
+										.getParameter().get(0);
+							} else {
+								// Error Message
+							}
+						} else {
+							// Error Message
+						}
+					} else {
+						// Error Message
+					}
+				} else {
+					// Error Message
+				}
+			} else {
+				// Error Message
+			}
 		} else {
-			selectedParameter = humanInteractions.getLogicalPeopleGroups()
-					.getLogicalPeopleGroup().get(0).getParameter().get(0);
+			// Error Message
 		}
+		
 	}
 	
 	public void updatePeopleAssignmentTable()
