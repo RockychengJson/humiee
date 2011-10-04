@@ -518,6 +518,7 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 				setAttribute_logicalPplGroup(
 						htdPackage.eINSTANCE.getTLogicalPeopleGroup_Name(),
 						nameTextBox.getText());
+				logicalPplviewer.setInput(createLogicalPplModle());
 			}
 		});
 	}
@@ -544,6 +545,7 @@ public class LogicalPeopleGroupPage extends FormPage implements IResourceChangeL
 				setAttribute_parmName(
 						htdPackage.eINSTANCE.getTParameter_Name(),
 						parmNameTextBox.getText());
+				parameterViewer.setInput(createPramModle());
 			}
 		});
 	}
