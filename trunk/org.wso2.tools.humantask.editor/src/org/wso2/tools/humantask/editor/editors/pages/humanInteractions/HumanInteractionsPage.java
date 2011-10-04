@@ -777,19 +777,7 @@ public class HumanInteractionsPage extends FormPage implements
 				}
 			}
 		}
-		/*if (humanInteractions.getExtensions() == null) {
-			// Error message
-
-		} else {
-			if(humanInteractions.getExtensions().getExtension() != null){
-				
-					selectedItem_extension = humanInteractions.getExtensions()
-					.getExtension().get(0);
-			
-			}
-			
-		}*/
-
+		
 	}
 
 	private void configExtensionDetailSection_namespace(
@@ -913,12 +901,16 @@ public class HumanInteractionsPage extends FormPage implements
 	}
 
 	private void checkAvailability_import() {
-		if (humanInteractions.getImport().size() == 0) {
-			// Error message
-
+		if (humanInteractions.getImport() != null) {
+			if (humanInteractions.getImport().size() != 0) {
+				selectedItem_import = humanInteractions.getImport().get(0);
+			} else {
+				// Error Message
+			}
 		} else {
-			selectedItem_import = humanInteractions.getImport().get(0);
+			// Error Message
 		}
+		
 
 	}
 
