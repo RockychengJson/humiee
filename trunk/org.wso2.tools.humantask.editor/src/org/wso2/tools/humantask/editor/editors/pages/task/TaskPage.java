@@ -613,38 +613,99 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private void configGeneralInfoSection_oneWayAndRequestResponseButton()
 	{
 		if (tasks != null) {
-			if ((tasks.getTask().get(0).getInterface().getResponsePortType()== null)&
-					(tasks.getTask().get(0).getInterface().getResponseOperation()== null)) {
-				oneway.setSelection(true);
-				requestres.setSelection(false);
-				//OportTextBox.setText("");
-				OportComboBox.setText("");
-				//OportTextBox.setEnabled(false);
-				OportComboBox.setEnabled(false);
-				//OresponseTextBox.setText("");
-				OresponseComboBox.setText("");
-				//OresponseTextBox.setEnabled(false);
-				OresponseComboBox.setEnabled(false);
-				
-			}else {
+			if (tasks.getTask() != null) {
+				if (tasks.getTask().size() != 0) {
+					if (tasks.getTask().get(0) != null) {
+						if (tasks.getTask().get(0).getInterface() != null) {
+							if ((tasks.getTask().get(0).getInterface()
+									.getResponsePortType() == null)
+									& (tasks.getTask().get(0).getInterface()
+											.getResponseOperation() == null)) {
+
+								oneway.setSelection(true);
+								requestres.setSelection(false);
+								// OportTextBox.setText("");
+								OportComboBox.setText("");
+								// OportTextBox.setEnabled(false);
+								OportComboBox.setEnabled(false);
+								// OresponseTextBox.setText("");
+								OresponseComboBox.setText("");
+								// OresponseTextBox.setEnabled(false);
+								OresponseComboBox.setEnabled(false);
+
+							} else {
+								oneway.setSelection(false);
+								requestres.setSelection(true);
+							}
+						} else {
+							oneway.setSelection(false);
+							requestres.setSelection(true);
+						}
+					} else {
+						oneway.setSelection(false);
+						requestres.setSelection(true);
+					}
+				} else {
+					oneway.setSelection(false);
+					requestres.setSelection(true);
+				}
+			} else {
 				oneway.setSelection(false);
 				requestres.setSelection(true);
-				}
 			}
+			/*
+			 * if
+			 * ((tasks.getTask().get(0).getInterface().getResponsePortType()==
+			 * null)&
+			 * (tasks.getTask().get(0).getInterface().getResponseOperation()==
+			 * null)) { oneway.setSelection(true);
+			 * requestres.setSelection(false); //OportTextBox.setText("");
+			 * OportComboBox.setText(""); //OportTextBox.setEnabled(false);
+			 * OportComboBox.setEnabled(false); //OresponseTextBox.setText("");
+			 * OresponseComboBox.setText("");
+			 * //OresponseTextBox.setEnabled(false);
+			 * OresponseComboBox.setEnabled(false);
+			 * 
+			 * }else { oneway.setSelection(false);
+			 * requestres.setSelection(true); }
+			 */
+		} else {
+			oneway.setSelection(false);
+			requestres.setSelection(true);
+		}
 	}
 	
 	private void configGeneralInfoSection_portType(final Combo portComboBox) {
 		if (tasks != null) {
-			if (tasks.getTask().get(0).getInterface().getPortType() != null) {
-			/*	if ((tasks.getTask().get(0).getInterface().getPortType()
-						.toString() != null)){*/ 
-				portComboBox.setText(tasks.getTask().get(0).getInterface().getPortType().toString()) ;
-				
-				
-			}else {
-				portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			if (tasks.getTask() != null) {
+				if (tasks.getTask().size() != 0) {
+					if (tasks.getTask().get(0).getInterface() != null) {
+						if (tasks.getTask().get(0).getInterface().getPortType() != null) {
+							portComboBox.setText(tasks.getTask().get(0)
+									.getInterface().getPortType().toString());
+						} else {
+							portComboBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					} else {
+						portComboBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
+				} else {
+					portComboBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
+				/*
+				 * if ((tasks.getTask().get(0).getInterface().getPortType()
+				 * .toString() != null)){
+				 */
+			} else {
+				portComboBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
+		} else {
+			portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
 		
 		portComboBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -669,14 +730,44 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	private void configGeneralInfoSection_operation(final Combo operationComboBox) {
 		if (tasks != null) {
-			if ((tasks.getTask().get(0).getInterface().getOperation() != null)) {
+			if(tasks.getTask() != null){
+				if(tasks.getTask().size() != 0){
+					if(tasks.getTask().get(0) != null){
+						if(tasks.getTask().get(0).getInterface() != null){
+							if(tasks.getTask().get(0).getInterface().getOperation() != null){
+								operationComboBox.setText((tasks.getTask().get(0).getInterface()
+										.getOperation()));
+							}else {
+								operationComboBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+						}else {
+							operationComboBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					}else {
+						operationComboBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
+				}else {
+					operationComboBox
+					.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}else {
+				operationComboBox
+				.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+			/*if ((tasks.getTask().get(0).getInterface().getOperation() != null)) {
 				operationComboBox.setText((tasks.getTask().get(0).getInterface()
 						.getOperation()));
 				
 			} else {
 				operationComboBox
 						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-			}
+			}*/
+		}else {
+			operationComboBox
+			.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
 
 		operationComboBox.addModifyListener(new ModifyListener() {
@@ -692,17 +783,49 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	private void configGeneralInfoSection_OportType(final Combo OportTypeComboBox) {
 		if (tasks != null) {
-			if (tasks.getTask().get(0).getInterface().getResponsePortType() != null) {
-		/*		if ((tasks.getTask().get(0).getInterface()
-						.getResponsePortType().toString() != null)) {*/
-				OportTypeComboBox.setText((tasks.getTask().get(0)
-							.getInterface().getResponsePortType().toString()));
-				
+			if (tasks.getTask() != null) {
+				if (tasks.getTask().size() != 0) {
+					if (tasks.getTask().get(0) != null) {
+						if (tasks.getTask().get(0).getInterface() != null) {
+							if (tasks.getTask().get(0).getInterface()
+									.getResponsePortType() != null) {
+								OportTypeComboBox.setText((tasks.getTask()
+										.get(0).getInterface()
+										.getResponsePortType().toString()));
+							} else {
+								OportTypeComboBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+						} else {
+							OportTypeComboBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					} else {
+						OportTypeComboBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
 				} else {
 					OportTypeComboBox
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
+			} else {
+				OportTypeComboBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
+			/*
+			 * if (tasks.getTask().get(0).getInterface().getResponsePortType()
+			 * != null) { if ((tasks.getTask().get(0).getInterface()
+			 * .getResponsePortType().toString() != null)) {
+			 * OportTypeComboBox.setText((tasks.getTask().get(0)
+			 * .getInterface().getResponsePortType().toString()));
+			 * 
+			 * } else { OportTypeComboBox
+			 * .setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); }
+			 */
+		} else {
+			OportTypeComboBox
+					.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
 		
 		OportTypeComboBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -729,15 +852,43 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 	private void configGeneralInfoSection_Oresponse(final Combo OresponseComboBox) {
 		if (tasks != null) {
-			if ((tasks.getTask().get(0).getInterface().getResponseOperation() != null)) {
-				OresponseComboBox.setText((tasks.getTask().get(0).getInterface()
-						.getResponseOperation()));
-				
+			if (tasks.getTask() != null) {
+				if (tasks.getTask().size() != 0) {
+					if (tasks.getTask().get(0).getInterface() != null) {
+						if (tasks.getTask().get(0).getInterface()
+								.getResponseOperation() != null) {
+							OresponseComboBox.setText((tasks.getTask().get(0)
+									.getInterface().getResponseOperation()));
+						} else {
+							OresponseComboBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					} else {
+						OresponseComboBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
+				} else {
+					OresponseComboBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
 			} else {
 				OresponseComboBox
 						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
+			/*
+			 * if ((tasks.getTask().get(0).getInterface().getResponseOperation()
+			 * != null)) {
+			 * OresponseComboBox.setText((tasks.getTask().get(0).getInterface()
+			 * .getResponseOperation()));
+			 * 
+			 * } else { OresponseComboBox
+			 * .setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); }
+			 */
+		} else {
+			OresponseComboBox
+					.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
+		
 		OresponseComboBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
@@ -750,6 +901,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	}
 
 	private void setAttribute(EAttribute tTaskInterface_Attribute, String text) {
+		if(input != null){
 		Command setAttribCommand = SetCommand.create(domain,
 				input.getInterface(), tTaskInterface_Attribute, text);
 
@@ -757,25 +909,35 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			domain.getCommandStack().execute(setAttribCommand);
 		} else {
 			System.out.println("can't modify Attribute: "
+					+ tTaskInterface_Attribute.getName());
+		}
+		}else{
+			System.out.println("can't modify Attribute: No Task"
 					+ tTaskInterface_Attribute.getName());
 		}
 	}
 
 	private void setAttribute_Qname(EAttribute tTaskInterface_Attribute,
 			QName text) {
+		if(input != null){
 		Command setAttribCommand = SetCommand.create(domain,
 				input.getInterface(), tTaskInterface_Attribute, text);
-
+		
 		if (setAttribCommand.canExecute()) {
 			domain.getCommandStack().execute(setAttribCommand);
 		} else {
 			System.out.println("can't modify Attribute: "
 					+ tTaskInterface_Attribute.getName());
 		}
+		}
+		else{
+			System.out.println("can't modify Attribute: No Task"
+					+ tTaskInterface_Attribute.getName());
+		}
 	}
 
 	private void updateInterfaceTab() {
-		
+		if(input != null){
 		if (input.getInterface() != null) {
 
 			if (input.getInterface().getPortType() != null) {				
@@ -824,7 +986,12 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			}
 		}
 			
-			
+		}else {
+			portComboBox.setText("");
+			operationComboBox.setText("");
+			OresponseComboBox.setText("");
+			OportComboBox.setText("");
+		}	
 		} else {
 			portComboBox.setText("");
 			operationComboBox.setText("");
@@ -1504,7 +1671,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			@Override
 			public void modifyText(ModifyEvent e) {
 
-				//should be edited
+		// TODO		//should be edited
 				
 				/*if(selectedHumanRole.getGenericHumanRole().getFrom()!=null){
 				selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().setValue(0, expTextBox.getText());
@@ -2844,15 +3011,75 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	
 	private void configPElemGeneralInfoSection_language(final Text languageTextBox) {
 		if (tasks != null) {
-			if (tasks.getTask().get(0).getPresentationElements() != null) {
-				if ((tasks.getTask().get(0).getPresentationElements().getName().get(0).getLang() != null)) {
-					languageTextBox.setText((tasks.getTask().get(0).getPresentationElements().getName().get(0).getLang()));
+			if (tasks.getTask() != null) {
+				if (tasks.getTask().size() != 0) {
+					if (tasks.getTask().get(0) != null) {
+						if (tasks.getTask().get(0).getPresentationElements() != null) {
+							if (tasks.getTask().get(0)
+									.getPresentationElements().getName() != null) {
+								if (tasks.getTask().get(0)
+										.getPresentationElements().getName()
+										.size() != 0) {
+									if (tasks.getTask().get(0)
+											.getPresentationElements()
+											.getName().get(0) != null) {
+										if (tasks.getTask().get(0)
+												.getPresentationElements()
+												.getName().get(0).getLang() != null) {
+											languageTextBox
+													.setText((tasks
+															.getTask()
+															.get(0)
+															.getPresentationElements()
+															.getName().get(0)
+															.getLang()));
+										} else {
+											languageTextBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+										}
+									} else {
+										languageTextBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+									}
+								} else {
+									languageTextBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+								}
+							} else {
+								languageTextBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+						} else {
+							languageTextBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+
+					} else {
+						languageTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
 				} else {
 					languageTextBox
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
+			} else {
+				languageTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
+			/*
+			 * if (tasks.getTask().get(0).getPresentationElements() != null) {
+			 * if
+			 * ((tasks.getTask().get(0).getPresentationElements().getName().get
+			 * (0).getLang() != null)) {
+			 * languageTextBox.setText((tasks.getTask()
+			 * .get(0).getPresentationElements().getName().get(0).getLang())); }
+			 * else { languageTextBox
+			 * .setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); } }
+			 */
+		} else {
+			languageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
+
 		languageTextBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
@@ -2883,44 +3110,76 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			// .getPresentationParameter() .get(0).getName()!= null))
 			// {
 			if (tasks.getTask() != null) {
-				if (tasks.getTask().get(0) != null) {
-					if (tasks.getTask().get(0).getPresentationElements() != null) {
-						if (tasks.getTask().get(0).getPresentationElements()
-								.getPresentationParameters() != null) {
+				if (tasks.getTask().size() != 0) {
+					if (tasks.getTask().get(0) != null) {
+						if (tasks.getTask().get(0).getPresentationElements() != null) {
 							if (tasks.getTask().get(0)
 									.getPresentationElements()
-									.getPresentationParameters()
-									.getPresentationParameter() != null) {
+									.getPresentationParameters() != null) {
 								if (tasks.getTask().get(0)
 										.getPresentationElements()
 										.getPresentationParameters()
-										.getPresentationParameter().get(0) != null) {
+										.getPresentationParameter() != null) {
 									if (tasks.getTask().get(0)
 											.getPresentationElements()
 											.getPresentationParameters()
-											.getPresentationParameter().get(0)
-											.getName() != null) {
-										nameTextBox.setText((tasks.getTask()
-												.get(0)
+											.getPresentationParameter().get(0) != null) {
+										if (tasks.getTask().get(0)
 												.getPresentationElements()
 												.getPresentationParameters()
 												.getPresentationParameter()
-												.get(0).getName()));
+												.get(0).getName() != null) {
+											nameTextBox
+													.setText((tasks
+															.getTask()
+															.get(0)
+															.getPresentationElements()
+															.getPresentationParameters()
+															.getPresentationParameter()
+															.get(0).getName()));
+										} else {
+											nameTextBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+										}
+									} else {
+										nameTextBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
 									}
+								} else {
+									nameTextBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
 								}
+							} else {
+								nameTextBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
 							}
+						} else {
+							nameTextBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
 						}
+					} else {
+						nameTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
 					}
+				} else {
+					nameTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
 				}
 			}
 
-		  else 
-		  {
-			nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); 
-			
-		  } 
-		  
-	  }
+			else {
+				nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+			}
+
+		}
 	  		
 	  nameTextBox.addModifyListener(new ModifyListener() {
 	  			public void modifyText(ModifyEvent e) 
@@ -2949,33 +3208,78 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	
 	private void cinfigPparm_type(final Text typeTextBox){
 		
-		if (tasks != null)
-		  {
-			if(tasks.getTask()!=null){ 
-				if(tasks.getTask().get(0)!=null){
-					if(tasks.getTask().get(0).getPresentationElements()!=null){
-						if(tasks.getTask().get(0).getPresentationElements().getPresentationParameters()!=null){
-							if(tasks.getTask().get(0).getPresentationElements().getPresentationParameters().getPresentationParameter()!=null){
-								if(tasks.getTask().get(0).getPresentationElements().getPresentationParameters().getPresentationParameter().get(0)!=null){
-								if((tasks.getTask().get(0).getPresentationElements().getPresentationParameters()
-					  .getPresentationParameter() .get(0).getType() != null))
-			  { 
-				  typeTextBox.setText((tasks.getTask().get(0).getPresentationElements().
-						  getPresentationParameters().getPresentationParameter().get(0).getType().toString())); 
-			  } 
+		if (tasks != null) {
+			if (tasks.getTask() != null) {
+				if (tasks.getTask().size() != 0) {
+					if (tasks.getTask().get(0) != null) {
+						if (tasks.getTask().get(0).getPresentationElements() != null) {
+							if (tasks.getTask().get(0)
+									.getPresentationElements()
+									.getPresentationParameters() != null) {
+								if (tasks.getTask().get(0)
+										.getPresentationElements()
+										.getPresentationParameters()
+										.getPresentationParameter() != null) {
+									if (tasks.getTask().get(0)
+											.getPresentationElements()
+											.getPresentationParameters()
+											.getPresentationParameter().get(0) != null) {
+										if ((tasks.getTask().get(0)
+												.getPresentationElements()
+												.getPresentationParameters()
+												.getPresentationParameter()
+												.get(0).getType() != null)) {
+											typeTextBox
+													.setText((tasks
+															.getTask()
+															.get(0)
+															.getPresentationElements()
+															.getPresentationParameters()
+															.getPresentationParameter()
+															.get(0).getType()
+															.toString()));
+										} else {
+											typeTextBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+										}
+
+									} else {
+										typeTextBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+									}
+
+								} else {
+									typeTextBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+								}
+
+							} else {
+								typeTextBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+
+						} else {
+							typeTextBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+
+					} else {
+						typeTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
+
+				} else {
+					typeTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+
+			} else {
+				typeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
-		  }
-		  }
-		  }
-		  }
-		  }
-			  else 
-			  {
-				  typeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); 
-				
-			  } 
-			  
-		  }
+
+		} else {
+			typeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
 		  		
 		typeTextBox.addModifyListener(new ModifyListener() {
 		  			public void modifyText(ModifyEvent e) 
@@ -3005,15 +3309,72 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	
 	private void configPElem_SubInfo_lang(final Text languageTextBox){
 		if (tasks != null) {
-			if (tasks.getTask().get(0).getPresentationElements() != null) {
-				if ((tasks.getTask().get(0).getPresentationElements().getSubject().get(0) != null)) {
-					languageTextBox.setText((tasks.getTask().get(0).getPresentationElements().getSubject().get(0).getLang()));
+			if (tasks.getTask() != null) {
+				if (tasks.getTask().size() != 0) {
+					if (tasks.getTask().get(0) != null) {
+						if (tasks.getTask().get(0).getPresentationElements() != null) {
+							if (tasks.getTask().get(0)
+									.getPresentationElements().getSubject() != null) {
+								if (tasks.getTask().get(0)
+										.getPresentationElements().getSubject()
+										.size() != 0) {
+									if (tasks.getTask().get(0)
+											.getPresentationElements()
+											.getSubject().get(0) != null) {
+										if (tasks.getTask().get(0)
+												.getPresentationElements()
+												.getSubject().get(0).getLang() != null) {
+											languageTextBox.setText((tasks
+													.getTask().get(0)
+													.getPresentationElements()
+													.getSubject().get(0)
+													.getLang()));
+										} else {
+											languageTextBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+										}
+									} else {
+										languageTextBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+									}
+								} else {
+									languageTextBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+								}
+							} else {
+								languageTextBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+						} else {
+							languageTextBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					} else {
+						languageTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
 				} else {
 					languageTextBox
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
+			} else {
+				languageTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
+			/*
+			 * if (tasks.getTask().get(0).getPresentationElements() != null) {
+			 * if
+			 * ((tasks.getTask().get(0).getPresentationElements().getSubject()
+			 * .get(0) != null)) {
+			 * languageTextBox.setText((tasks.getTask().get(0
+			 * ).getPresentationElements().getSubject().get(0).getLang())); }
+			 * else { languageTextBox
+			 * .setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); } }
+			 */
+		} else {
+			languageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
+
 		languageTextBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
@@ -3039,15 +3400,74 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private void configPElem_DescInfo_lang(final Text languageTextBox){
 		
 		if (tasks != null) {
-			if (tasks.getTask().get(0).getPresentationElements() != null) {
-				if ((tasks.getTask().get(0).getPresentationElements().getDescription().get(0) != null)) {
-					languageTextBox.setText((tasks.getTask().get(0).getPresentationElements().getDescription().get(0).getLang()));
+			if (tasks.getTask() != null) {
+				if (tasks.getTask().size() != 0) {
+					if (tasks.getTask().get(0) != null) {
+						if (tasks.getTask().get(0).getPresentationElements() != null) {
+							if (tasks.getTask().get(0)
+									.getPresentationElements().getDescription() != null) {
+								if (tasks.getTask().get(0)
+										.getPresentationElements()
+										.getDescription().size() != 0) {
+									if (tasks.getTask().get(0)
+											.getPresentationElements()
+											.getDescription().get(0) != null) {
+										if (tasks.getTask().get(0)
+												.getPresentationElements()
+												.getDescription().get(0)
+												.getLang() != null) {
+											
+											languageTextBox.setText((tasks
+													.getTask().get(0)
+													.getPresentationElements()
+													.getDescription().get(0)
+													.getLang()));
+										} else {
+											languageTextBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+										}
+									} else {
+										languageTextBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+									}
+								} else {
+									languageTextBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+								}
+							} else {
+								languageTextBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+						} else {
+							languageTextBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					} else {
+						languageTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
 				} else {
 					languageTextBox
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
+			} else {
+				languageTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
+			/*
+			 * if (tasks.getTask().get(0).getPresentationElements() != null) {
+			 * if
+			 * ((tasks.getTask().get(0).getPresentationElements().getDescription
+			 * ().get(0) != null)) {
+			 * languageTextBox.setText((tasks.getTask().get
+			 * (0).getPresentationElements
+			 * ().getDescription().get(0).getLang())); } else { languageTextBox
+			 * .setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); } }
+			 */
+		} else {
+			languageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
+
 		languageTextBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
@@ -3075,20 +3495,77 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private void configPElemDescInfo_contextType(final Combo contextTypeComboBox)
  {
 		if (tasks != null) {
-			if (tasks.getTask().get(0).getPresentationElements() != null) {
-				if ((tasks.getTask().get(0).getPresentationElements()
-						.getDescription().get(0) != null)) {
-					contextTypeComboBox.select(tasks.getTask().get(0)
-							.getPresentationElements().getDescription().get(0)
-							.getContentType().compareTo("text/plain") == 0 ? 0
-							: 1);
+			if (tasks.getTask() != null) {
+				if (tasks.getTask().size() != 0) {
+					if (tasks.getTask().get(0) != null) {
+						if (tasks.getTask().get(0).getPresentationElements() != null) {
+							if ((tasks.getTask().get(0)
+									.getPresentationElements().getDescription() != null)) {
+								if (tasks.getTask().get(0)
+										.getPresentationElements()
+										.getDescription().size() != 0) {
+									if (tasks.getTask().get(0)
+											.getPresentationElements()
+											.getDescription().get(0) != null) {
+										if (tasks.getTask().get(0)
+												.getPresentationElements()
+												.getDescription().get(0)
+												.getContentType() != null) {
+											contextTypeComboBox
+													.select(tasks
+															.getTask()
+															.get(0)
+															.getPresentationElements()
+															.getDescription()
+															.get(0)
+															.getContentType()
+															.compareTo(
+																	"text/plain") == 0 ? 0
+															: 1);
+										} else {
 
+											contextTypeComboBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+										}
+									} else {
+
+										contextTypeComboBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+									}
+								} else {
+
+									contextTypeComboBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+								}
+							} else {
+
+								contextTypeComboBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+						} else {
+
+							contextTypeComboBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					} else {
+
+						contextTypeComboBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
 				} else {
 
 					contextTypeComboBox
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
+			} else {
+
+				contextTypeComboBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
+		} else {
+
+			contextTypeComboBox
+					.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
 
 		contextTypeComboBox.addModifyListener(new ModifyListener() {
@@ -3123,13 +3600,31 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	// Availability checks
 
 	private void checkAvailability_Tasks() {
-		if (tasks == null) {
+		
+		if(tasks != null){
+			if(tasks.getTask() != null){
+				if(tasks.getTask().size() != 0){
+					input = tasks.getTask().get(0);
+				}else{
+					//Error Message
+					System.out.println("checkAvailability_Tasks() + Error message");
+				}
+			}else{
+				//Error Message
+				System.out.println("checkAvailability_Tasks() + Error message");
+			}
+		}else{
+			//Error Message
+			System.out.println("checkAvailability_Tasks() + Error message");
+		}
+		/*if (tasks == null) {
 			System.out.println("checkAvailability_Tasks() + Error message");
 			// Error message
 
 		} else {
+			
 			input = tasks.getTask().get(0);
-		}
+		}*/
 
 	}
 	
@@ -3149,7 +3644,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private void checkAvailability_HumanRole() {
 		if (tasks != null) {
 			if (tasks.getTask() != null) {
-				if (tasks.getTask().get(0) != null) {
+				if (tasks.getTask().size() != 0) {
 					List peopleassignment = getPeopleAssignmentList(tasks
 							.getTask().get(0));
 
