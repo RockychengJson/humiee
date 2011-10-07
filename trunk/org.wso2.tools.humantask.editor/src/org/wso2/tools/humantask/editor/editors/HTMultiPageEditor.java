@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.command.BasicCommandStack;
 import org.eclipse.emf.common.util.EList;
@@ -19,6 +21,8 @@ import org.eclipse.emf.edit.provider.ReflectiveItemProviderAdapterFactory;
 import org.eclipse.emf.edit.provider.resource.ResourceItemProviderAdapterFactory;
 import org.eclipse.emf.edit.ui.util.EditUIUtil;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -38,12 +42,15 @@ import org.wso2.tools.humantask.editor.editors.xmleditor.HTEditor;
 
 
 
-public class HTMultiPageEditor extends HTMultiPageEditorBase{
+public class HTMultiPageEditor extends HTMultiPageEditorBase implements IResourceChangeListener,
+Listener{
 
 	private HumanInteractionsPage humanInteractionPage;
 	private LogicalPeopleGroupPage logicalPeopleGroupPage;
 	private TaskPage taskPage;
 	private NotificationPage notificationPage;
+	
+	private boolean isResourceChanged;
 	
 	private HTEditor sourceViewer;
 	
@@ -248,6 +255,25 @@ public class HTMultiPageEditor extends HTMultiPageEditorBase{
 		} else {
 			return false;
 		}
+		
+	}
+	public void customizedSave(){
+		firePropertyChange(IEditorPart.PROP_DIRTY);
+		if(isDirty()){
+			System.out.println("dirtied");
+		}else{System.out.println("not dirtied");}
+	}
+
+	@Override
+	public void handleEvent(Event event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resourceChanged(IResourceChangeEvent event) {
+		// TODO Auto-generated method stub
+		isResourceChanged = true;
 		
 	}
 
