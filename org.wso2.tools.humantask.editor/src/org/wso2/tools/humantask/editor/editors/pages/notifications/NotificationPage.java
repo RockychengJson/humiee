@@ -1064,11 +1064,20 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 						} else {
 							nameTextBox
 									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-
 						}
+					} else {
+						nameTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 					}
+				} else {
+					nameTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
+			} else {
+				nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
+		} else {
+			nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
 
 		nameTextBox.addModifyListener(new ModifyListener() {
@@ -1992,7 +2001,96 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	
 	private void configPParm_name(final Text nameTextBox) 
 	{
-	  if (notifications != null)
+
+		if (notifications != null) {
+			if (notifications.getNotification() != null) {
+				if (notifications.getNotification().size() != 0) {
+					if (notifications.getNotification().get(0) != null) {
+						if (notifications.getNotification().get(0)
+								.getPresentationElements() != null) {
+							if (notifications.getNotification().get(0)
+									.getPresentationElements()
+									.getPresentationParameters() != null) {
+								if (notifications.getNotification().get(0)
+										.getPresentationElements()
+										.getPresentationParameters()
+										.getPresentationParameter() != null) {
+									if (notifications.getNotification().get(0)
+											.getPresentationElements()
+											.getPresentationParameters()
+											.getPresentationParameter().size() != 0) {
+										if (notifications.getNotification()
+												.get(0)
+												.getPresentationElements()
+												.getPresentationParameters()
+												.getPresentationParameter()
+												.get(0) != null) {
+											if (notifications
+													.getNotification()
+													.get(0)
+													.getPresentationElements()
+													.getPresentationParameters()
+													.getPresentationParameter()
+													.get(0).getName() != null) {
+												nameTextBox
+														.setText((notifications
+																.getNotification()
+																.get(0)
+																.getPresentationElements()
+																.getPresentationParameters()
+																.getPresentationParameter()
+																.get(0)
+																.getName()));
+											} else {
+												nameTextBox
+														.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+											}
+
+										} else {
+											nameTextBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+										}
+									} else {
+										nameTextBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+									}
+								} else {
+									nameTextBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+								}
+							} else {
+								nameTextBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+							}
+						} else {
+							nameTextBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+						}
+					} else {
+						nameTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+					}
+				} else {
+					nameTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+				}
+			} else {
+				nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+			}
+		} else {
+			nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+		}
+	  /*if (notifications != null)
 	  {
 		  if((notifications.getNotification().get(0).getPresentationElements().getPresentationParameters()
 				  .getPresentationParameter() .get(0).getName()!= null))
@@ -2006,7 +2104,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			
 		  } 
 		  
-	  }
+	  }*/
 	  		
 	  nameTextBox.addModifyListener(new ModifyListener() {
 	  			public void modifyText(ModifyEvent e) 
@@ -2034,8 +2132,97 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	
 	
 	private void cinfigPparm_type(final Text typeTextBox){
-		
-		if (notifications != null)
+		if (notifications != null) {
+			if (notifications.getNotification() != null) {
+				if (notifications.getNotification().size() != 0) {
+					if (notifications.getNotification().get(0) != null) {
+						if (notifications.getNotification().get(0)
+								.getPresentationElements() != null) {
+							if (notifications.getNotification().get(0)
+									.getPresentationElements()
+									.getPresentationParameters() != null) {
+								if (notifications.getNotification().get(0)
+										.getPresentationElements()
+										.getPresentationParameters()
+										.getPresentationParameter() != null) {
+									if (notifications.getNotification().get(0)
+											.getPresentationElements()
+											.getPresentationParameters()
+											.getPresentationParameter().size() != 0) {
+										if (notifications.getNotification()
+												.get(0)
+												.getPresentationElements()
+												.getPresentationParameters()
+												.getPresentationParameter()
+												.get(0) != null) {
+											if (notifications
+													.getNotification()
+													.get(0)
+													.getPresentationElements()
+													.getPresentationParameters()
+													.getPresentationParameter()
+													.get(0).getType() != null) {
+												typeTextBox
+														.setText((notifications
+																.getNotification()
+																.get(0)
+																.getPresentationElements()
+																.getPresentationParameters()
+																.getPresentationParameter()
+																.get(0)
+																.getType()
+																.toString()));
+
+											} else {
+												typeTextBox
+														.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+											}
+
+										} else {
+											typeTextBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+										}
+									} else {
+										typeTextBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+									}
+								} else {
+									typeTextBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+								}
+							} else {
+								typeTextBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+							}
+						} else {
+							typeTextBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+						}
+					} else {
+						typeTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+					}
+				} else {
+					typeTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+				}
+			} else {
+				typeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+			}
+		} else {
+			typeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+		}
+		/*if (notifications != null)
 		  {
 			  if((notifications.getNotification().get(0).getPresentationElements().getPresentationParameters()
 					  .getPresentationParameter() .get(0).getType() != null))
@@ -2049,7 +2236,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				
 			  } 
 			  
-		  }
+		  }*/
 		  		
 		typeTextBox.addModifyListener(new ModifyListener() {
 		  			public void modifyText(ModifyEvent e) 
@@ -2077,6 +2264,68 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	 
 	private void configPElem_SubInfo_lang(final Text languageTextBox){
 		if (notifications != null) {
+			if (notifications.getNotification() != null) {
+				if (notifications.getNotification().size() != 0) {
+					if (notifications.getNotification().get(0) != null) {
+						if (notifications.getNotification().get(0)
+								.getPresentationElements() != null) {
+							if (notifications.getNotification().get(0)
+									.getPresentationElements().getSubject() != null) {
+								if (notifications.getNotification().get(0)
+										.getPresentationElements().getSubject()
+										.size() != 0) {
+									if (notifications.getNotification().get(0)
+											.getPresentationElements()
+											.getSubject().get(0) != null) {
+										if (notifications.getNotification()
+												.get(0)
+												.getPresentationElements()
+												.getSubject().get(0).getLang() != null) {
+											languageTextBox
+													.setText((notifications
+															.getNotification()
+															.get(0)
+															.getPresentationElements()
+															.getSubject()
+															.get(0).getLang()));
+										} else {
+											languageTextBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+										}
+									} else {
+										languageTextBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+									}
+								} else {
+									languageTextBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+								}
+							} else {
+								languageTextBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+						} else {
+							languageTextBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					} else {
+						languageTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
+				} else {
+					languageTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+
+			} else {
+				languageTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+
+		} else {
+			languageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+		/*if (notifications != null) {
 			if (notifications.getNotification().get(0).getPresentationElements() != null) {
 				if ((notifications.getNotification().get(0).getPresentationElements().getSubject().get(0) != null)) {
 					languageTextBox.setText((notifications.getNotification().get(0).getPresentationElements().getSubject().get(0).getLang()));
@@ -2085,7 +2334,9 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
 			}
-		}
+		}*/
+		
+		
 		languageTextBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
@@ -2109,17 +2360,81 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	
 	
 	private void configPElem_DescInfo_lang(final Text languageTextBox){
-		
+		if (notifications != null) {
+			if (notifications.getNotification() != null) {
+				if (notifications.getNotification().size() != 0) {
+					if (notifications.getNotification().get(0) != null) {
+						if (notifications.getNotification().get(0)
+								.getPresentationElements() != null) {
+							if (notifications.getNotification().get(0)
+									.getPresentationElements().getDescription() != null) {
+								if (notifications.getNotification().get(0)
+										.getPresentationElements()
+										.getDescription().size() != 0) {
+									if (notifications.getNotification().get(0)
+											.getPresentationElements()
+											.getDescription().get(0) != null) {
+										if (notifications.getNotification()
+												.get(0)
+												.getPresentationElements()
+												.getDescription().get(0)
+												.getLang() != null) {
+											languageTextBox
+													.setText((notifications
+															.getNotification()
+															.get(0)
+															.getPresentationElements()
+															.getDescription()
+															.get(0).getLang()));
+										} else {
+											languageTextBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+										}
+									} else {
+										languageTextBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+									}
+								} else {
+									languageTextBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+								}
+							} else {
+								languageTextBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+						} else {
+							languageTextBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					} else {
+						languageTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
+				} else {
+					languageTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+
+			} else {
+				languageTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+
+		} else {
+			languageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+
+		/*
 		if (notifications != null) {
 			if (notifications.getNotification().get(0).getPresentationElements().getDescription().size() !=0) {
 				if ((notifications.getNotification().get(0).getPresentationElements().getDescription().get(0) != null)) {
 					languageTextBox.setText((notifications.getNotification().get(0).getPresentationElements().getDescription().get(0).getLang()));
 				} else {
-					languageTextBox
-							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					languageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
 			}
-		}
+		}*/
+		
 		languageTextBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
@@ -2147,6 +2462,75 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	private void configPElemDescInfo_contextType(final Combo contextTypeComboBox)
  {
 		if (notifications != null) {
+			if (notifications.getNotification() != null) {
+				if (notifications.getNotification().size() != 0) {
+					if (notifications.getNotification().get(0) != null) {
+						if (notifications.getNotification().get(0)
+								.getPresentationElements() != null) {
+							if (notifications.getNotification().get(0)
+									.getPresentationElements().getDescription() != null) {
+								if (notifications.getNotification().get(0)
+										.getPresentationElements()
+										.getDescription().size() != 0) {
+									if (notifications.getNotification().get(0)
+											.getPresentationElements()
+											.getDescription().get(0) != null) {
+										if (notifications.getNotification()
+												.get(0)
+												.getPresentationElements()
+												.getDescription().get(0)
+												.getContentType() != null) {
+											contextTypeComboBox
+													.select(notifications
+															.getNotification()
+															.get(0)
+															.getPresentationElements()
+															.getDescription()
+															.get(0)
+															.getContentType()
+															.compareTo(
+																	"text/plain") == 0 ? 0
+															: 1);
+										} else {
+											contextTypeComboBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+										}
+									} else {
+										contextTypeComboBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+									}
+								} else {
+									contextTypeComboBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+								}
+							} else {
+								contextTypeComboBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+						} else {
+							contextTypeComboBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					} else {
+						contextTypeComboBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
+				} else {
+					contextTypeComboBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+
+			} else {
+				contextTypeComboBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+
+		} else {
+			contextTypeComboBox
+					.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+
+		/*if (notifications != null) {
 			if (notifications.getNotification().get(0).getPresentationElements().getDescription().size() != 0) {
 				if ((notifications.getNotification().get(0).getPresentationElements()
 						.getDescription().get(0) != null)) {
@@ -2156,12 +2540,10 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 							: 1);
 
 				} else {
-
-					contextTypeComboBox
-							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					contextTypeComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
 			}
-		}
+		}*/
 
 		contextTypeComboBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -2723,6 +3105,8 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		}else{
 			System.out.println("checkAvailability_Notifications + Error message");
 		}
+		
+		
 		/*if (notifications == null) {
 			System.out.println("checkAvailability_Notifications + Error message");
 			// Error message

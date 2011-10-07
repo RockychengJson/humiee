@@ -21,8 +21,28 @@ public class NPresentationElemeSubContentProvider implements IStructuredContentP
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		TNotification notification = (TNotification)inputElement;
-		return notification.getPresentationElements().getSubject().toArray();
+		TNotification notification = (TNotification) inputElement;
+		Object[] o = {};
+		if (notification != null) {
+			if (notification.getPresentationElements() != null) {
+				if (notification.getPresentationElements().getSubject() != null) {
+					if (notification.getPresentationElements().getSubject()
+							.size() != 0) {
+						return notification.getPresentationElements()
+								.getSubject().toArray();
+					} else {
+						return o;
+					}
+				} else {
+					return o;
+				}
+			} else {
+				return o;
+			}
+		} else {
+			return o;
+		}
+
 	}
 
 }
