@@ -949,6 +949,8 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	private void configPeopleAssignmentSection_logicalPeopleGroup(final Combo logicalPeopleGroupComboBox)
 	{
 		if (selectedHumanRole != null) {
+			if (selectedHumanRole.getGenericHumanRole() != null) {
+				if (selectedHumanRole.getGenericHumanRole().getFrom() != null) {
 			if (selectedHumanRole.getGenericHumanRole().getFrom().getLogicalPeopleGroup() != null) {
 				int itemCount = logicalPeopleGroupComboBox.getItemCount();
 				for (int j = 0; j < itemCount; ++j) {
@@ -959,9 +961,9 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 
 				}
 				
-			} else {
-				
 			}
+			}
+		}
 		}
 
 		logicalPeopleGroupComboBox.addModifyListener(new ModifyListener() {
@@ -1012,8 +1014,9 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	
 	private void setAttribute_parmName(EAttribute tArgument_Attribute,
 			String text) {
-		if(selectedHumanRole.getGenericHumanRole().getFrom()!=null)
-		{
+		if(selectedHumanRole!=null){
+			if(selectedHumanRole.getGenericHumanRole()!=null){
+				if(selectedHumanRole.getGenericHumanRole().getFrom()!=null){
 		Command setAttribCommand = SetCommand.create(domain, selectedHumanRole.getGenericHumanRole().getFrom().getArgument(),
 				tArgument_Attribute, text);
 
@@ -1025,14 +1028,17 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 					+ tArgument_Attribute.getName());
 		}
 		}
+		}
+	}
 
 	}
 	
 	private void setAttribute_logicalPeopleGroup(EAttribute tArgument_Attribute,
 			String text) {
 		
-		if(selectedHumanRole.getGenericHumanRole().getFrom()!=null)
-		{
+		if(selectedHumanRole!=null){
+			if(selectedHumanRole.getGenericHumanRole()!=null){
+				if(selectedHumanRole.getGenericHumanRole().getFrom()!=null){
 		Command setAttribCommand = SetCommand.create(domain, selectedHumanRole.getGenericHumanRole().getFrom(),
 				tArgument_Attribute, new QName(text) );
 
@@ -1044,6 +1050,8 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 					+ tArgument_Attribute.getName());
 		}
 		}
+		}
+	}
 
 	}
 	
