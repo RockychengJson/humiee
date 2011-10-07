@@ -568,17 +568,42 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	}
 	
 	private void configGeneralInfoSection_portType(final Combo portComboBox) {
-		if (humanInteractions.getNotifications() != null) {
+		if(notifications != null){
+			if(notifications.getNotification() != null){
+				if(notifications.getNotification().size() != 0){
+					if(notifications.getNotification().get(0) != null){
+						if(notifications.getNotification().get(0).getInterface() != null){
+							if(notifications.getNotification().get(0).getInterface().getPortType() != null){
+								portComboBox.setText(notifications.getNotification().get(0).getInterface().getPortType().toString()) ;
+							}else {
+								portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+						}else {
+							portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					}else {
+						portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
+				}else {
+				portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}else {
+				portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+		}else {
+			portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+		/*if (notifications != null) {
 			if (humanInteractions.getNotifications().getNotification().get(0).getInterface().getPortType()!= null) {
-			/*	if ((tasks.getTask().get(0).getInterface().getPortType()
-						.toString() != null)){*/ 
+				if ((tasks.getTask().get(0).getInterface().getPortType()
+						.toString() != null)){ 
 				portComboBox.setText(humanInteractions.getNotifications().getNotification().get(0).getInterface().getPortType().toString()) ;
 				
 				
 			}else {
 				portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
-			}
+			}*/
 		
 		portComboBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -619,17 +644,42 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	
 	
 	private void configGeneralInfoSection_operation(final Combo operationComboBox) {
-		if (humanInteractions.getNotifications() != null) {
+		
+		if(notifications != null){
+			if(notifications.getNotification() != null){
+				if(notifications.getNotification().size() != 0){
+					if(notifications.getNotification().get(0) != null){
+						if(notifications.getNotification().get(0).getInterface() != null){
+							if(notifications.getNotification().get(0).getInterface().getOperation() != null){
+								operationComboBox.setText(notifications.getNotification().get(0).getInterface().getOperation()) ;
+							}else {
+								operationComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+						}else {
+							operationComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					}else {
+						operationComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
+				}else {
+				operationComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			}else {
+				operationComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+		}
+		/*if (humanInteractions.getNotifications() != null) {
 			if (humanInteractions.getNotifications().getNotification().get(0).getInterface().getOperation()!= null) {
-			/*	if ((tasks.getTask().get(0).getInterface().getPortType()
-						.toString() != null)){*/ 
+				if ((tasks.getTask().get(0).getInterface().getPortType()
+						.toString() != null)){ 
 				operationComboBox.setText(humanInteractions.getNotifications().getNotification().get(0).getInterface().getOperation()) ;
 				
 				
 			}else {
 				operationComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
-			}
+			}*/
+		
 		
 		operationComboBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -882,12 +932,18 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	}
 	
 	private void checkAvailability_peopleAssignment() {
-
+		
+		if(viewer_peopleAssignment.getElementAt(0) != null){
+			selectedHumanRole=(HumanRole)viewer_peopleAssignment.getElementAt(0);
+		}else{
+			System.out.println("checkAvailability_peopleAssignment()+Error message");
+		}
+/*
 		if (viewer_peopleAssignment.getElementAt(0) == null) {
 			// Error message
 		} else {
 			selectedHumanRole=(HumanRole)viewer_peopleAssignment.getElementAt(0);
-		}
+		}*/
 	}
 	
 	private void configPeopleAssignmentSection_roleType(final Combo roleCombo) {
@@ -947,25 +1003,41 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 
 
 	private void configPeopleAssignmentSection_logicalPeopleGroup(final Combo logicalPeopleGroupComboBox)
-	{
+	{	
 		if (selectedHumanRole != null) {
+
 			if (selectedHumanRole.getGenericHumanRole() != null) {
 				if (selectedHumanRole.getGenericHumanRole().getFrom() != null) {
-			if (selectedHumanRole.getGenericHumanRole().getFrom().getLogicalPeopleGroup() != null) {
-				int itemCount = logicalPeopleGroupComboBox.getItemCount();
-				for (int j = 0; j < itemCount; ++j) {
-					if ((logicalPeopleGroupComboBox.getItem(j))
-							.equals(selectedHumanRole.getLogicalPeopleGroup())) {
-						logicalPeopleGroupComboBox.select(j);
+					if (selectedHumanRole.getGenericHumanRole().getFrom()
+							.getLogicalPeopleGroup() != null) {
+						int itemCount = logicalPeopleGroupComboBox
+								.getItemCount();
+						for (int j = 0; j < itemCount; ++j) {
+							if ((logicalPeopleGroupComboBox.getItem(j))
+									.equals(selectedHumanRole
+											.getLogicalPeopleGroup())) {
+								logicalPeopleGroupComboBox.select(j);
+							}
+						}
+					} else {
+
 					}
+				} else {
 
 				}
-				
-			}
-			}
-		}
-		}
+			} else {
 
+			}
+		} else {
+
+		}
+		/*if (selectedHumanRole != null) {
+
+			if (selectedHumanRole.getGenericHumanRole() != null) {
+				if (selectedHumanRole.getGenericHumanRole().getFrom() != null) {
+
+		}
+*/
 		logicalPeopleGroupComboBox.addModifyListener(new ModifyListener() {
 
 			@Override
@@ -1675,8 +1747,113 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private void configPElemGeneralInfoSection_name(final Text nameTextBox)
-	{
-		 if (selectedNotification != null)
+ {
+		if (notifications != null) {
+			if (notifications.getNotification() != null) {
+				if (notifications.getNotification().size() != 0) {
+					if (notifications.getNotification().get(0) != null) {
+						if (notifications.getNotification().get(0)
+								.getPresentationElements() != null) {
+							if (notifications.getNotification().get(0)
+									.getPresentationElements().getName() != null) {
+								if (notifications.getNotification().get(0)
+										.getPresentationElements().getName()
+										.size() != 0) {
+									if (notifications.getNotification().get(0)
+											.getPresentationElements()
+											.getName().get(0) != null) {
+										if (notifications.getNotification()
+												.get(0)
+												.getPresentationElements()
+												.getName().get(0).getMixed() != null) {
+											if (notifications.getNotification()
+													.get(0)
+													.getPresentationElements()
+													.getName().get(0)
+													.getMixed().size() != 0) {
+												if (notifications
+														.getNotification()
+														.get(0)
+														.getPresentationElements()
+														.getName().get(0)
+														.getMixed().get(0) != null) {
+													if (notifications
+															.getNotification()
+															.get(0)
+															.getPresentationElements()
+															.getName().get(0)
+															.getMixed().get(0)
+															.getValue() != null) {
+														nameTextBox
+																.setText(notifications
+																		.getNotification()
+																		.get(0)
+																		.getPresentationElements()
+																		.getName()
+																		.get(0)
+																		.getMixed()
+																		.get(0)
+																		.getValue()
+																		.toString());
+													} else {
+														nameTextBox
+																.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+													}
+												} else {
+													nameTextBox
+															.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+												}
+											} else {
+												nameTextBox
+														.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+											}
+										} else {
+											nameTextBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+										}
+									} else {
+										nameTextBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+									}
+								} else {
+									nameTextBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+								}
+							} else {
+								nameTextBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+							}
+						} else {
+							nameTextBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+						}
+					} else {
+						nameTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+					}
+				} else {
+					nameTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+				}
+			} else {
+				nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+			}
+		} else {
+			nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+
+		}
+		/* if (selectedNotification != null)
 		  {
 			  if(selectedElemName!= null)
 			  { 
@@ -1690,7 +1867,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				
 			  } 
 			  
-		  }
+		  }*/
 		  		
 		  nameTextBox.addModifyListener(new ModifyListener() {
 		  			public void modifyText(ModifyEvent e) 
@@ -1717,7 +1894,68 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	
 	
 	private void configPElemGeneralInfoSection_language(final Text languageTextBox) {
+		
 		if (notifications != null) {
+			if (notifications.getNotification() != null) {
+				if (notifications.getNotification().size() != 0) {
+					if (notifications.getNotification().get(0) != null) {
+						if (notifications.getNotification().get(0)
+								.getPresentationElements() != null) {
+							if (notifications.getNotification().get(0)
+									.getPresentationElements().getName() != null) {
+								if (notifications.getNotification().get(0)
+										.getPresentationElements().getName()
+										.size() != 0) {
+									if (notifications.getNotification().get(0)
+											.getPresentationElements()
+											.getName().get(0) != null) {
+										if (notifications.getNotification()
+												.get(0)
+												.getPresentationElements()
+												.getName().get(0).getLang() != null) {
+											languageTextBox
+													.setText((notifications
+															.getNotification()
+															.get(0)
+															.getPresentationElements()
+															.getName().get(0)
+															.getLang()));
+										} else {
+											languageTextBox
+													.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+										}
+									} else {
+										languageTextBox
+												.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+									}
+								} else {
+									languageTextBox
+											.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+								}
+							} else {
+								languageTextBox
+										.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+							}
+						} else {
+							languageTextBox
+									.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+						}
+					} else {
+						languageTextBox
+								.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+					}
+				} else {
+					languageTextBox
+							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+				}
+			} else {
+				languageTextBox
+						.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+			}
+		} else {
+			languageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
+		}
+		/*if (notifications != null) {
 			if (notifications.getNotification().get(0).getPresentationElements() != null) {
 				if ((notifications.getNotification().get(0).getPresentationElements().getName().get(0).getLang() != null)) {
 					languageTextBox.setText((notifications.getNotification().get(0).getPresentationElements().getName().get(0).getLang()));
@@ -1726,7 +1964,9 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
 			}
-		}
+		}*/
+		
+		
 		languageTextBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				// validateInput();
@@ -2470,19 +2710,52 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	// Availability checks
 	
 	private void checkAvailability_Notifications() {
-		if (notifications == null) {
+		if(notifications != null){
+			if(notifications.getNotification() != null){
+				if(notifications.getNotification().size() != 0){
+					selectedNotification = notifications.getNotification().get(0);
+				}else{
+					System.out.println("checkAvailability_Notifications + Error message");
+				}
+			}else{
+				System.out.println("checkAvailability_Notifications + Error message");
+			}
+		}else{
+			System.out.println("checkAvailability_Notifications + Error message");
+		}
+		/*if (notifications == null) {
 			System.out.println("checkAvailability_Notifications + Error message");
 			// Error message
 
 		} else {
 			selectedNotification = humanInteractions.getNotifications().getNotification().get(0);
-		}
+		}*/
 
 	}
 	
 	private void chechAvailability_PElemName(){
-		
-		if (selectedNotification == null){
+		if(selectedNotification != null){
+			if(selectedNotification.getPresentationElements() != null){
+				if(selectedNotification.getPresentationElements().getName() != null){
+					if(selectedNotification.getPresentationElements().getName().size() != 0){
+						if(selectedNotification.getPresentationElements().getName().get(0) != null){
+							
+						}else{
+							System.out.println("chechAvailability_PElemName()+ Error message");
+						}
+					}else{
+						System.out.println("chechAvailability_PElemName()+ Error message");
+					}
+				}else{
+					System.out.println("chechAvailability_PElemName()+ Error message");
+				}
+			}else{
+				System.out.println("chechAvailability_PElemName()+ Error message");
+			}
+		}else{
+			System.out.println("chechAvailability_PElemName()+ Error message");
+		}
+		/*if (selectedNotification == null){
 			System.out.println("chechAvailability_PElemName()+ Error message");
 			//Error message
 		}
@@ -2490,11 +2763,52 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			if(selectedNotification.getPresentationElements() !=  null){
 				selectedElemName = selectedNotification.getPresentationElements().getName().get(0);
 			}
-		}
+		}*/
 	}
 	
 	private void checkAvailability_Pparm() {
 
+		if (selectedNotification != null) {
+			if (selectedNotification.getPresentationElements() != null) {
+				if (selectedNotification.getPresentationElements()
+						.getPresentationParameters() != null) {
+					if (selectedNotification.getPresentationElements()
+							.getPresentationParameters()
+							.getPresentationParameter() != null) {
+						if (selectedNotification.getPresentationElements()
+								.getPresentationParameters()
+								.getPresentationParameter().size() != 0) {
+							if (selectedNotification.getPresentationElements()
+									.getPresentationParameters()
+									.getPresentationParameter().get(0) != null) {
+								selectedParam = selectedNotification
+										.getPresentationElements()
+										.getPresentationParameters()
+										.getPresentationParameter().get(0);
+							} else {
+								System.out
+										.println("checkAvailability_Pparm() +Error message");
+							}
+						} else {
+							System.out
+									.println("checkAvailability_Pparm() +Error message");
+						}
+
+					} else {
+						System.out
+								.println("checkAvailability_Pparm() +Error message");
+					}
+				} else {
+					System.out
+							.println("checkAvailability_Pparm() +Error message");
+				}
+			} else {
+				System.out.println("checkAvailability_Pparm() +Error message");
+			}
+		} else {
+			System.out.println("checkAvailability_Pparm() +Error message");
+		}
+/*
 		if (selectedNotification == null) {
 			System.out.println("checkAvailability_Pparm() +Error message");
 			// Error message
@@ -2504,11 +2818,34 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 					.getPresentationParameters().getPresentationParameter()
 					.get(0);
 			}
-		}
+		}*/
 	}
 
 	private void checkAvailabilityPElemSub() {
-		if (selectedNotification == null) {
+		if (selectedNotification != null) {
+			if (selectedNotification.getPresentationElements() != null) {
+				if (selectedNotification.getPresentationElements().getSubject() != null) {
+					if (selectedNotification.getPresentationElements()
+							.getSubject().size() != 0) {
+						selectedElemSubject = selectedNotification
+								.getPresentationElements().getSubject().get(0);
+					} else {
+						System.out
+								.println("checkAvailabilityPElemSubTable() + Error message");
+					}
+				} else {
+					System.out
+							.println("checkAvailabilityPElemSubTable() + Error message");
+				}
+			} else {
+				System.out
+						.println("checkAvailabilityPElemSubTable() + Error message");
+			}
+		} else {
+			System.out
+					.println("checkAvailabilityPElemSubTable() + Error message");
+		}
+		/*if (selectedNotification == null) {
 			System.out.println("checkAvailabilityPElemSubTable() + Error message");
 			//Error message
 		} else {
@@ -2516,18 +2853,40 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			selectedElemSubject = selectedNotification.getPresentationElements().getSubject()
 					.get(0);
 			}
-		}
+		}*/
 	}
 
 	private void checkAvailabilityPElemDesc() {
-		if (selectedNotification == null) {
+		if(selectedNotification != null){
+			if(selectedNotification.getPresentationElements() != null){
+				if(selectedNotification.getPresentationElements().getDescription() != null){
+					if(selectedNotification.getPresentationElements().getDescription().size() != 0){
+						if(selectedNotification.getPresentationElements().getDescription().get(0) != null){
+							selectedElemDesc = selectedNotification.getPresentationElements().getDescription()
+							.get(0);
+						}else{
+							System.out.println("checkAvailabilityPElemDescTable() +Error message");
+						}
+					}else{
+						System.out.println("checkAvailabilityPElemDescTable() +Error message");
+					}
+				}else{
+					System.out.println("checkAvailabilityPElemDescTable() +Error message");
+				}
+			}else{
+				System.out.println("checkAvailabilityPElemDescTable() +Error message");
+			}
+		}else{
+			System.out.println("checkAvailabilityPElemDescTable() +Error message");
+		}
+		/*if (selectedNotification == null) {
 			System.out.println("checkAvailabilityPElemDescTable() +Error message");
 		} else {
 			if(selectedNotification.getPresentationElements().getDescription().size()!= 0){
 			selectedElemDesc = selectedNotification.getPresentationElements().getDescription()
 					.get(0);
 			}
-		}
+		}*/
 	}
 	
 	
