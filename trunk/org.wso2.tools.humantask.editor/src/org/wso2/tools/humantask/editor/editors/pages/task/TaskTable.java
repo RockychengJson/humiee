@@ -105,7 +105,7 @@ public class TaskTable {
 
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				taskPage.taskTableItemSelecter(event.getSelection(),viewer);
+				taskPage.itemSelecter_TaskTable(event.getSelection(),viewer);
 
 			}
 		});

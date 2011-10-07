@@ -23,7 +23,25 @@ public class NPresentationElemDescContentProvider implements IStructuredContentP
 	public Object[] getElements(Object inputElement) {
 		
 		TNotification notification = (TNotification)inputElement;
-		return notification.getPresentationElements().getDescription().toArray();
+		Object []o={};
+		if(notification != null){
+			if(notification.getPresentationElements() != null){
+				if(notification.getPresentationElements().getDescription() != null){
+					if(notification.getPresentationElements().getDescription().size() != 0){
+						return notification.getPresentationElements().getDescription().toArray();
+					}else{
+						return o;
+					}
+				}else{
+					return o;
+				}
+			}else{
+				return o;
+			}
+		}else{
+			return o;
+		}
+		
 	}
 
 }
