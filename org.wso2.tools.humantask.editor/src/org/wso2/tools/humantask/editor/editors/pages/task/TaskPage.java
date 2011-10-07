@@ -57,6 +57,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -1307,19 +1308,25 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private void configPeopleAssignmentSection_logicalPeopleGroup(final Combo logicalPeopleGroupComboBox)
 	{
 		if (selectedHumanRole != null) {
-			if (selectedHumanRole.getGenericHumanRole().getFrom().getLogicalPeopleGroup() != null) {
-				int itemCount = logicalPeopleGroupComboBox.getItemCount();
-				for (int j = 0; j < itemCount; ++j) {
-					if ((logicalPeopleGroupComboBox.getItem(j))
-							.equals(selectedHumanRole.getLogicalPeopleGroup())) {
-						logicalPeopleGroupComboBox.select(j);
-					}
+			if (selectedHumanRole.getGenericHumanRole() != null) {
+				if (selectedHumanRole.getGenericHumanRole().getFrom() != null) {
+					if (selectedHumanRole.getGenericHumanRole().getFrom()
+							.getLogicalPeopleGroup() != null) {
 
+						int itemCount = logicalPeopleGroupComboBox
+								.getItemCount();
+						for (int j = 0; j < itemCount; ++j) {
+							if ((logicalPeopleGroupComboBox.getItem(j))
+									.equals(selectedHumanRole
+											.getLogicalPeopleGroup())) {
+								logicalPeopleGroupComboBox.select(j);
+							}
+
+						}
+					}
 				}
-				
-			} else {
-				
 			}
+
 		}
 
 		logicalPeopleGroupComboBox.addModifyListener(new ModifyListener() {
@@ -1336,8 +1343,9 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private void setAttribute_logicalPeopleGroup(EAttribute tArgument_Attribute,
 			String text) {
 		
-		if(selectedHumanRole.getGenericHumanRole().getFrom()!=null)
-		{
+		if(selectedHumanRole!=null){
+			if(selectedHumanRole.getGenericHumanRole()!=null){
+				if(selectedHumanRole.getGenericHumanRole().getFrom()!=null){
 		Command setAttribCommand = SetCommand.create(domain, selectedHumanRole.getGenericHumanRole().getFrom(),
 				tArgument_Attribute, new QName(text) );
 
@@ -1349,6 +1357,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 					+ tArgument_Attribute.getName());
 		}
 		}
+		}
+	}
 
 	}
 	
@@ -1618,12 +1628,19 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	
 	private void configPeopleAssignmentSection_name(final Text nameTextBox) {
 			if (selectedHumanRole != null) {
+				if (selectedHumanRole.getGenericHumanRole() != null) {
+					if (selectedHumanRole.getGenericHumanRole().getFrom() != null) {
+						if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument() != null) {
 				if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getName() != null) {
 					nameTextBox.setText(selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getName());
-				} else {
+				}				
+				else {
 					nameTextBox
 							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 				}
+					}
+				}
+			}
 			}
 			else {
 				nameTextBox
@@ -1645,12 +1662,13 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	
 	private void configPeopleAssignmentSection_expression(final Text expTextBox) {
 		if (selectedHumanRole != null) {
+			if (selectedHumanRole.getGenericHumanRole() != null) {
+				if (selectedHumanRole.getGenericHumanRole().getFrom() != null) {
+					if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument() != null) {
+						if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed() != null) {	
+			if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().size() != 0) {
 
-			if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument()
-					.getMixed().size() != 0) {
-
-				if (selectedHumanRole.getGenericHumanRole().getFrom()
-						.getArgument().getMixed().getValue(0) != null) {
+				if (selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().getValue(0) != null) {
 					expTextBox.setText(selectedHumanRole.getGenericHumanRole()
 							.getFrom().getArgument().getMixed().getValue(0)
 							.toString());
@@ -1661,8 +1679,13 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 			} else {
 				expTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
-
-		} else {
+		}
+		}
+		}
+		}
+		} 
+		
+		else {
 			expTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
 		
@@ -1673,12 +1696,15 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 		// TODO		//should be edited
 				
-				/*if(selectedHumanRole.getGenericHumanRole().getFrom()!=null){
+				if(selectedHumanRole.getGenericHumanRole().getFrom()!=null){
 				selectedHumanRole.getGenericHumanRole().getFrom().getArgument().getMixed().setValue(0, expTextBox.getText());
 				}
-				firePropertyChange(IEditorPart.PROP_DIRTY);
-				}*/
-				
+				editor.customizedSave();
+				//firePropertyChange(IEditorPart.PROP_DIRTY);
+				//firePropertyChange(257);
+				//if(isDirty()){
+					//System.out.println("dirtied");
+				//}else{System.out.println("not dirtied");}
 			}
 		});
 	}
@@ -1691,8 +1717,9 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	
 	private void setAttribute_parmName(EAttribute tArgument_Attribute,
 			String text) {
-		if(selectedHumanRole.getGenericHumanRole().getFrom()!=null)
-		{
+		if(selectedHumanRole!=null){
+			if(selectedHumanRole.getGenericHumanRole()!=null){
+				if(selectedHumanRole.getGenericHumanRole().getFrom()!=null){
 		Command setAttribCommand = SetCommand.create(domain, selectedHumanRole.getGenericHumanRole().getFrom().getArgument(),
 				tArgument_Attribute, text);
 
@@ -1702,6 +1729,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		} else {
 			System.out.println("can't modify Attribute: "
 					+ tArgument_Attribute.getName());
+		}
+		}
 		}
 		}
 
