@@ -53,6 +53,7 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TImport;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
+import org.wso2.tools.humantask.editor.editors.pages.util.WSDLHandler;
 
 public class HumanInteractionsPage extends FormPage implements
 		IResourceChangeListener {
@@ -506,7 +507,7 @@ public class HumanInteractionsPage extends FormPage implements
 
 				}
 				HIImportWizard wizard = new HIImportWizard(humanInteractions,
-						domain, viewer_import);
+						domain, viewer_import,editor);
 				WizardDialog wizardDialog = new WizardDialog(Display
 						.getCurrent().getActiveShell(), wizard);
 				wizardDialog.create();
@@ -540,6 +541,8 @@ public class HumanInteractionsPage extends FormPage implements
 					im_type_txt.setText("");
 					im_type_txt.setEnabled(false);
 				}
+				
+				
 			}
 		});
 
@@ -903,7 +906,11 @@ public class HumanInteractionsPage extends FormPage implements
 	private void checkAvailability_import() {
 		if (humanInteractions.getImport() != null) {
 			if (humanInteractions.getImport().size() != 0) {
+				if(humanInteractions.getImport().get(0) != null){
 				selectedItem_import = humanInteractions.getImport().get(0);
+				}else{
+					//Error Message
+				}
 			} else {
 				// Error Message
 			}

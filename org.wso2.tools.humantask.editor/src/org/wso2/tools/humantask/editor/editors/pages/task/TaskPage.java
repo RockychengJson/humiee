@@ -76,6 +76,7 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
 import org.wso2.tools.humantask.editor.editors.pages.util.Messages;
+import org.wso2.tools.humantask.editor.editors.pages.util.WSDLHandler;
 
 import com.ibm.wsdl.OperationImpl;
 import com.ibm.wsdl.xml.WSDLReaderImpl;
@@ -97,6 +98,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private TabContent[] temp;
 	private int tempindex;
 	private boolean isFirst = true;
+	private WSDLHandler wsdl_handler;
 
 	private Section via_logical_ppl;
 
@@ -174,7 +176,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	private Combo selectLogicalPeopleGroup_combo;
 
 	private static final String[] FILTER_EXTS = { "*.wsdl","*.*" };
-	
+	private File wsdl_txt_file;
 	
 	
 	public TaskPage(HTMultiPageEditor editor, TTasks tasks,
@@ -192,23 +194,10 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 		this.humanInteractions = humanInteractions;
 		this.taskPage = this;
 		reader=new WSDLReaderImpl();
-
-		String name= domain.getResourceSet().getResources().get(0).getURI().segment(domain.getResourceSet().getResources().get(0).getURI().segmentCount()-1);
 		
-		File file=new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()+"/WSDLLocations_"+name+".txt");
-		try{	
-		filename=file.getCanonicalPath();
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-		}
-		catch(IOException e)
-		{
-			System.out.println("Error creating file WSDLLocations_...txt !");
-		}
-			
-		System.out.println(ResourcesPlugin.getWorkspace().getRoot().getLocation().toFile().pathSeparator) ;
-	
+		wsdl_handler = WSDLHandler.getInstance(editor);
+		filename = wsdl_handler.createWSDLLocationTxt("task_page");
+		
 		
 	}
 
@@ -4082,6 +4071,25 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 	public void deleteTask(TableViewer viewer,TTasks tasks){
 		boolean done= humanInteractions.getTasks().getTask().remove(input);
 		viewer.setInput(tasks);
+		/*if(done == true){
+					
+				   
+				    File f = wsdl_txt_file;
+
+				  
+				    if (!f.exists())
+				      throw new IllegalArgumentException(
+				          "Delete: no such file or directory: " + f.getName());
+
+				    if (!f.canWrite())
+				      throw new IllegalArgumentException("Delete: write protected: "
+				          + f.getName());
+
+				    boolean success = f.delete();
+
+				    if (!success)
+				      throw new IllegalArgumentException("Delete: deletion failed");
+				  }*/
 		
 	}
 	

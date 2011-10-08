@@ -76,6 +76,7 @@ import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
 import org.wso2.tools.humantask.editor.editors.pages.task.HumanRole;
 import org.wso2.tools.humantask.editor.editors.pages.util.Messages;
+import org.wso2.tools.humantask.editor.editors.pages.util.WSDLHandler;
 
 import com.ibm.wsdl.OperationImpl;
 import com.ibm.wsdl.xml.WSDLReaderImpl;
@@ -101,6 +102,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	private String selectedWsdlComboBoxItem;
 	private Combo comboDropDown;
 	private Object portTypes[];
+	private WSDLHandler wsdl_handler;
 	
 	private CTabFolder tabFolder;
 	private ScrolledForm form;
@@ -180,19 +182,8 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		
 		reader=new WSDLReaderImpl();
 
-		String name= domain.getResourceSet().getResources().get(0).getURI().segment(domain.getResourceSet().getResources().get(0).getURI().segmentCount()-1);
-		
-		File file=new File(ResourcesPlugin.getWorkspace().getRoot().getLocation().toString()+"/WSDLLocations_"+name+".txt");
-		try{	
-		filename=file.getCanonicalPath();
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-		}
-		catch(IOException e)
-		{
-			System.out.println("Error creating file WSDLLocations_...txt !");
-		}
+		wsdl_handler = WSDLHandler.getInstance(editor);
+		filename = wsdl_handler.createWSDLLocationTxt("notifi_page");
 		
 		
 	}
@@ -1862,21 +1853,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 
 		}
-		/* if (selectedNotification != null)
-		  {
-			  if(selectedElemName!= null)
-			  { 
-				  nameTextBox.setText(notifications.getNotification().get(0).getPresentationElements()
-						  .getName().get(0).getMixed().get(0).getValue().toString());
-				
-			  } 
-			  else 
-			  {
-				nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); 
-				
-			  } 
-			  
-		  }*/
+		
 		  		
 		  nameTextBox.addModifyListener(new ModifyListener() {
 		  			public void modifyText(ModifyEvent e) 
@@ -1964,16 +1941,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		} else {
 			languageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
-		/*if (notifications != null) {
-			if (notifications.getNotification().get(0).getPresentationElements() != null) {
-				if ((notifications.getNotification().get(0).getPresentationElements().getName().get(0).getLang() != null)) {
-					languageTextBox.setText((notifications.getNotification().get(0).getPresentationElements().getName().get(0).getLang()));
-				} else {
-					languageTextBox
-							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-				}
-			}
-		}*/
+		
 		
 		
 		languageTextBox.addModifyListener(new ModifyListener() {
@@ -2090,21 +2058,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 
 		}
-	  /*if (notifications != null)
-	  {
-		  if((notifications.getNotification().get(0).getPresentationElements().getPresentationParameters()
-				  .getPresentationParameter() .get(0).getName()!= null))
-		  { 
-			  nameTextBox.setText((notifications.getNotification().get(0).getPresentationElements().
-					  getPresentationParameters().getPresentationParameter().get(0).getName())); 
-		  } 
-		  else 
-		  {
-			nameTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); 
-			
-		  } 
-		  
-	  }*/
+	  
 	  		
 	  nameTextBox.addModifyListener(new ModifyListener() {
 	  			public void modifyText(ModifyEvent e) 
@@ -2222,21 +2176,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			typeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 
 		}
-		/*if (notifications != null)
-		  {
-			  if((notifications.getNotification().get(0).getPresentationElements().getPresentationParameters()
-					  .getPresentationParameter() .get(0).getType() != null))
-			  { 
-				  typeTextBox.setText((notifications.getNotification().get(0).getPresentationElements().
-						  getPresentationParameters().getPresentationParameter().get(0).getType().toString())); 
-			  } 
-			  else 
-			  {
-				  typeTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE); 
-				
-			  } 
-			  
-		  }*/
+		
 		  		
 		typeTextBox.addModifyListener(new ModifyListener() {
 		  			public void modifyText(ModifyEvent e) 
@@ -2325,16 +2265,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		} else {
 			languageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
-		/*if (notifications != null) {
-			if (notifications.getNotification().get(0).getPresentationElements() != null) {
-				if ((notifications.getNotification().get(0).getPresentationElements().getSubject().get(0) != null)) {
-					languageTextBox.setText((notifications.getNotification().get(0).getPresentationElements().getSubject().get(0).getLang()));
-				} else {
-					languageTextBox
-							.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-				}
-			}
-		}*/
+		
 		
 		
 		languageTextBox.addModifyListener(new ModifyListener() {
@@ -2424,16 +2355,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			languageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
 
-		/*
-		if (notifications != null) {
-			if (notifications.getNotification().get(0).getPresentationElements().getDescription().size() !=0) {
-				if ((notifications.getNotification().get(0).getPresentationElements().getDescription().get(0) != null)) {
-					languageTextBox.setText((notifications.getNotification().get(0).getPresentationElements().getDescription().get(0).getLang()));
-				} else {
-					languageTextBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-				}
-			}
-		}*/
+		
 		
 		languageTextBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -2530,20 +2452,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 					.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
 
-		/*if (notifications != null) {
-			if (notifications.getNotification().get(0).getPresentationElements().getDescription().size() != 0) {
-				if ((notifications.getNotification().get(0).getPresentationElements()
-						.getDescription().get(0) != null)) {
-					contextTypeComboBox.select(notifications.getNotification().get(0)
-							.getPresentationElements().getDescription().get(0)
-							.getContentType().compareTo("text/plain") == 0 ? 0
-							: 1);
-
-				} else {
-					contextTypeComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-				}
-			}
-		}*/
+		
 
 		contextTypeComboBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -3107,13 +3016,6 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		}
 		
 		
-		/*if (notifications == null) {
-			System.out.println("checkAvailability_Notifications + Error message");
-			// Error message
-
-		} else {
-			selectedNotification = humanInteractions.getNotifications().getNotification().get(0);
-		}*/
 
 	}
 	
@@ -3139,15 +3041,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		}else{
 			System.out.println("chechAvailability_PElemName()+ Error message");
 		}
-		/*if (selectedNotification == null){
-			System.out.println("chechAvailability_PElemName()+ Error message");
-			//Error message
-		}
-		else{
-			if(selectedNotification.getPresentationElements() !=  null){
-				selectedElemName = selectedNotification.getPresentationElements().getName().get(0);
-			}
-		}*/
+		
 	}
 	
 	private void checkAvailability_Pparm() {
@@ -3192,17 +3086,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		} else {
 			System.out.println("checkAvailability_Pparm() +Error message");
 		}
-/*
-		if (selectedNotification == null) {
-			System.out.println("checkAvailability_Pparm() +Error message");
-			// Error message
-		} else {
-			if(selectedNotification.getPresentationElements().getPresentationParameters().getPresentationParameter() != null){
-			selectedParam = selectedNotification.getPresentationElements()
-					.getPresentationParameters().getPresentationParameter()
-					.get(0);
-			}
-		}*/
+
 	}
 
 	private void checkAvailabilityPElemSub() {
@@ -3229,15 +3113,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 			System.out
 					.println("checkAvailabilityPElemSubTable() + Error message");
 		}
-		/*if (selectedNotification == null) {
-			System.out.println("checkAvailabilityPElemSubTable() + Error message");
-			//Error message
-		} else {
-			if(selectedNotification.getPresentationElements().getSubject() != null){
-			selectedElemSubject = selectedNotification.getPresentationElements().getSubject()
-					.get(0);
-			}
-		}*/
+		
 	}
 
 	private void checkAvailabilityPElemDesc() {
@@ -3263,14 +3139,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		}else{
 			System.out.println("checkAvailabilityPElemDescTable() +Error message");
 		}
-		/*if (selectedNotification == null) {
-			System.out.println("checkAvailabilityPElemDescTable() +Error message");
-		} else {
-			if(selectedNotification.getPresentationElements().getDescription().size()!= 0){
-			selectedElemDesc = selectedNotification.getPresentationElements().getDescription()
-					.get(0);
-			}
-		}*/
+		
 	}
 	
 	
@@ -3299,108 +3168,65 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		}
 		operationComboBox.select(0);
 		
-		//operationComboBox.setText(operation.getName());
-		//System.out.println(operation.getStyle());
-		/*if(operation.getStyle().toString().equals("REQUEST_RESPONSE"))
-		{
-			
-			oneway.setSelection(false);
-			requestres.setSelection(true);
-			OportComboBox.setEnabled(true);
-			
-			OportComboBox.removeAll();
-			for(int i=0;i<portTypes.length;++i){
-				OportComboBox.add(definition.getPortType((QName) portTypes[i]).getQName().toString());
-			}
-			OportComboBox.select(0);
-			OperationImpl responseOperation= (OperationImpl)definition.getPortType((QName) portTypes[0]).getOperations().get(0);
-			List responseOperations=definition.getPortType((QName) portTypes[0]).getOperations();
-			
-			OresponseComboBox.setEnabled(true);
-			OresponseComboBox.removeAll();
-			for(int i=0;i<responseOperations.size();++i){
-				OresponseComboBox.add(((OperationImpl)responseOperations.get(i)).getName());
-			}
-			OresponseComboBox.select(0);
-			
-			//OportTextBox.setText("")
-			
-		}*/
-		 /*if(operation.getStyle().toString().equals("ONE_WAY"))
-		{
-			
-			oneway.setSelection(true);
-			requestres.setSelection(false);			
-			OresponseComboBox.setText("");
-			OresponseComboBox.setEnabled(false);
-			OportComboBox.setText("");
-			OportComboBox.setEnabled(false);
-		}
-		*/
-		//oneway.setSelection(selected);
+		
 		
 	}
 	
 	private void configImportedWsdl(final Combo WsdlComboBox)
-	throws IOException {
+			throws IOException {
 
-BufferedReader br;
-try {
-	br= new BufferedReader(new InputStreamReader(
-			new DataInputStream(new FileInputStream(filename))));
-	String strLine;
-	while ((strLine = br.readLine()) != null) {
-		WsdlComboBox.add(strLine);
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new InputStreamReader(new DataInputStream(
+					new FileInputStream(filename))));
+			String strLine;
+			while ((strLine = br.readLine()) != null) {
+				WsdlComboBox.add(strLine);
+			}
+			br.close();
+
+		} catch (IOException e) {
+			System.out.println("Error: " + e.getMessage());
+		}
+		System.out.println(WsdlComboBox.getItemCount());
+		if (WsdlComboBox.getItemCount() != 0) {
+			selectedWsdlComboBoxItem = WsdlComboBox.getItem(0);
+		}
+
+		WsdlComboBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				selectedWsdlComboBoxItem = WsdlComboBox.getItem(WsdlComboBox
+						.getSelectionIndex());
+				// WSDLReaderImpl reader =new WSDLReaderImpl();
+
+				updateDetailsAccordingToWSDL();
+
+			}
+		});
+
 	}
-	br.close();
-	
-} catch (IOException e) {
-	System.out.println("Error: " + e.getMessage());
-}
-System.out.println(WsdlComboBox.getItemCount());
-if(WsdlComboBox.getItemCount()!=0)
-{
-	selectedWsdlComboBoxItem = WsdlComboBox.getItem(0);
-}
-	  
-	
-	WsdlComboBox.addModifyListener(new ModifyListener() {
-public void modifyText(ModifyEvent e) {
-	//validateInput();
-	selectedWsdlComboBoxItem= WsdlComboBox.getItem(WsdlComboBox.getSelectionIndex());
-	//WSDLReaderImpl reader =new WSDLReaderImpl();
-	
-	updateDetailsAccordingToWSDL();
-	
-	
-}
-});
-
-
-}
 
 
 
 private void saveToFile(String location) throws IOException {
-FileWriter fw = null;
-	try {		
+		FileWriter fw = null;
+		try {
 
-	fw = new FileWriter(filename, true); // the true will append the new
-											// data
+			fw = new FileWriter(filename, true); // the true will append the new
+													// data
 
-} catch (FileNotFoundException ioe) {
-	System.out.println("File not found !");
-}
-fw.write(location + "\n");// appends the string to the file
-fw.close();
+		} catch (FileNotFoundException ioe) {
+			System.out.println("File not found !");
+		}
+		fw.write(location + "\n");// appends the string to the file
+		fw.close();
 
-
-
-comboDropDown.add(location);
-int count = comboDropDown.getItemCount();
-comboDropDown.select(count - 1);
-selectedWsdlComboBoxItem = comboDropDown.getItem(comboDropDown
-		.getSelectionIndex());
+		comboDropDown.add(location);
+		int count = comboDropDown.getItemCount();
+		comboDropDown.select(count - 1);
+		selectedWsdlComboBoxItem = comboDropDown.getItem(comboDropDown
+				.getSelectionIndex());
 
 }
 	
