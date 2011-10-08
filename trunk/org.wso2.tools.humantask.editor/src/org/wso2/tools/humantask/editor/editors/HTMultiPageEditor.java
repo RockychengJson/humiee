@@ -38,6 +38,7 @@ import org.wso2.tools.humantask.editor.editors.pages.humanInteractions.HumanInte
 import org.wso2.tools.humantask.editor.editors.pages.logicalpeoplegroups.LogicalPeopleGroupPage;
 import org.wso2.tools.humantask.editor.editors.pages.notifications.NotificationPage;
 import org.wso2.tools.humantask.editor.editors.pages.task.TaskPage;
+import org.wso2.tools.humantask.editor.editors.pages.util.WSDLHandler;
 import org.wso2.tools.humantask.editor.editors.xmleditor.HTEditor;
 
 
@@ -49,6 +50,7 @@ Listener{
 	private LogicalPeopleGroupPage logicalPeopleGroupPage;
 	private TaskPage taskPage;
 	private NotificationPage notificationPage;
+	private WSDLHandler wsdl_handler;
 	
 	private boolean isResourceChanged;
 	
@@ -153,7 +155,6 @@ Listener{
 		
 		try {
 			
-			
 			humanInteractionPage = new HumanInteractionsPage(this, humanInteractions);
 			int index = addPage(humanInteractionPage);
 			setPageText(index, humanInteractionPage.getTitle());
@@ -169,7 +170,7 @@ Listener{
 			notificationPage = new NotificationPage(this,humanInteractions);
 			index = addPage(notificationPage);
 			setPageText(index, notificationPage.getTitle());
-		
+			
 			
 		} catch (PartInitException e) {
 			e.printStackTrace();

@@ -12,26 +12,29 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TImport;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdFactory;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
+import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 
 public class HIImportWizard extends Wizard{
 
 	private EditingDomain domain;
 	private THumanInteractions humanInteractions;
 	private  TableViewer tableviewer;
+	private HTMultiPageEditor editor;
 	
 	private HIImportWizardPage page;
 	
 	
-	public HIImportWizard(THumanInteractions humanInteractions,EditingDomain domain,TableViewer tableviewer ){
+	public HIImportWizard(THumanInteractions humanInteractions,EditingDomain domain,TableViewer tableviewer,HTMultiPageEditor editor ){
 		super();
 		this.humanInteractions=humanInteractions;
 		this.domain=domain;
 		this.tableviewer=tableviewer;
+		this.editor = editor;
 	}
 	
 	
 	public void addPages(){
-		page = new HIImportWizardPage();
+		page = new HIImportWizardPage(editor);
 		addPage(page);
 	}
 	
