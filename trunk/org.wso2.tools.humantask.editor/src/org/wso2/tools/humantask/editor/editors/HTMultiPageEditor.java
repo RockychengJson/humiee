@@ -27,8 +27,11 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.ISaveablePart;
+import org.eclipse.ui.IWorkbenchPartConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.eclipse.ui.part.EditorInputTransfer.EditorInputData;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.DocumentRoot;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.THumanInteractions;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TTasks;
@@ -58,6 +61,8 @@ Listener{
 	
 	private THumanInteractions humanInteractions;
 	private TTasks tasks;
+	
+	public boolean isDirty;
 	
 	
 	public HTMultiPageEditor(){
@@ -194,6 +199,8 @@ Listener{
 	@Override
 	public void doSave(IProgressMonitor progressMonitor) {
 		
+		isDirty=false;
+		
 		// Save only resources that have actually changed.
 		final Map<Object, Object> saveOptions = new HashMap<Object, Object>();
 		saveOptions.put(Resource.OPTION_SAVE_ONLY_IF_CHANGED, Resource.OPTION_SAVE_ONLY_IF_CHANGED_MEMORY_BUFFER);
@@ -241,6 +248,7 @@ Listener{
 			//TODO: Correct exception handling
 			e.printStackTrace();
 		}
+		
 			
 	}
 	
@@ -253,17 +261,22 @@ Listener{
 		/*}else if (sourceViewer.isDirty()) {
 			return true;*/
 		
-		} else {
-			return false;
+		} else if(isDirty) {
+			return true;
 		}
+		else{
+			return false;
+			}
 		
 	}
 	public void customizedSave(){
-		firePropertyChange(IEditorPart.PROP_DIRTY);
-		if(isDirty()){
-			System.out.println("dirtied");
-		}else{System.out.println("not dirtied");}
+		
+		isDirty=true;
+		updateDirtyState();	
+	
 	}
+	
+	
 
 	@Override
 	public void handleEvent(Event event) {
