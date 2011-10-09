@@ -1703,17 +1703,31 @@ public class TaskPage extends FormPage implements IResourceChangeListener,
 
 				// TODO //should be edited
 
-				if (selectedHumanRole.getGenericHumanRole().getFrom() != null) {
-					selectedHumanRole.getGenericHumanRole().getFrom()
-							.getArgument().getMixed()
-							.setValue(0, expTextBox.getText());
+				if (selectedHumanRole != null) {
+					if (selectedHumanRole.getGenericHumanRole() != null) {
+						if (selectedHumanRole.getGenericHumanRole().getFrom() != null) {
+							if (selectedHumanRole.getGenericHumanRole()
+									.getFrom().getArgument() != null) {
+								if (selectedHumanRole.getGenericHumanRole()
+										.getFrom().getArgument().getMixed() != null) {
+									if (selectedHumanRole.getGenericHumanRole()
+											.getFrom().getArgument().getMixed()
+											.size() != 0) {
+										selectedHumanRole
+												.getGenericHumanRole()
+												.getFrom()
+												.getArgument()
+												.getMixed()
+												.setValue(0,
+														expTextBox.getText());
+									}
+								}
+							}
+						}
+					}
 				}
+
 				editor.customizedSave();
-				// firePropertyChange(IEditorPart.PROP_DIRTY);
-				// firePropertyChange(257);
-				// if(isDirty()){
-				// System.out.println("dirtied");
-				// }else{System.out.println("not dirtied");}
 			}
 		});
 	}
