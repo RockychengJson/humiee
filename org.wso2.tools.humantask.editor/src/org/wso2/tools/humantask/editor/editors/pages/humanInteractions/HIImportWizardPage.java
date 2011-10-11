@@ -40,9 +40,9 @@ public class HIImportWizardPage extends WizardPage {
 	 public static final String PAGE_NAME = "Import page";
 	 
 	
-	 private Combo nsp_combo;
+	 private Text nsp_txt;
 	 private Text location_txt;
-	 private Text im_type_txt;
+	 private Combo im_type_combo;
 	 private Combo comboDropDown;
 	 private static final String[] FILTER_EXTS = { "*.wsdl","*.*" };
 	 private String selectedWsdlComboBoxItem;
@@ -142,10 +142,9 @@ public class HIImportWizardPage extends WizardPage {
 		gd.horizontalSpan =1;
 		name_space_label.setLayoutData(gd);
 		
-		//nsp_txt= new Text(comp, SWT.SINGLE|SWT.BORDER);
-		//nsp_txt.setLayoutData(gd);
-		nsp_combo = new Combo(comp,SWT.DROP_DOWN | SWT.BORDER );
-		nsp_combo.setLayoutData(gd);
+		
+		nsp_txt = new Text(comp, SWT.SINGLE | SWT.BORDER);
+		nsp_txt.setLayoutData(gd);
 		
 		Label location_lb = new Label(comp, SWT.WRAP);
 		location_lb.setText("Location");
@@ -158,8 +157,8 @@ public class HIImportWizardPage extends WizardPage {
 		im_type_lb.setText("Import Type");
 		im_type_lb.setLayoutData(gd);
 		
-		im_type_txt = new Text(comp, SWT.SINGLE| SWT.BORDER);
-		im_type_txt.setLayoutData(gd);
+		im_type_combo = new Combo(comp,SWT.DROP_DOWN | SWT.BORDER );
+		im_type_combo.setLayoutData(gd);
 		
 		setControl(comp);  
 		setPageComplete(true);
@@ -231,18 +230,18 @@ public class HIImportWizardPage extends WizardPage {
 		
 		Object [] namesapces = definition.getNamespaces().keySet().toArray();
 		
-		nsp_combo.removeAll();
+		im_type_combo.removeAll();
 		
 		for(int i = 0 ;i<namesapces.length ; i++){
-			nsp_combo.add(definition.getNamespace(namesapces[i].toString()));
+			im_type_combo.add(definition.getNamespace(namesapces[i].toString()));
 		}
-		nsp_combo.select(0);
+		im_type_combo.select(0);
 		
 		
 	}
 	
 	public String getNameSpace(){
-		return nsp_combo.getItem(nsp_combo.getSelectionIndex());
+		return nsp_txt.getText();
 	}
 
 	public String getLocation(){
@@ -250,7 +249,8 @@ public class HIImportWizardPage extends WizardPage {
 	}
 	
 	public String getImportType(){
-		return im_type_txt.getText();
+		return im_type_combo.getItem(im_type_combo.getSelectionIndex());
+		
 	}
 	
 }
