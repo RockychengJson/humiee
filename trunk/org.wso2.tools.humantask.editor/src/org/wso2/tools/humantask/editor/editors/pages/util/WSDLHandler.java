@@ -14,6 +14,11 @@ public class WSDLHandler {
 	private String filename = "";
 	private String txt_name;
 	
+	public static final String HI_IMPORT_WIZ = "hi_impwiz";
+	public static final String TASK_PAGE_IMPORT= "task_page_import";
+	public static final String NOTIFICATION_PAGE_IMPORT ="notifi_page_import" ;
+	
+	
 	private WSDLHandler(HTMultiPageEditor editor){
 		
 		this.domain = editor.getEditingDomain();
@@ -31,11 +36,11 @@ public class WSDLHandler {
 		
 		//This ladder should be updated if any WSDL importing feature will add in the future.
 		
-		if(flag.compareTo("hi_impwiz") == 0){
+		if(flag.compareTo(WSDLHandler.HI_IMPORT_WIZ) == 0){
 			txt_name = "/HIImportWSDLLocations_";
-		}else if(flag.compareTo("task_page") == 0){
+		}else if(flag.compareTo(WSDLHandler.TASK_PAGE_IMPORT) == 0){
 			txt_name = "/TWSDLLocations_";
-		}else if(flag.compareTo("notifi_page") == 0){
+		}else if(flag.compareTo(WSDLHandler.NOTIFICATION_PAGE_IMPORT) == 0){
 			txt_name = "/NWSDLLocations_";
 		}
 

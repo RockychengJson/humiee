@@ -48,7 +48,6 @@ public boolean performCancel()  {
 
 	@Override
 	public boolean performFinish() {
-		// TODO viraj check out pou in the console you will understand how it works
 		
 		htdFactory factory= htdFactory.eINSTANCE;
 		TImport tImport= factory.createTImport();					

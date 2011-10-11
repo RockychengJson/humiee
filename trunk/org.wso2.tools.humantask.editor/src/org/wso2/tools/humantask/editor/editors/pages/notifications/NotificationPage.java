@@ -183,7 +183,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		reader=new WSDLReaderImpl();
 
 		wsdl_handler = WSDLHandler.getInstance(editor);
-		filename = wsdl_handler.createWSDLLocationTxt("notifi_page");
+		filename = wsdl_handler.createWSDLLocationTxt(WSDLHandler.NOTIFICATION_PAGE_IMPORT);
 		
 		
 	}
@@ -584,17 +584,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		}else {
 			portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 		}
-		/*if (notifications != null) {
-			if (humanInteractions.getNotifications().getNotification().get(0).getInterface().getPortType()!= null) {
-				if ((tasks.getTask().get(0).getInterface().getPortType()
-						.toString() != null)){ 
-				portComboBox.setText(humanInteractions.getNotifications().getNotification().get(0).getInterface().getPortType().toString()) ;
-				
-				
-			}else {
-				portComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-				}
-			}*/
+		
 		
 		portComboBox.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -659,17 +649,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				operationComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
 			}
 		}
-		/*if (humanInteractions.getNotifications() != null) {
-			if (humanInteractions.getNotifications().getNotification().get(0).getInterface().getOperation()!= null) {
-				if ((tasks.getTask().get(0).getInterface().getPortType()
-						.toString() != null)){ 
-				operationComboBox.setText(humanInteractions.getNotifications().getNotification().get(0).getInterface().getOperation()) ;
-				
-				
-			}else {
-				operationComboBox.setText(EMFObjectHandleUtil.RESOURCE_NOT_AVAILABLE);
-				}
-			}*/
+		
 		
 		
 		operationComboBox.addModifyListener(new ModifyListener() {
