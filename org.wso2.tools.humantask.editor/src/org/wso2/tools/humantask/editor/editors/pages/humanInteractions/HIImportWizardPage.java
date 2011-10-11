@@ -57,7 +57,7 @@ public class HIImportWizardPage extends WizardPage {
 		super(PAGE_NAME, "Add New Import", null);
 		reader=new WSDLReaderImpl();
 		wsdl_handler = WSDLHandler.getInstance(editor);
-		filename= wsdl_handler.createWSDLLocationTxt("hi_impwiz");
+		filename = wsdl_handler.createWSDLLocationTxt(WSDLHandler.HI_IMPORT_WIZ);
 		
 	}
 
