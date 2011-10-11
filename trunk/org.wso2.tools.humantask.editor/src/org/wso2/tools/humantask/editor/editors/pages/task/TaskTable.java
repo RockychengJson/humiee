@@ -122,6 +122,7 @@ public class TaskTable {
 
 			@Override
 			public void handleEvent(Event event) {
+				taskPage.checkEnableStateWSDLSection();
 				TaskCreatWizard wizard = new TaskCreatWizard(humanInteractions,domain,viewer );
 				WizardDialog wizardDialog = new WizardDialog(Display .getCurrent().getActiveShell(),wizard);
 				wizardDialog.create(); 

@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.command.Command;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
@@ -98,11 +99,12 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 	private int tempindex;
 	private boolean isFirst = true;
 	private WSDLHandler wsdl_handler;
-
+	private Text filelocation ;
 	private Section via_logical_ppl;
 
 	protected THumanInteractions humanInteractions;
 
+	private Group wsdlInfo;
 	private Combo portComboBox;
 	private Combo OportComboBox;
 	private Combo OresponseComboBox;
@@ -166,7 +168,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 	private File file;
 	private Combo comboDropDown;
 	private String selectedWsdlComboBoxItem;
-	private String filename= "WSDLLocations.txt";
+	private String filename = "";
 	private WSDLReaderImpl reader;
 	private Definition definition;
 	private Object portTypes[];
@@ -414,7 +416,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 		GridLayout wsdlComp_layout = new GridLayout(3 ,false);
 		wsdl_import_comp.setLayout(wsdlComp_layout);
 		*/
-		Group wsdlInfo = new Group(sectionClient, SWT.NONE);
+	    wsdlInfo = new Group(sectionClient, SWT.NONE);
 		wsdlInfo.setText("Import WSDLs");
 		GridLayout gridLayout = new GridLayout();
 		gridLayout.numColumns = 3;
@@ -447,8 +449,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 		//import_lb_gd.horizontalSpan =  1;
 		select_wsdl_label.setLayoutData(import_lb_gd);
 		
-		final Text filename = new Text(wsdlInfo, SWT.SINGLE | SWT.BORDER);
-		filename.setLayoutData(import_lb_gd);
+		filelocation = new Text(wsdlInfo, SWT.SINGLE | SWT.BORDER);
+		filelocation.setLayoutData(import_lb_gd);
 		
 		Button browse_btn = new Button(wsdlInfo, SWT.PUSH);
 		browse_btn.setText("Browse");
@@ -463,10 +465,10 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 				dlg.setFilterExtensions(FILTER_EXTS);
 				String fn = dlg.open();
 				if (fn != null) {
-					filename.setText(fn);
+					filelocation.setText(fn);
 				}
 				try{
-				saveToFile(filename.getText()); //url is saved to a text file
+				saveToFile(filelocation.getText()); //url is saved to a text file
 				}
 				catch(IOException e)
 				{
@@ -1835,8 +1837,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 	}
 	
 	
-	private void updatePeopleAssignmentTable()
-	{
+	private void updatePeopleAssignmentTable(){
+		
 		viewer_peopleAssignment.setInput(createModleForPeopleAssinment());
 		table_peopleAssingment.setSelection(0);
 		checkAvailability_peopleAssignment();
@@ -2659,87 +2661,98 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 	
 	
 	private void updatePreElemNameTable(){
-		
-		if(input.getPresentationElements() != null){
-			if(input.getPresentationElements().getName() != null){
-				
-			 presentationElemNameViewer.setInput(input);
-			 table_presentationElemName.setSelection(0);
-			 
-			 if(input.getPresentationElements().getName().size() != 0){
-				 
-				 selectedElemName = input.getPresentationElements().getName().get(0);
-				 
-			 }else{
-				 
-			 }
-				
-			 	updatePElemNameDetails();
+		if (input != null) {
+			if (input.getPresentationElements() != null) {
+				if (input.getPresentationElements().getName() != null) {
+
+					presentationElemNameViewer.setInput(input);
+					table_presentationElemName.setSelection(0);
+
+					if (input.getPresentationElements().getName().size() != 0) {
+
+						selectedElemName = input.getPresentationElements()
+								.getName().get(0);
+
+					} else {
+
+					}
+
+					updatePElemNameDetails();
+				}
 			}
 		}
 	}
 
 	private void updatePresentationPramTable(){
-	
-	if (input.getPresentationElements() != null) {
-		if (input.getPresentationElements().getPresentationParameters() != null) {
-			if (input.getPresentationElements().getPresentationParameters()
-					.getPresentationParameter() != null) {
+		if (input != null) {
+			if (input.getPresentationElements() != null) {
+				if (input.getPresentationElements().getPresentationParameters() != null) {
+					if (input.getPresentationElements()
+							.getPresentationParameters()
+							.getPresentationParameter() != null) {
 
-				PresentationParameterViewer.setInput(input);
-				table_presentationParm.setSelection(0);
+						PresentationParameterViewer.setInput(input);
+						table_presentationParm.setSelection(0);
 
-				if (input.getPresentationElements().getPresentationParameters().getPresentationParameter().size() != 0) {
-					
-					selectedParam = input.getPresentationElements().getPresentationParameters().getPresentationParameter().get(0);
+						if (input.getPresentationElements()
+								.getPresentationParameters()
+								.getPresentationParameter().size() != 0) {
 
-				} else {
-				//	clearText();
+							selectedParam = input.getPresentationElements()
+									.getPresentationParameters()
+									.getPresentationParameter().get(0);
+
+						} else {
+							// clearText();
+						}
+
+						updatePparmDetails();
+					}
 				}
-
-				updatePparmDetails();
 			}
 		}
 	}
-}
 
 	private void updatePreElemSubjectTable(){
-	
-	if(input.getPresentationElements() != null){
-		if(input.getPresentationElements().getSubject() != null){
-			
-			presentationElemSubjectViewer.setInput(input);
-			table_presentationElemSub.setSelection(0);
-			
-			if(input.getPresentationElements().getSubject().size() != 0){
-				
-				selectedElemSubject = input.getPresentationElements().getSubject().get(0);
-			}else{
-				
+		if (input != null) {
+			if (input.getPresentationElements() != null) {
+				if (input.getPresentationElements().getSubject() != null) {
+
+					presentationElemSubjectViewer.setInput(input);
+					table_presentationElemSub.setSelection(0);
+
+					if (input.getPresentationElements().getSubject().size() != 0) {
+
+						selectedElemSubject = input.getPresentationElements()
+								.getSubject().get(0);
+					} else {
+
+					}
+
+					updatePElemSubDetail();
+				}
 			}
-			
-			updatePElemSubDetail();
 		}
 	}
-}
 
 	private void updatePreElemDescTable(){
-	
-	if(input.getPresentationElements() != null){
-		if(input.getPresentationElements().getDescription() != null){
-			
-			presentationElemDescViewer.setInput(input);
-			table_PresentationElemDesc.setSelection(0);
-			
-			if(input.getPresentationElements().getDescription().size() != 0){
-				
-				selectedElemDesc = input.getPresentationElements().getDescription().get(0);
-			}
-			else{
-				
-			}
-			
-			updatePElemDescDetail();
+		if (input != null) {
+			if (input.getPresentationElements() != null) {
+				if (input.getPresentationElements().getDescription() != null) {
+
+					presentationElemDescViewer.setInput(input);
+					table_PresentationElemDesc.setSelection(0);
+
+					if (input.getPresentationElements().getDescription().size() != 0) {
+
+						selectedElemDesc = input.getPresentationElements()
+								.getDescription().get(0);
+					} else {
+
+					}
+
+					updatePElemDescDetail();
+				}
 			}
 		}
 	}
@@ -3775,40 +3788,49 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 
 	
 	
-	private void configImportedWsdl(final Combo WsdlComboBox)
-			throws IOException {
-		
+	private void configImportedWsdl(final Combo WsdlComboBox) throws IOException {
 		BufferedReader br;
-		try {
-			br= new BufferedReader(new InputStreamReader(
-					new DataInputStream(new FileInputStream(filename))));
-			String strLine;
-			while ((strLine = br.readLine()) != null) {
-				WsdlComboBox.add(strLine);
+		
+		if(humanInteractions.getTasks() != null){
+			if(humanInteractions.getTasks().getTask() != null){
+				if(humanInteractions.getTasks().getTask().size() != 0){
+					
+					try {
+						br = new BufferedReader(new InputStreamReader(new DataInputStream(
+								new FileInputStream(filename))));
+						String strLine;
+						while ((strLine = br.readLine()) != null) {
+							WsdlComboBox.add(strLine);
+						}
+						br.close();
+
+					} catch (IOException e) {
+						System.out.println("Error: " + e.getMessage());
+					}
+				}
 			}
-			br.close();
-			
-		} catch (IOException e) {
-			System.out.println("Error: " + e.getMessage());
 		}
+		
+		
 		System.out.println(WsdlComboBox.getItemCount());
-		if(WsdlComboBox.getItemCount()!=0)
-		{
+
+		if (WsdlComboBox.getItemCount() != 0) {
 			selectedWsdlComboBoxItem = WsdlComboBox.getItem(0);
 		}
-			  
-			
-			WsdlComboBox.addModifyListener(new ModifyListener() {
-		public void modifyText(ModifyEvent e) {
-			//validateInput();
-			selectedWsdlComboBoxItem= WsdlComboBox.getItem(WsdlComboBox.getSelectionIndex());
-			//WSDLReaderImpl reader =new WSDLReaderImpl();
-			
-			updateDetailsAccordingToWSDL();
-			
-			
-		}
-	});
+
+		WsdlComboBox.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				// validateInput();
+				if(WsdlComboBox.getItemCount() != 0){
+				selectedWsdlComboBoxItem = WsdlComboBox.getItem(WsdlComboBox
+						.getSelectionIndex());
+				
+				// WSDLReaderImpl reader =new WSDLReaderImpl();
+
+				updateDetailsAccordingToWSDL();
+				}
+			}
+		});
 	
 		
 	}
@@ -3936,6 +3958,25 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 	public void deleteTask(TableViewer viewer,TTasks tasks){
 		boolean done= humanInteractions.getTasks().getTask().remove(input);
 		viewer.setInput(tasks);
+		EList<TTask> task_list = humanInteractions.getTasks().getTask();
+		//System.out.println("TASK LIST SIZE"+task_list.size());
+		if(task_list.size() == 0){
+			comboDropDown.removeAll();
+			filelocation.setText("");
+			wsdlInfo.setEnabled(false);
+			
+			portComboBox.removeAll();
+			portComboBox.setEnabled(false);
+			
+			operationComboBox.removeAll();
+			operationComboBox.setEnabled(false);
+			
+			OportComboBox.removeAll();
+			OportComboBox.setEnabled(false);
+			
+			OresponseComboBox.removeAll();
+			OresponseComboBox.setEnabled(false);
+		}
 		/*if(done == true){
 					
 				   
@@ -3958,7 +3999,18 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 		
 	}
 	
-
+	void checkEnableStateWSDLSection(){
+		if(wsdlInfo.getEnabled() == false){
+			wsdlInfo.setEnabled(true);	
+		}
+		if(portComboBox.getEnabled() == false || operationComboBox.getEnabled() == false ||
+				OportComboBox.getEnabled() == false || OresponseComboBox.getEnabled() == false){
+			portComboBox.setEnabled(true);
+			operationComboBox.setEnabled(true);
+			operationComboBox.setEnabled(true);
+			operationComboBox.setEnabled(true);
+		}
+	}
 	
 	
 	@Override
