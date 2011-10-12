@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -76,8 +77,10 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TText;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
+import org.wso2.tools.humantask.editor.editors.pages.humanInteractions.HIImportWizardPage;
+import org.wso2.tools.humantask.editor.editors.pages.util.FileOpHandler;
 import org.wso2.tools.humantask.editor.editors.pages.util.Messages;
-import org.wso2.tools.humantask.editor.editors.pages.util.WSDLHandler;
+import org.wso2.tools.humantask.editor.editors.pages.util.ImportHandler;
 
 import com.ibm.wsdl.OperationImpl;
 import com.ibm.wsdl.xml.WSDLReaderImpl;
@@ -98,7 +101,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 	private TabContent[] temp;
 	private int tempindex;
 	private boolean isFirst = true;
-	private WSDLHandler wsdl_handler;
+	private ImportHandler wsdl_handler;
 	private Text filelocation ;
 	private Section via_logical_ppl;
 
@@ -109,6 +112,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 	private Combo OportComboBox;
 	private Combo OresponseComboBox;
 	private Combo operationComboBox;
+	private Button browse_btn;
 	
 	private Button oneway;
 	private Button requestres;
@@ -168,7 +172,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 	private File file;
 	private Combo comboDropDown;
 	private String selectedWsdlComboBoxItem;
-	private String filename = "";
+	private String location_filename = "";
 	private WSDLReaderImpl reader;
 	private Definition definition;
 	private Object portTypes[];
@@ -196,8 +200,8 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 		this.taskPage = this;
 		reader=new WSDLReaderImpl();
 		
-		wsdl_handler = WSDLHandler.getInstance(editor);
-		filename = wsdl_handler.createWSDLLocationTxt(WSDLHandler.TASK_PAGE_IMPORT);
+		wsdl_handler = ImportHandler.getInstance(editor);
+		location_filename = wsdl_handler.createWSDLLocationTxt(ImportHandler.TASK_PAGE_IMPORT);
 		
 		
 	}
@@ -408,14 +412,6 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 
 		sectionClient.setLayout(layout);
 		
-		/*final Composite wsdl_import_comp = toolkit.createComposite(sectionClient);
-		GridData wsdl_import_comp_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL);
-		wsdl_import_comp_gd.horizontalSpan = 2;
-		wsdl_import_comp.setLayoutData(wsdl_import_comp_gd);
-		GridLayout wsdlComp_layout = new GridLayout(3 ,false);
-		wsdl_import_comp.setLayout(wsdlComp_layout);
-		*/
 	    wsdlInfo = new Group(sectionClient, SWT.NONE);
 		wsdlInfo.setText("Import WSDLs");
 		GridLayout gridLayout = new GridLayout();
@@ -432,7 +428,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 		import_lb_gd.horizontalSpan =1;
 		import_label.setLayoutData(import_lb_gd);
 		
-		 comboDropDown = new Combo(wsdlInfo, SWT.DROP_DOWN | SWT.BORDER);
+		comboDropDown = new Combo(wsdlInfo, SWT.DROP_DOWN | SWT.BORDER);
 		GridData combo_lb_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
 				| GridData.FILL_HORIZONTAL);
 		combo_lb_gd.horizontalSpan = 2;
@@ -446,35 +442,52 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 		
 		Label select_wsdl_label = new Label(wsdlInfo, SWT.WRAP);
 		select_wsdl_label.setText("Select the WSDL");
-		//import_lb_gd.horizontalSpan =  1;
 		select_wsdl_label.setLayoutData(import_lb_gd);
 		
 		filelocation = new Text(wsdlInfo, SWT.SINGLE | SWT.BORDER);
 		filelocation.setLayoutData(import_lb_gd);
 		
-		Button browse_btn = new Button(wsdlInfo, SWT.PUSH);
+		browse_btn = new Button(wsdlInfo, SWT.PUSH);
 		browse_btn.setText("Browse");
 		browse_btn.addSelectionListener(new SelectionAdapter() {
 			
 			public void widgetSelected(SelectionEvent event) {
 				
-			
 				FileDialog dlg = new FileDialog(Display
 						.getCurrent().getActiveShell(), SWT.OPEN);
-			  //dlg.setFilterNames(FILTER_NAMES);
+			 
 				dlg.setFilterExtensions(FILTER_EXTS);
 				String fn = dlg.open();
+				if(FileOpHandler.isListed(location_filename,fn) == false){
 				if (fn != null) {
 					filelocation.setText(fn);
 				}
 				try{
 				saveToFile(filelocation.getText()); //url is saved to a text file
+				FileOpHandler.copyFile(fn, ResourcesPlugin.getWorkspace().getRoot()
+				.getLocation().toString()+File.separator+dlg.getFileName());
+				
 				}
 				catch(IOException e)
 				{
 					System.out.println(e);
 				}
+				
+				
 				updateDetailsAccordingToWSDL();
+				}else{
+					browse_btn.setEnabled(false);
+					filelocation.setEnabled(false);
+					String title = "Duplicate Import";
+					String message =fn +":-"+"This file alredy exists in the import list.";
+					String [] button_lables = new String[] { "OK" };
+					MessageDialog dialog = new MessageDialog(Display
+							.getCurrent().getActiveShell(), title, null,message ,MessageDialog.QUESTION,
+							button_lables, 0);
+					dialog.open();
+
+				}
+			
 			}
 			
 		});
@@ -3797,7 +3810,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 					
 					try {
 						br = new BufferedReader(new InputStreamReader(new DataInputStream(
-								new FileInputStream(filename))));
+								new FileInputStream(location_filename))));
 						String strLine;
 						while ((strLine = br.readLine()) != null) {
 							WsdlComboBox.add(strLine);
@@ -3828,6 +3841,10 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 				// WSDLReaderImpl reader =new WSDLReaderImpl();
 
 				updateDetailsAccordingToWSDL();
+				if(browse_btn.getEnabled() == false || filelocation.getEnabled() == false){
+					browse_btn.setEnabled(true);
+					filelocation.setEnabled(true);
+				}
 				}
 			}
 		});
@@ -3841,7 +3858,7 @@ public class TaskPage extends FormPage implements IResourceChangeListener,Listen
 		FileWriter fw = null;
 			try {		
 		
-			fw = new FileWriter(filename, true); // the true will append the new
+			fw = new FileWriter(location_filename, true); // the true will append the new
 													// data
 
 		} catch (FileNotFoundException ioe) {

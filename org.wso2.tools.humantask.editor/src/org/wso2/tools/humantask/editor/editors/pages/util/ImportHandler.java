@@ -1,15 +1,24 @@
 package org.wso2.tools.humantask.editor.editors.pages.util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Text;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
+import org.wso2.tools.humantask.editor.editors.pages.humanInteractions.HIImportWizardPage;
 
-public class WSDLHandler {
+public class ImportHandler {
 	
-	private static WSDLHandler wsdl_handler;
+	private static ImportHandler wsdl_handler;
 	protected EditingDomain domain;
 	private String filename = "";
 	private String txt_name;
@@ -19,14 +28,14 @@ public class WSDLHandler {
 	public static final String NOTIFICATION_PAGE_IMPORT ="notifi_page_import" ;
 	
 	
-	private WSDLHandler(HTMultiPageEditor editor){
+	private ImportHandler(HTMultiPageEditor editor){
 		
 		this.domain = editor.getEditingDomain();
 	}
 
-	public static WSDLHandler getInstance(HTMultiPageEditor editor){
+	public static ImportHandler getInstance(HTMultiPageEditor editor){
 		if(wsdl_handler == null){
-			wsdl_handler = new WSDLHandler(editor);
+			wsdl_handler = new ImportHandler(editor);
 		}
 		
 		return wsdl_handler;
@@ -36,11 +45,11 @@ public class WSDLHandler {
 		
 		//This ladder should be updated if any WSDL importing feature will add in the future.
 		
-		if(flag.compareTo(WSDLHandler.HI_IMPORT_WIZ) == 0){
+		if(flag.compareTo(ImportHandler.HI_IMPORT_WIZ) == 0){
 			txt_name = "/HIImportWSDLLocations_";
-		}else if(flag.compareTo(WSDLHandler.TASK_PAGE_IMPORT) == 0){
+		}else if(flag.compareTo(ImportHandler.TASK_PAGE_IMPORT) == 0){
 			txt_name = "/TWSDLLocations_";
-		}else if(flag.compareTo(WSDLHandler.NOTIFICATION_PAGE_IMPORT) == 0){
+		}else if(flag.compareTo(ImportHandler.NOTIFICATION_PAGE_IMPORT) == 0){
 			txt_name = "/NWSDLLocations_";
 		}
 
@@ -69,4 +78,6 @@ public class WSDLHandler {
 				.getLocation().toFile().pathSeparator);
 		return filename;
 	}
+	
+	
 }

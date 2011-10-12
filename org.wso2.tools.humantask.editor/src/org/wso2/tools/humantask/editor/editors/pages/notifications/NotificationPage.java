@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.edit.command.SetCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.provider.ComposedAdapterFactory;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -75,8 +76,9 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
 import org.wso2.tools.humantask.editor.editors.pages.task.HumanRole;
+import org.wso2.tools.humantask.editor.editors.pages.util.FileOpHandler;
 import org.wso2.tools.humantask.editor.editors.pages.util.Messages;
-import org.wso2.tools.humantask.editor.editors.pages.util.WSDLHandler;
+import org.wso2.tools.humantask.editor.editors.pages.util.ImportHandler;
 
 import com.ibm.wsdl.OperationImpl;
 import com.ibm.wsdl.xml.WSDLReaderImpl;
@@ -98,11 +100,11 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	
 	private Definition definition;
 	private WSDLReaderImpl reader;
-	private String filename= "WSDLLocations.txt";
+	private String location_filename= "";
 	private String selectedWsdlComboBoxItem;
 	private Combo comboDropDown;
 	private Object portTypes[];
-	private WSDLHandler wsdl_handler;
+	private ImportHandler wsdl_handler;
 	
 	private CTabFolder tabFolder;
 	private ScrolledForm form;
@@ -120,6 +122,8 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 	
 	
 	private static final String[] FILTER_EXTS = { "*.wsdl","*.*" };
+	private Text filelocation;
+	private Button browse_btn;
 	
 	private TableViewer notficationViewer;
 	private Section notificationTableSection;
@@ -182,8 +186,8 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		
 		reader=new WSDLReaderImpl();
 
-		wsdl_handler = WSDLHandler.getInstance(editor);
-		filename = wsdl_handler.createWSDLLocationTxt(WSDLHandler.NOTIFICATION_PAGE_IMPORT);
+		wsdl_handler = ImportHandler.getInstance(editor);
+		location_filename = wsdl_handler.createWSDLLocationTxt(ImportHandler.NOTIFICATION_PAGE_IMPORT);
 		
 		
 	}
@@ -451,14 +455,6 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 
 		sectionClient.setLayout(layout);
 		
-		/*final Composite wsdl_import_comp = toolkit.createComposite(sectionClient);
-		GridData wsdl_import_comp_gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING
-				| GridData.FILL_HORIZONTAL);
-		wsdl_import_comp_gd.horizontalSpan = 2;
-		wsdl_import_comp.setLayoutData(wsdl_import_comp_gd);
-		GridLayout wsdlComp_layout = new GridLayout(3 ,false);
-		wsdl_import_comp.setLayout(wsdlComp_layout);*/
-	
 		Group wsdlInfo = new Group(sectionClient, SWT.NONE);
 		wsdlInfo.setText("Import WSDLs");
 		GridLayout gridLayout = new GridLayout();
@@ -497,16 +493,50 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		//import_lb_gd.horizontalSpan =  1;
 		select_wsdl_label.setLayoutData(import_lb_gd);
 		
-		final Text filename = new Text(wsdlInfo, SWT.SINGLE | SWT.BORDER);
-		filename.setLayoutData(import_lb_gd);
+		filelocation = new Text(wsdlInfo, SWT.SINGLE | SWT.BORDER);
+		filelocation.setLayoutData(import_lb_gd);
 		
-		Button browse_btn = new Button(wsdlInfo, SWT.PUSH);
+		browse_btn = new Button(wsdlInfo, SWT.PUSH);
 		browse_btn.setText("Browse");
 		browse_btn.addSelectionListener(new SelectionAdapter() {
 			
 			public void widgetSelected(SelectionEvent event) {
 				
-				FileDialog dlg = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+				FileDialog dlg = new FileDialog(Display
+						.getCurrent().getActiveShell(), SWT.OPEN);
+			 
+				dlg.setFilterExtensions(FILTER_EXTS);
+				String fn = dlg.open();
+				if(FileOpHandler.isListed(location_filename,fn) == false){
+				if (fn != null) {
+					filelocation.setText(fn);
+				}
+				try{
+				saveToFile(filelocation.getText()); //url is saved to a text file
+				FileOpHandler.copyFile(fn, ResourcesPlugin.getWorkspace().getRoot()
+				.getLocation().toString()+File.separator+dlg.getFileName());
+				
+				}
+				catch(IOException e)
+				{
+					System.out.println(e);
+				}
+				
+				
+				updateDetailsAccordingToWSDL();
+				}else{
+					browse_btn.setEnabled(false);
+					filelocation.setEnabled(false);
+					String title = "Duplicate Import";
+					String message =fn +":-"+"This file alredy exists in the import list.";
+					String [] button_lables = new String[] { "OK" };
+					MessageDialog dialog = new MessageDialog(Display
+							.getCurrent().getActiveShell(), title, null,message ,MessageDialog.QUESTION,
+							button_lables, 0);
+					dialog.open();
+
+				}
+				/*FileDialog dlg = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
 			  //dlg.setFilterNames(FILTER_NAMES);
 				dlg.setFilterExtensions(FILTER_EXTS);
 				String fn = dlg.open();
@@ -520,7 +550,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 					{
 						System.out.println(e);
 					}
-					updateDetailsAccordingToWSDL();
+					updateDetailsAccordingToWSDL();*/
 			}
 			
 		});
@@ -3158,7 +3188,7 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new InputStreamReader(new DataInputStream(
-					new FileInputStream(filename))));
+					new FileInputStream(location_filename))));
 			String strLine;
 			while ((strLine = br.readLine()) != null) {
 				WsdlComboBox.add(strLine);
@@ -3181,7 +3211,10 @@ public class NotificationPage extends FormPage implements IResourceChangeListene
 				// WSDLReaderImpl reader =new WSDLReaderImpl();
 
 				updateDetailsAccordingToWSDL();
-
+				if(browse_btn.getEnabled() == false || filelocation.getEnabled() == false){
+					browse_btn.setEnabled(true);
+					filelocation.setEnabled(true);
+				}
 			}
 		});
 
@@ -3193,7 +3226,7 @@ private void saveToFile(String location) throws IOException {
 		FileWriter fw = null;
 		try {
 
-			fw = new FileWriter(filename, true); // the true will append the new
+			fw = new FileWriter(location_filename, true); // the true will append the new
 													// data
 
 		} catch (FileNotFoundException ioe) {
