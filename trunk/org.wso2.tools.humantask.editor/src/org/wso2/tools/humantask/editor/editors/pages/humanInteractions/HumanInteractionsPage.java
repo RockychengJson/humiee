@@ -53,7 +53,7 @@ import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.TImport;
 import org.open.oasis.docs.ns.bpel4people.ws.humantask.ht.htdPackage;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
 import org.wso2.tools.humantask.editor.editors.base.util.EMFObjectHandleUtil;
-import org.wso2.tools.humantask.editor.editors.pages.util.WSDLHandler;
+import org.wso2.tools.humantask.editor.editors.pages.util.ImportHandler;
 
 public class HumanInteractionsPage extends FormPage implements
 		IResourceChangeListener {

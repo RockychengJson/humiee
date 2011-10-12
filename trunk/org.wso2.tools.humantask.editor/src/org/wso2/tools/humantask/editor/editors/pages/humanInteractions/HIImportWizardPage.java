@@ -11,9 +11,9 @@ import java.io.InputStreamReader;
 
 import javax.wsdl.Definition;
 import javax.wsdl.WSDLException;
-import javax.xml.namespace.QName;
 
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -31,7 +31,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.wso2.tools.humantask.editor.editors.HTMultiPageEditor;
-import org.wso2.tools.humantask.editor.editors.pages.util.WSDLHandler;
+import org.wso2.tools.humantask.editor.editors.pages.util.FileOpHandler;
+import org.wso2.tools.humantask.editor.editors.pages.util.ImportHandler;
 
 import com.ibm.wsdl.xml.WSDLReaderImpl;
 
@@ -46,18 +47,18 @@ public class HIImportWizardPage extends WizardPage {
 	 private Combo comboDropDown;
 	 private static final String[] FILTER_EXTS = { "*.wsdl","*.*" };
 	 private String selectedWsdlComboBoxItem;
-	 private String filename = "ImportWSDLLocations.txt";
+	 private String location_filename = "ImportWSDLLocations.txt";
 	 private File wsdl_txt_file;
 	 private Definition definition;
 	 private WSDLReaderImpl reader;
-	 private WSDLHandler wsdl_handler;
+	 private ImportHandler wsdl_handler;
 	
 	 
-	protected HIImportWizardPage(HTMultiPageEditor editor) {
+	protected HIImportWizardPage(HTMultiPageEditor editor,HIImportWizard wizard) {
 		super(PAGE_NAME, "Add New Import", null);
 		reader=new WSDLReaderImpl();
-		wsdl_handler = WSDLHandler.getInstance(editor);
-		filename = wsdl_handler.createWSDLLocationTxt(WSDLHandler.HI_IMPORT_WIZ);
+		wsdl_handler = ImportHandler.getInstance(editor);
+		location_filename = wsdl_handler.createWSDLLocationTxt(ImportHandler.HI_IMPORT_WIZ);
 		
 	}
 
@@ -68,7 +69,7 @@ public class HIImportWizardPage extends WizardPage {
 		GridLayout layout = new GridLayout(2, false);
 		comp.setLayout(layout);
 		
-		/////////////////////////////////////////////////////////////
+		
 		Group wsdlInfo = new Group(comp, SWT.NONE);
 		wsdlInfo.setText("Import WSDLs");
 		GridLayout gridLayout = new GridLayout();
@@ -102,38 +103,70 @@ public class HIImportWizardPage extends WizardPage {
 		//import_lb_gd.horizontalSpan =  1;
 		select_wsdl_label.setLayoutData(import_lb_gd);
 		
-		final Text filename = new Text(wsdlInfo, SWT.SINGLE | SWT.BORDER);
-		filename.setLayoutData(import_lb_gd);
+		final Text selected_filename = new Text(wsdlInfo, SWT.SINGLE | SWT.BORDER);
+		selected_filename.setLayoutData(import_lb_gd);
 		
-		Button browse_btn = new Button(wsdlInfo, SWT.PUSH);
+		final Button browse_btn = new Button(wsdlInfo, SWT.PUSH);
 		browse_btn.setText("Browse");
 		browse_btn.addSelectionListener(new SelectionAdapter() {
 			
 			public void widgetSelected(SelectionEvent event) {
 				
-			
 				FileDialog dlg = new FileDialog(Display
 						.getCurrent().getActiveShell(), SWT.OPEN);
 			 
 				dlg.setFilterExtensions(FILTER_EXTS);
 				String fn = dlg.open();
+				if(FileOpHandler.isListed(HIImportWizardPage.this.location_filename,fn) == false){
 				if (fn != null) {
-					filename.setText(fn);
+					selected_filename.setText(fn);
 				}
 				try{
-				saveToFile(filename.getText()); //url is saved to a text file
+				saveToFile(selected_filename.getText()); //url is saved to a text file
+				
+				//TODO Kalpa :-going in to the project folder which .htd resides.
+				
+				/*// Get the root of the workspace
+				IWorkspace workspace = ResourcesPlugin.getWorkspace();
+				IWorkspaceRoot root = workspace.getRoot();
+				// Get all projects in the workspace
+				IProject[] projects = root.getProjects();
+				// Loop over all projects
+				for (IProject project : projects) {
+					try {
+						printProjectInfo(project);
+					} catch (CoreException e) {
+						e.printStackTrace();
+					}
+				}*/
+				
+				FileOpHandler.copyFile(fn, ResourcesPlugin.getWorkspace().getRoot()
+				.getLocation().toString()+File.separator+dlg.getFileName());
+				
 				}
 				catch(IOException e)
 				{
 					System.out.println(e);
 				}
+				
 				updateDetailsAccordingToWSDL();
+				}else{
+					browse_btn.setEnabled(false);
+					selected_filename.setEnabled(false);
+					String title = "Duplicate Import";
+					String message =fn +":-"+"This file alredy exists in the import list.";
+					String [] button_lables = new String[] { "OK" };
+					MessageDialog dialog = new MessageDialog(Display
+							.getCurrent().getActiveShell(), title, null,message ,MessageDialog.QUESTION,
+							button_lables, 0);
+					dialog.open();
+
+				}
 			}
 			
 		});
 		browse_btn.setLayoutData(import_lb_gd);
 		
-		//////////////////////////////////////////////////////////////
 		
 		Label name_space_label = new Label(comp, SWT.WRAP);
 		name_space_label.setText("Namespace");
@@ -168,7 +201,7 @@ public class HIImportWizardPage extends WizardPage {
 		FileWriter fw = null;
 		try {
 
-			fw = new FileWriter(filename, true);
+			fw = new FileWriter(location_filename, true);
 
 		} catch (FileNotFoundException ioe) {
 			System.out.println("File not found !");
@@ -190,7 +223,7 @@ public class HIImportWizardPage extends WizardPage {
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new InputStreamReader(new DataInputStream(
-					new FileInputStream(filename))));
+					new FileInputStream(location_filename))));
 			String strLine;
 			while ((strLine = br.readLine()) != null) {
 				WsdlComboBox.add(strLine);

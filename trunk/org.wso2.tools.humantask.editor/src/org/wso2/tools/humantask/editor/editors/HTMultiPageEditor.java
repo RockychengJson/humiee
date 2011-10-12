@@ -41,7 +41,7 @@ import org.wso2.tools.humantask.editor.editors.pages.humanInteractions.HumanInte
 import org.wso2.tools.humantask.editor.editors.pages.logicalpeoplegroups.LogicalPeopleGroupPage;
 import org.wso2.tools.humantask.editor.editors.pages.notifications.NotificationPage;
 import org.wso2.tools.humantask.editor.editors.pages.task.TaskPage;
-import org.wso2.tools.humantask.editor.editors.pages.util.WSDLHandler;
+import org.wso2.tools.humantask.editor.editors.pages.util.ImportHandler;
 import org.wso2.tools.humantask.editor.editors.xmleditor.HTEditor;
 
 
@@ -53,7 +53,7 @@ Listener{
 	private LogicalPeopleGroupPage logicalPeopleGroupPage;
 	private TaskPage taskPage;
 	private NotificationPage notificationPage;
-	private WSDLHandler wsdl_handler;
+	private ImportHandler wsdl_handler;
 	
 	private boolean isResourceChanged;
 	

@@ -34,12 +34,12 @@ public class HIImportWizard extends Wizard{
 	
 	
 	public void addPages(){
-		page = new HIImportWizardPage(editor);
+		page = new HIImportWizardPage(editor,this);
 		addPage(page);
 	}
 	
 	
-public boolean performCancel()  {
+	public boolean performCancel()  {
 		
 		page.dispose();
 		return true;
